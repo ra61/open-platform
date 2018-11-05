@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Icon, BackTop, Modal, Form, Input, Radio } from 'antd';
+import { Icon, BackTop, Modal, Form, Input, Radio, message } from 'antd';
 import { connect } from 'dva';
 import styles from './index.less';
 
@@ -24,7 +24,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="反馈类型" >
-        {form.getFieldDecorator('platform', {
+        {form.getFieldDecorator('type', {
           rules: [
             {
               required: true,
@@ -48,7 +48,7 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入标题" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="内容">
-        {form.getFieldDecorator('desc', {
+        {form.getFieldDecorator('content', {
           rules: [{ required: true, message: '请输入至少五个字符！', min: 5 }],
         })(<TextArea
           style={{ minHeight: 32 }}
@@ -90,9 +90,12 @@ class Tickling extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'feedback/add',
       payload: {
-        desc: fields.desc,
+        type: fields.type,
+        title: fields.title,
+        content: fields.content,
+        contact: fields.contact,
       },
     });
 
@@ -119,7 +122,7 @@ class Tickling extends PureComponent {
       <div>
 
       
-      <BackTop visibilityHeight={100}>
+      <BackTop visibilityHeight={-10}>
         <div className={styles.handle}>
           <div className={styles.iconWrap}>
             <Icon

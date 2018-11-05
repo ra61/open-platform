@@ -1,52 +1,73 @@
 import React, { Component, Fragment } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
+import Link from 'umi/link';
 import { Form, Card, List, Tag, Icon, Button } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './DocuList.less';
 
-const pageSize = 5;
-
-@Form.create()
-@connect(({ list, loading }) => ({
-  list,
+@connect(({ docu, loading }) => ({
+  docu,
   loading: loading.models.list,
 }))
 class DocuList extends Component {
+
+  state = {
+    pageIndex: 1,
+    pageSize: 5
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
+    let params = {
+      classifyId: this.props.location.query.id,
+      pageIndex: this.state.pageIndex,
+      pageSize: this.state.pageSize
+    }
+
     dispatch({
-      type: 'list/fetch',
-      payload: {
-        count: 5,
-      },
+      type: 'docu/fetchDocumentList',
+      payload: params
     });
   }
 
-  setOwner = () => {
-    const { form } = this.props;
-    form.setFieldsValue({
-      owner: ['wzj'],
+  handleListChange = (pageIndex, pageSize) => {
+
+    this.setState({ pageIndex: pageIndex, pageSize: pageSize });
+
+    let params = {
+      classifyId: this.props.location.query.id,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+    };
+
+    this.props.dispatch({
+      type: 'docu/fetchDocumentList',
+      payload: params,
     });
   };
 
-  fetchMore = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'list/appendFetch',
-      payload: {
-        count: pageSize,
-      },
-    });
-  };
 
   render() {
     const {
-      form,
-      list: { list },
+      docu: { documentList, totalCount },
       loading,
     } = this.props;
-    const { getFieldDecorator } = form;
+
+    const { pageSize } = this.state;
+
+    const paginationProps = {
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: pageSize,
+      total: totalCount,
+      onChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize);
+      },
+      onShowSizeChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize)
+      },
+    };
 
     const dataSource = [
       {
@@ -67,31 +88,16 @@ class DocuList extends Component {
       </span>
     );
 
-    const ListContent = ({ data: { content, updatedAt, like} }) => (
+    const ListContent = ({ data: { content, publish_time, up} }) => (
       <div className={styles.listContent}>
         <div className={styles.description}>{content}</div>
         <div className={styles.extra}>
           发布于
-          <em style={{ marginRight: 10 }}>{moment(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
-          <IconText type="like-o" text={like} />
+          <em style={{ marginRight: 10 }}>{moment(publish_time).format('YYYY-MM-DD HH:mm')}</em>
+          <IconText type="like-o" text={up} />
         </div>
       </div>
     );
-
-    const loadMore =
-      list.length > 0 ? (
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Button onClick={this.fetchMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
-            {loading ? (
-              <span>
-                <Icon type="loading" /> 加载中...
-              </span>
-            ) : (
-              '加载更多'
-            )}
-          </Button>
-        </div>
-      ) : null;
 
     return (
       <PageHeaderWrapper title='社区使用'>
@@ -103,11 +109,11 @@ class DocuList extends Component {
         >
           <List
             size="large"
-            loading={list.length === 0 ? loading : false}
+            loading={documentList.length === 0 ? loading : false}
             rowKey="id"
             itemLayout="vertical"
-            loadMore={loadMore}
-            dataSource={dataSource}
+            pagination={paginationProps}
+            dataSource={documentList}
             renderItem={item => (
               <List.Item
                 key={item.id}
@@ -115,20 +121,12 @@ class DocuList extends Component {
               >
                 <List.Item.Meta
                   title={
-                    <a className={styles.listItemMetaTitle} href={item.href}>
+
+                    <Link to={'/docu/detail?id=' + item.id} className={styles.listItemMetaTitle} >
                       {item.title}
-                    </a>
+                    </Link>
                   }
-                  description={
-                    
-                    <span>
-                      {
-                        item.tags.map((itemTag, i) => (
-                          <Tag key={i}>{itemTag}</Tag>
-                        ))
-                      }
-                    </span>
-                  }
+
                 />
                 <ListContent data={item} />
               </List.Item>

@@ -186,7 +186,12 @@ export default [
         path: '/docu',
         name: 'docu',
         icon: 'file-text',
+        hideChildrenInMenu: true,
         routes: [
+          {
+            path: '/docu',
+            redirect: '/docu/center',
+          },
           {
             path: '/docu/center',
             name: 'center',
@@ -208,7 +213,12 @@ export default [
         path: '/feedback',
         name: 'feedback',
         icon: 'form',
+        hideChildrenInMenu: true,
         routes: [
+          {
+            path: '/feedback',
+            redirect: '/feedback/list',
+          },
           {
             path: '/feedback/list',
             name: 'list',

@@ -8,28 +8,23 @@ import styles from './Info.less';
 const progressColumns = [
     {
         title: '控件/应用',
-        dataIndex: 'sdk',
-        key: 'sdk',
+        dataIndex: 'title',
     },
     {
         title: '介绍',
-        dataIndex: 'content',
-        key: 'content',
+        dataIndex: 'introduce',
     },
     {
         title: '更新日期',
-        dataIndex: 'time',
-        key: 'time',
+        dataIndex: 'updateDate',
     },
     {
         title: '大小',
         dataIndex: 'size',
-        key: 'size',
     },
     {
         title: '下载',
-        dataIndex: 'download',
-        key: 'download',
+        dataIndex: 'platform',
     },
 ];
 

@@ -1,15 +1,23 @@
-import { queryFileCenterList} from '@/services/api';
+import { queryFileCenterList, queryDocumentList} from '@/services/api';
 
 export default {
   namespace: 'docu',
 
   state: {
-    fileCenterList:[]
+    fileCenterList: [],
+    documentList: []
   },
 
   effects: {
-    *fetch(_, { call, put }) {
+    *fetchFileCenterList(_, { call, put }) {
       const response = yield call(queryFileCenterList);
+      yield put({
+        type: 'queryList',
+        payload: response,
+      });
+    },
+    *fetchDocumentList({ payload }, { call, put }) {
+      const response = yield call(queryDocumentList, payload);
       yield put({
         type: 'queryList',
         payload: response,

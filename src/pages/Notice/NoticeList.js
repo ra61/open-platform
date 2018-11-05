@@ -7,47 +7,65 @@ import styles from './NoticeList.less';
 
 const pageSize = 5;
 
-@Form.create()
-  @connect(({ notice, loading }) => ({
-    notice,
+@connect(({ notice, loading }) => ({
+  notice,
   loading: loading.models.list,
 }))
 class NoticeList extends Component {
+
+  state = {
+    pageIndex: 1,
+    pageSize: 5
+  }
+  
   componentDidMount() {
     const { dispatch } = this.props;
+
+    let params = {
+      pageIndex: this.state.pageIndex,
+      pageSize: this.state.pageSize
+    }
+
     dispatch({
       type: 'notice/fetch',
-      payload: {
-        pageSize: 5,
-      },
+      payload: params
     });
   }
 
-  setOwner = () => {
-    const { form } = this.props;
-    form.setFieldsValue({
-      owner: ['wzj'],
-    });
-  };
+  handleListChange = (pageIndex, pageSize) => {
+    let params = {
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+    };
 
-  fetchMore = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'notice/appendFetch',
-      payload: {
-        count: pageSize,
-      },
+    this.setState({ pageIndex: pageIndex, pageSize: pageSize });
+
+    this.props.dispatch({
+      type: 'notice/fetch',
+      payload: params,
     });
   };
 
   render() {
     const {
-      form,
       notice: { noticeData, totalCount },
       loading,
     } = this.props;
 
-    const { getFieldDecorator } = form;
+    const { pageSize } = this.state;
+
+    const paginationProps = {
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: pageSize,
+      total: totalCount,
+      onChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize);
+      },
+      onShowSizeChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize)
+      },
+    };
 
     const IconText = ({ type, text }) => (
       <span>
@@ -62,25 +80,10 @@ class NoticeList extends Component {
         <div className={styles.extra}>
           发布于
           <em>{moment(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
-          <IconText type="like-o" text={like} />
         </div>
       </div>
     );
 
-    const loadMore =
-      noticeData.length > 0 ? (
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Button onClick={this.fetchMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
-            {loading ? (
-              <span>
-                <Icon type="loading" /> 加载中...
-              </span>
-            ) : (
-              '加载更多'
-            )}
-          </Button>
-        </div>
-      ) : null;
 
     return (
       <PageHeaderWrapper title='社区使用'>
@@ -95,7 +98,7 @@ class NoticeList extends Component {
             loading={noticeData.length === 0 ? loading : false}
             rowKey="id"
             itemLayout="vertical"
-            loadMore={loadMore}
+            pagination={paginationProps}
             dataSource={noticeData}
             renderItem={item => (
               <List.Item

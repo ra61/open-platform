@@ -16,10 +16,7 @@ class DocuCenter extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'docu/fetch',
-      payload: {
-        count: 6,
-      },
+      type: 'docu/fetchFileCenterList'
     });
   }
 
@@ -32,6 +29,21 @@ class DocuCenter extends PureComponent {
 
     const { fileCenterList } = docu
 
+    const fileList= [
+      { 
+        "id": 1, 
+        "title": "\u8bed\u97f3\u5408\u6210", 
+        "avatar": "http:\/\/www.hcicloud.com:8889\/web\/img\/doc_classify\/1541061749_5bdac354b1f02.jpg",
+         "description": "\u8bed\u97f3\u5408\u6210", 
+         "article": [
+           { "id": 1, "title": "ASR, \u4f60\u597d", "href": 'null' }, 
+           { "id": 2, "title": "ASR\u4f7f\u7528\u6559\u7a0b", "href": 'null' }, 
+           { "id": 3, "title": "ASR\u540c\u6b65\u53d1\u5e03u", "href": 'null' },
+          { "id": 4, "title": "\u540c\u6b65\u53d1\u5e03", "href": 'null' }
+        ] 
+      }
+      
+    ] ;
 
     return (
       <PageHeaderWrapper title="文档中心">
@@ -40,14 +52,18 @@ class DocuCenter extends PureComponent {
             rowKey="id"
             loading={loading}
             grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
-            dataSource={[...fileCenterList]}
+            dataSource={fileList}
             renderItem={item =>
                (
                 <List.Item key={item.id}>
                   <Card hoverable className={styles.card}  >
                     <Card.Meta
                       avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
-                      title={<a>{item.title}</a>}
+                      title={
+                        <Link to={'/docu/list?id=' + item.id}>
+                          {item.title}
+                        </Link>
+                      }
                       description={
                         <Ellipsis className={styles.item} lines={3}>
                           {item.description}
@@ -56,20 +72,22 @@ class DocuCenter extends PureComponent {
                     />
                     
                   </Card>
+                  
                   <ul>
-                  {
+                    {
                       item.article.map(element => (
                         <li key={element.id}>
-                          <Link to={element.href}>
+                          <Link to={'/docu/detail?id=' + element.id}>
                             {element.title}
                           </Link>
-                        
+
                         </li>
                       ))
-                  }
+                    }
                   </ul>
-                  
                 </List.Item>
+
+                
               ) 
             }
           />

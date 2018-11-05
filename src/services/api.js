@@ -255,28 +255,63 @@ export async function querySDKInfo() {
 
 // 文档中心
 export async function queryFileCenterList() {
-  return request(`/api/fileCenter/list`);
+  return request('/api2/dev/document/getDocSummary');
 }
+
+export async function queryDocumentList(params) {
+
+  console.log(params)
+  let body = new FormData();
+  body.append('classifyId', params.classifyId);
+  body.append('pageIndex', params.pageIndex);
+  body.append('pageSize', params.pageSize);
+  return request('/api2/dev/document/getDocList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
 
 export async function queryNoticeList(params) {
   let body = new FormData();
+  body.append('pageIndex', params.pageIndex);
   body.append('pageSize', params.pageSize);
 
   return request('/api2/dev/document/getNoticeList', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
 // 意见反馈
+export async function addFeedback(params) {
+
+  let body = new FormData();
+  body.append('type', params.type);
+  body.append('title', params.title);
+  body.append('content', params.content);
+  body.append('contact', params.contact);
+
+  return request('/api2/dev/WorkOrder/ajaxCreateWorkOrder', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+
+  // return request('/api/feedback/list');
+}
+
 export async function queryFeedbackList(params) {
   let body = new FormData();
-  body.append('current', params.current);
+  body.append('pageIndex', params.pageIndex);
   body.append('pageSize', params.pageSize);
 
   return request('/api2/dev/WorkOrder/getWorkOrderList', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 
   // return request('/api/feedback/list');

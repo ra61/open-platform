@@ -1,4 +1,4 @@
-import { queryFeedbackList, queryFeedbackDetail } from '@/services/api';
+import { queryFeedbackList, queryFeedbackDetail, addFeedback } from '@/services/api';
 
 export default {
   namespace: 'feedback',
@@ -22,7 +22,15 @@ export default {
         type: 'show',
         payload: response,
       });
-    }
+    },
+    *add({ payload, callback }, { call, put }) {
+      const response = yield call(addFeedback, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
+    },
   },
 
   reducers: {
@@ -30,6 +38,12 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+    save(state, action) {
+      return {
+        ...state,
+        data: action.payload,
       };
     },
   },
