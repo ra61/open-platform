@@ -1,4 +1,4 @@
-import { queryAppList, queryAppListPagination } from '@/services/api';
+import { queryAppList } from '@/services/api';
 
 export default {
   namespace: 'applist',
@@ -8,16 +8,9 @@ export default {
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryAppList);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
-    },
-    *fetchPagination({ payload }, { call, put }) {
-      const response = yield call(queryAppListPagination, payload);
-      console.log(response);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(queryAppList, payload);
+
       yield put({
         type: 'show',
         payload: response,

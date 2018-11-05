@@ -15,16 +15,22 @@ const { Search } = Input;
   loading: loading.effects['applist/fetch'],
 }))
 class AppList extends PureComponent {
+
+  state = {
+    pageIndex:1,
+    pageSize: 5
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
 
     let params = {
-      current: 1,
-      pageSize: 5,
+      pageIndex: this.state.pageIndex,
+      pageSize: this.state.pageSize,
     };
 
     dispatch({
-      type: 'applist/fetchPagination',
+      type: 'applist/fetch',
       payload: params,
     });
   }
@@ -38,14 +44,16 @@ class AppList extends PureComponent {
     );
   };
 
-  handleListChange = (current, pageSize) => {
+  handleListChange = (pageIndex, pageSize) => {
     let params = {
-      current: current,
+      pageIndex: pageIndex,
       pageSize: pageSize,
     };
 
+    this.setState({ pageIndex: pageIndex, pageSize: pageSize });
+
     this.props.dispatch({
-      type: 'applist/fetchPagination',
+      type: 'applist/fetch',
       payload: params,
     });
   };
@@ -55,6 +63,8 @@ class AppList extends PureComponent {
 
     const { appList, totalCount } = applist;
 
+    const { pageSize } = this.state;
+
     const extraContent = (
       <div className={styles.extraContent}>
         <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={() => ({})} />
@@ -62,12 +72,15 @@ class AppList extends PureComponent {
     );
 
     const paginationProps = {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      pageSize: 5,
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: pageSize,
       total: totalCount,
-      onChange: (current, pageSize) => {
-        this.handleListChange(current, pageSize);
+      onChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize);
+      },
+      onShowSizeChange: (pageIndex, pageSize) => {
+        this.handleListChange(pageIndex, pageSize)
       },
     };
 
@@ -78,15 +91,6 @@ class AppList extends PureComponent {
           break;
         case 'stat':
           this.toDetail('/myapps/detail/stat', id);
-          break;
-        case 'ability':
-          this.toDetail('/myapps/detail/ability', id);
-          break;
-        case 'terminal':
-          this.toDetail('/myapps/detail/terminal', id);
-          break;
-        case 'business':
-          this.toDetail('/myapps/detail/business', id);
           break;
         default:
           break;
@@ -150,73 +154,6 @@ class AppList extends PureComponent {
         ),
       },
     ];
-
-    const dataList = [
-      {
-        appId:741,
-        appName:'应用A',
-        testExpire:'2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning:123,
-        numberWarning:456
-      },
-      {
-        appId: 356,
-        appName: '应用B',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      },
-      {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      },
-      {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      },
-      {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      },
-      {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      },
-      {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      }, {
-        appId: 741,
-        appName: '应用A',
-        testExpire: '2018-11-02',
-        businessExpire: '2019-11-02',
-        terminalWarning: 123,
-        numberWarning: 456
-      }
-
-    ]
 
     return (
       <PageHeaderWrapper content={pageHeaderContent} extraContent={extraContent}>

@@ -178,18 +178,16 @@ export async function mockLogin() {
 }
 
 // 应用列表
-export async function queryAppList() {
-  return request('/api/app/list');
-}
 
-export async function queryAppListPagination(params) {
-  let body = new FormData();
-  body.append('pageIndex', params.current);
-  body.append('pageSize', params.pageSize);
+export async function queryAppList(params) {
+  let formData = new FormData();
+  formData.append('pageIndex', params.pageIndex);
+  formData.append('pageSize', params.pageSize);
 
   return request('/api2/dev/application/getAppList', {
     method: 'POST',
-    body: body,
+    body: formData,
+    expirys: false
   });
 
 }
@@ -240,13 +238,13 @@ export async function querySDKVersionList() {
 
 export async function querySDKList(params) {
 
-  console.log(params)
   let body = new FormData();
   body.append('version', params.version);
 
   return request('/api2/dev/sdk/getSdkList', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
