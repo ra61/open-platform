@@ -123,8 +123,8 @@ export async function fakeRegister(params) {
   });
 }
 
-export async function queryNotices() {
-  return request('/api/notices');
+export async function queryNoticeData() {
+  return request('/api2/dev/statistics/getNoticeList');
 }
 
 export async function getFakeCaptcha(mobile) {
@@ -192,7 +192,7 @@ export async function queryAppList(params) {
 
 }
 
-// 应用基本信息
+// 获取应用基本信息
 export async function queryAppBasicInfo(params) {
   let body = new FormData();
   body.append('appId', params.appId);
@@ -200,8 +200,27 @@ export async function queryAppBasicInfo(params) {
   return request('/api2/dev/application/getAppBasicInfo', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
+
+// 更新应用基本信息
+export async function updateAppBasicInfo(params) {
+  console.log(params);
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('appname', params.appname);
+  body.append('category', params.category);
+  body.append('summary', params.summary);
+  body.append('os', params.os);
+
+  return request('/api2/dev/application/updateAppBasicInfo', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+
 
 // 概况
 export async function querySituationAllData() {
@@ -215,6 +234,27 @@ export async function querySituationApp(params) {
 export async function querySituationCalledData() {
   return request('/api/situation/calledData');
 }
+
+// 统计信息
+export async function getAppStatisticByAppId(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  return request('/api2/dev/application/getAppStatisticByAppId', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+// 版本列表
+export async function getAppSerialList(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  return request('/api2/dev/application/getAppSerialList', {
+    method: 'POST',
+    body: body,
+  });
+}
+
 
 // 创建应用
 export async function submitCreateNewApp(params) {
@@ -317,9 +357,33 @@ export async function queryFeedbackList(params) {
   // return request('/api/feedback/list');
 }
 
-export async function queryFeedbackDetail() {
-  return request('/api/feedback/detail');
+export async function queryFeedbackDetail(params) {
+
+  let body = new FormData();
+  body.append('id', params.id);
+
+  return request('/api2/dev/WorkOrder/getWorkOrderInfo', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+
 }
+
+export async function queryDialogList(params) {
+
+  let body = new FormData();
+  body.append('id', params.id);
+
+  return request('/api2/dev/WorkOrder/getInteractionList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+
+}
+
+
 
 // 应用详情-资源文件
 export async function querySourceFile() {

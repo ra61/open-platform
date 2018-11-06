@@ -36,14 +36,11 @@ class Panel extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
-
-      // dispatch({
-      //   type: 'panel/fetchLogin',
-      // });
       
       dispatch({
         type: 'panel/fetch',
       });
+
       dispatch({
         type: 'panel/fetchRankingData',
       });
@@ -59,6 +56,10 @@ class Panel extends Component {
 
       dispatch({
         type: 'panel/fetchPhpData',
+      });
+
+      dispatch({
+        type: 'panel/fetchNotice',
       });
 
       
@@ -171,11 +172,11 @@ class Panel extends Component {
                 />
               }
               extra={
-                <Link to="/sino">更多 >>></Link>
+                <Link to="/notice/list">更多 >>></Link>
               }
             >
               <ul className={styles.notice}>
-                {noticeData.map((item, i) => (
+                {noticeData.map((item, index) => (
                   <li key={item.key}>
                     <span className={styles.noticeItemTitle}>
                       【{item.type}】

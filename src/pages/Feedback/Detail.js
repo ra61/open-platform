@@ -65,7 +65,7 @@ const CreateForm = Form.create()(props => {
                         <Upload name="logo" action="/upload.do" listType="picture">
                             <Button>
                                 <Icon type="upload" /> Click to upload
-                        </Button>
+                            </Button>
                         </Upload>
                     )}
                 </Form.Item>
@@ -82,9 +82,23 @@ const CreateForm = Form.create()(props => {
 @Form.create()
 class Detail extends Component {
     componentDidMount() {
+
         const { dispatch } = this.props;
+
+        // 反馈信息
         dispatch({
             type: 'feedback/fetchDetail',
+            payload: {
+                id: this.props.location.query.id
+            }
+        });
+
+        // 交互列表
+        dispatch({
+            type: 'feedback/fetchDialog',
+            payload: {
+                id: this.props.location.query.id
+            }
         });
     }
 
@@ -135,13 +149,13 @@ class Detail extends Component {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
         const { modalVisible } = this.state;
-        const { feedbackDetail } = feedback;
+        const { feedbackDetail, dialogList } = feedback;
 
-        const dialogList = [
+        const dialogLists = [
             {
                 talker:'user',
                 userName:'用户',
-                content:'开发者社区访问慢',
+                content:'',
                 date:'2020-06-01 08:00'
             }, 
             {
@@ -152,7 +166,52 @@ class Detail extends Component {
             }
         ]
 
-        const process = 'processing';
+        const statusNode = text => {
+            let node;
+            switch (text) {
+                case 0:
+                    node = <Badge status="default" text="已创建" />
+                    break;
+                case 1:
+                    node = <Badge status="processing" text="处理中" />
+                    break;
+                case 2:
+                    node = <Badge status="success" text="已解决" />
+                    break;
+                case 3:
+                    node = <Badge status="warning" text="已评价" />
+                    break;
+                default:
+                    break;
+            }
+
+            return node;
+        }
+
+        const typeNode = text => {
+            let node;
+            switch (text) {
+                case 1:
+                    node = '能力使用'
+                    break;
+                case 2:
+                    node = '财务问题'
+                    break;
+                case 3:
+                    node = '业务咨询'
+                    break;
+                case 4:
+                    node = '商务合作'
+                    break;
+                case 5:
+                    node = '意见建议'
+                    break;
+                default:
+                    break;
+            }
+
+            return node;
+        }
 
         const parentMethods = {
             handleAdd: this.handleAdd,
@@ -165,26 +224,26 @@ class Detail extends Component {
             <PageHeaderWrapper title="反馈详情">
                 <Card>
                     <DescriptionList size="large" style={{ marginBottom: 32 }}>
-                        <Description><Icon type="question-circle" style={{ marginRight: 5 }} />开发者社区访问慢</Description>
+                        <Description><Icon type="question-circle" style={{ marginRight: 5 }} />{feedbackDetail.title}</Description>
                         <Description>
                             {
-                                process === 'pending' ? (
-                                    <Badge status="success" text="待处理" />
-                                ) : (
-                                    <Badge status="processing" text="处理中" />
-                                )
+                                statusNode(feedbackDetail.status)
                             }
                         </Description>
-                        <Description>2020-06-01 08:00</Description>
+                        <Description>{feedbackDetail.date}</Description>
                     </DescriptionList>
                     <DescriptionList size="large" >
                         <Description term="问题类型">
-                            <p>开发者社区访问慢</p>
+                            <p>
+                                {
+                                    typeNode(feedbackDetail.type)
+                                }
+                            </p>
                         </Description>
                     </DescriptionList>
                     <DescriptionList size="large" >
                         <Description term="问题描述">
-                            <p>开发者社区访问慢</p>
+                            <p>{feedbackDetail.content}</p>
                         </Description>
                     </DescriptionList>
                 </Card>

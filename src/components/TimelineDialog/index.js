@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { Icon, Timeline} from 'antd';
 import styles from './index.less';
 
@@ -11,7 +12,7 @@ const TimelineDialog = ({ list }) => (
             <div className={styles.timelineItem}>
               <div>{item.userName}</div>
               <div className={styles.userBubble}>{item.content}</div>
-              <time>{item.date}</time>
+              <time>{moment(item.date).format('YYYY-MM-DD HH:mm')}</time>
             </div>
           </Timeline.Item>
           :
@@ -19,7 +20,7 @@ const TimelineDialog = ({ list }) => (
             <div className={styles.timelineItem}>
               <div>{item.serverName}</div>
               <div className={styles.serviceBubble}>{item.content}</div>
-              <time>{item.date}</time>
+              <time>{moment(item.date).format('YYYY-MM-DD HH:mm')}</time>
             </div>
           </Timeline.Item>
       ))}

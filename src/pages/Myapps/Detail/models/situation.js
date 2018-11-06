@@ -1,4 +1,4 @@
-import { querySituationAllData, querySituationApp, querySituationCalledData } from '@/services/api';
+import { querySituationAllData, querySituationApp, querySituationCalledData, getAppStatisticByAppId, getAppSerialList } from '@/services/api';
 import { parse, stringify } from 'qs';
 
 export default {
@@ -7,7 +7,12 @@ export default {
     state: {
         calledData: [],
         headerData: [],
-        authpriv:[]
+        authpriv:[],
+        cumulativeTerminal:{},
+        remainingTerminal:{},
+        cumulativePoints:{},
+        remainingPoints:{},
+        serialList: []
     },
 
     effects: {
@@ -31,7 +36,25 @@ export default {
                 type: 'show',
                 payload: response,
             });
+        },
+        *fetchAppStatistic({ payload }, { call, put }) {
+            const response = yield call(getAppStatisticByAppId, payload);
+            yield put({
+                type: 'statistic',
+                payload: response,
+            });
+        },
+        *fetchAppSerial({ payload }, { call, put }) {
+            const response = yield call(getAppSerialList, payload);
+            console.log(response)
+            yield put({
+                type: 'show',
+                payload: {
+                    serialList: response.list
+                },
+            });
         }
+
     },
 
     reducers: {
@@ -39,6 +62,36 @@ export default {
             return {
                 ...state,
                 ...payload,
+            };
+        },
+        statistic(state, { payload }) {
+            return {
+                ...state,
+                cumulativeTerminal: {
+                    title: payload.list[0].title,
+                    total: payload.list[0].description,
+                    test: payload.list[0].children[0].description,
+                    business: payload.list[0].children[1].description
+                },
+                remainingTerminal: {
+                    title: payload.list[1].title,
+                    total: payload.list[1].description,
+                    test: payload.list[1].children[0].description,
+                    business: payload.list[1].children[1].description
+                },
+                cumulativePoints: {
+                    title: payload.list[2].title,
+                    total: payload.list[2].description,
+                    test: payload.list[2].children[0].description,
+                    business: payload.list[2].children[1].description
+                },
+                remainingPoints: {
+                    title: payload.list[3].title,
+                    total: payload.list[3].description,
+                    test: payload.list[3].children[0].description,
+                    business: payload.list[3].children[1].description
+                },
+                
             };
         },
     },

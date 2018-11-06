@@ -22,22 +22,26 @@ const { TextArea } = Input;
 
 @connect(({ appBasicInfo, loading }) => ({
   appBasicInfo,
-  submitting: loading.effects['form/submitRegularForm'],
+  submitting: loading.effects['appBasicInfo/submitForm'],
 }))
 @Form.create()
 class ModifyApp extends PureComponent {
 
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
 
-    let params = {
-      appId: 356
-    };
+    // let params = {
+    //   appId: this.props.location.query.id
+    // };
 
-    dispatch({
-      type: 'appBasicInfo/fetch',
-      payload: params,
-    });
+    // dispatch({
+    //   type: 'appBasicInfo/fetch',
+    //   payload: params,
+    // });
   }
 
   handleSubmit = e => {
@@ -46,8 +50,11 @@ class ModifyApp extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
+          type: 'appBasicInfo/submitForm',
+          payload: {
+            appId: this.props.location.query.id,
+            ...values
+          },
         });
       }
     });
@@ -58,6 +65,8 @@ class ModifyApp extends PureComponent {
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
+
+    const { appInfo } = appBasicInfo
 
     const formItemLayout = {
       labelCol: {
@@ -83,45 +92,60 @@ class ModifyApp extends PureComponent {
         <Card bordered={false} title="基本信息">
           <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="应用名称" help="中文/英文/数字字符1-20位" >
-              {getFieldDecorator('title', {
+              {getFieldDecorator('appname', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入标题',
+                    message: '请输入应用名称',
                   },
                 ],
-                initialValue:'A123456789'
+                initialValue: appInfo.name
               })(<Input placeholder="请输入应用名称" />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="应用分类" >
-                {getFieldDecorator('type', {
+              {getFieldDecorator('category', {
                   rules: [
                     {
                       required: true,
                       message: '请选择应用分类',
                     },
                   ],
-                  initialValue: 'a'
+                initialValue: appInfo.category
                 })(
                 <Radio.Group>
-                    <Radio value="a">系统</Radio>
-                    <Radio value="b">学习</Radio>
-                    <Radio value="c">辅助</Radio>
-                    <Radio value="d">其他</Radio>
+                  <Radio value="0">系统</Radio>
+                  <Radio value="1">社交</Radio>
+                  <Radio value="2">通讯</Radio>
+                  <Radio value="3">导航</Radio>
+                  <Radio value="4">娱乐</Radio>
+                  <Radio value="5">书籍</Radio>
+                  <Radio value="6">生活</Radio>
+                  <Radio value="7">助理</Radio>
+                  <Radio value="8">虚拟形象</Radio>
+                  <Radio value="9">工具</Radio>
+                  <Radio value="10">教育</Radio>
+                  <Radio value="11">购物</Radio>
+                  <Radio value="12">旅游</Radio>
+                  <Radio value="13">运动</Radio>
+                  <Radio value="14">游戏</Radio>
+                  <Radio value="15">财务</Radio>
+                  <Radio value="16">医疗</Radio>
+                  <Radio value="17">新闻</Radio>
+                  <Radio value="18">其他</Radio>
                   </Radio.Group>
                 )}
             </FormItem>
 
             <FormItem {...formItemLayout} label="应用平台" >
-              {getFieldDecorator('platform', {
+              {getFieldDecorator('os', {
                 rules: [
                   {
                     required: false,
                     message: '请选择应用分类',
                   },
                 ],
-                initialValue: '1'
+                initialValue: appInfo.os
               })(
                 <Radio.Group >
                   <Radio.Button value="1">安卓</Radio.Button>
@@ -135,12 +159,13 @@ class ModifyApp extends PureComponent {
             </FormItem>
 
             <FormItem {...formItemLayout} label="应用描述">
-              {getFieldDecorator('goal', {
+              {getFieldDecorator('summary', {
                 rules: [
                   {
                     message: '请输入应用描述',
                   },
                 ],
+                initialValue: appInfo.summary
               })(
                 <TextArea
                   style={{ minHeight: 32 }}

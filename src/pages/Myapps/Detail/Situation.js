@@ -14,7 +14,7 @@ import {
   Table  
 } from 'antd';
 import { routerRedux } from 'dva/router';
-import { Bar } from '@/components/Charts';
+import { TimelineChart } from '@/components/Charts';
 import ExtraDatePicker from '@/components/ExtraDatePicker';
 import DescriptionList from '@/components/DescriptionList';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
@@ -34,7 +34,7 @@ class Situation extends Component {
     super(props);
 
     this.params = {
-      id: this.props.location.search.split('?')[1]
+      id: this.props.location.query.id
     }
 
     this.state = {
@@ -51,10 +51,28 @@ class Situation extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
+
       dispatch({
         type: 'situation/fetchApp',
         payload: this.params.id
       });
+
+      // 统计信息
+      dispatch({
+        type: 'situation/fetchAppStatistic',
+        payload: {
+          appId: this.params.id
+        }
+      });
+
+      // 版本列表
+      dispatch({
+        type: 'situation/fetchAppSerial',
+        payload: {
+          appId: this.params.id
+        }
+      });
+
       this.timeoutId = setTimeout(() => {
         this.setState({
           loading: false,
@@ -102,8 +120,15 @@ class Situation extends Component {
     const {
       calledData,
       headerData,
-      authpriv
+      authpriv,
+      cumulativeTerminal, // 累计终端
+      remainingTerminal,  // 剩余终端
+      cumulativePoints,   // 累计点数
+      remainingPoints,     // 累计点数
+      serialList
     } = situation;
+
+    console.log(serialList)
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -206,6 +231,14 @@ class Situation extends Component {
       }
     ]
 
+    const offlineChartData = [];
+    for (let i = 0; i < 20; i += 1) {
+      offlineChartData.push({
+        x: new Date().getTime() + 1000 * 60 * 30 * i,
+        y1: Math.floor(Math.random() * 100) + 10,
+      });
+    }
+
 
     const mouseOver = (flag) => {
       switch (flag) {
@@ -275,13 +308,13 @@ class Situation extends Component {
                 onMouseLeave={() => { mouseOut('cumulativeTerminalFlag') }}
               >
                 {
-                  this.state.cumulativeTerminalFlag ? <Info title="累计终端" value={headerData.cumulativeTerminal} bordered /> :
+                  this.state.cumulativeTerminalFlag ? <Info title={cumulativeTerminal.title} value={cumulativeTerminal.total} bordered /> :
                     <Row>
                       <Col sm={12} xs={24}>
-                        <Info title="测试授权" value={headerData.cumulativeTerminal} bordered />
+                        <Info title="测试授权" value={cumulativeTerminal.test} bordered />
                       </Col>
                       <Col sm={12} xs={24}>
-                        <Info title="正式商用" value={headerData.cumulativeTerminal} bordered />
+                        <Info title="正式商用" value={cumulativeTerminal.business} bordered />
                       </Col>
                     </Row>
                 }
@@ -292,13 +325,13 @@ class Situation extends Component {
                 onMouseLeave={() => { mouseOut('remainingTerminalFlag') }}
               >
                 {
-                  this.state.remainingTerminalFlag ? <Info title="剩余终端" value={headerData.remainingTerminal} bordered /> :
+                  this.state.remainingTerminalFlag ? <Info title={remainingTerminal.title} value={remainingTerminal.total} bordered /> :
                     <Row>
                       <Col sm={12} xs={24}>
-                        <Info title="测试授权" value={headerData.remainingTerminal} bordered />
+                        <Info title="测试授权" value={remainingTerminal.test} bordered />
                       </Col>
                       <Col sm={12} xs={24}>
-                        <Info title="正式商用" value={headerData.remainingTerminal} bordered />
+                        <Info title="正式商用" value={remainingTerminal.business} bordered />
                       </Col>
                     </Row>
                 }
@@ -308,13 +341,13 @@ class Situation extends Component {
                 onMouseLeave={() => { mouseOut('cumulativePointsFlag') }}
               >
                 {
-                  this.state.cumulativePointsFlag ? <Info title="剩余终端" value={headerData.cumulativePoints} bordered /> :
+                  this.state.cumulativePointsFlag ? <Info title={cumulativePoints.title} value={cumulativePoints.total} bordered /> :
                     <Row>
                       <Col sm={12} xs={24}>
-                        <Info title="测试授权" value={headerData.cumulativePoints} bordered />
+                        <Info title="测试授权" value={cumulativePoints.test} bordered />
                       </Col>
                       <Col sm={12} xs={24}>
-                        <Info title="正式商用" value={headerData.cumulativePoints} bordered />
+                        <Info title="正式商用" value={cumulativePoints.business} bordered />
                       </Col>
                     </Row>
                 }
@@ -324,13 +357,13 @@ class Situation extends Component {
                 onMouseLeave={() => { mouseOut('remainingPointsFlag') }}
               >
                 {
-                  this.state.remainingPointsFlag ? <Info title="剩余终端" value={headerData.remainingPoints} bordered /> :
+                  this.state.remainingPointsFlag ? <Info title={remainingPoints.title} value={remainingPoints.total} bordered /> :
                     <Row>
                       <Col sm={12} xs={24}>
-                        <Info title="测试授权" value={headerData.remainingPoints} bordered />
+                        <Info title="测试授权" value={remainingPoints.test} bordered />
                       </Col>
                       <Col sm={12} xs={24}>
-                        <Info title="正式商用" value={headerData.remainingPoints} bordered />
+                        <Info title="正式商用" value={remainingPoints.business} bordered />
                       </Col>
                     </Row>
                 }
@@ -362,7 +395,7 @@ class Situation extends Component {
             pagination={false}
             showHeader={false}
             loading={false}
-            dataSource={dataList}
+            dataSource={serialList}
             columns={sourceColumns}
           />
         </Card>
@@ -383,9 +416,10 @@ class Situation extends Component {
             <Row style={{ marginTop: 24 }}>
               <Col xl={24} lg={12} md={12} sm={24} xs={24}>
                 <div className={styles.salesBar}>
-                  <Bar
+                  <TimelineChart
                     height={295}
-                    data={calledData}
+                    data={offlineChartData}
+                    titleMap={{ y1: '调用次数' }}
                   />
                 </div>
               </Col>

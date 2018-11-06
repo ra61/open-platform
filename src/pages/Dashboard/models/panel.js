@@ -1,4 +1,4 @@
-import { queryPanelData, queryRankingData, queryPhpData, queryDailyStatisticData, queryAbilityStatisticData, mockLogin } from '@/services/api';
+import { queryPanelData, queryRankingData, queryPhpData, queryDailyStatisticData, queryAbilityStatisticData, queryNoticeData } from '@/services/api';
 
 export default {
     namespace: 'panel',
@@ -50,8 +50,9 @@ export default {
                 payload: response,
             });
         },
-        *fetchLogin(_, { call, put }) {
-            const response = yield call(mockLogin);
+        *fetchNotice(_, { call, put }) {
+            const response = yield call(queryNoticeData);
+            console.log(response);
             yield put({
                 type: 'show',
                 payload: response,

@@ -43,13 +43,6 @@ const progressColumns = [
 
             return node;
         }
-
-        
-            // text === 'pending' ? (
-            //     <Badge status="success" text="待处理" />
-            // ) : (
-            //         <Badge status="processing" text="进行中" />
-            //     ),
     },
     {
         title: '创建日期',
@@ -125,8 +118,8 @@ class List extends Component {
         );
 
         const paginationProps = {
-            showSizeChanger: true,
-            showQuickJumper: true,
+            showSizeChanger: false,
+            showQuickJumper: false,
             pageSize: pageSize,
             total: totalCount,
             onChange: (pageIndex, pageSize) => {

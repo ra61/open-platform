@@ -89,7 +89,6 @@ class Stat extends Component {
       offlineChartData.push({
         x: new Date().getTime() + 1000 * 60 * 30 * i,
         y1: Math.floor(Math.random() * 100) + 10,
-        y2: Math.floor(Math.random() * 100) + 10,
       });
     }
 
@@ -124,7 +123,7 @@ class Stat extends Component {
 
         {/* 调用分布 */}
       
-        <Card 
+        {/* <Card 
           loading={loading} 
           bordered={false} 
           bodyStyle={{ padding: 0 }} 
@@ -170,7 +169,7 @@ class Stat extends Component {
               </Col>
             </Row>
           </div>
-        </Card>
+        </Card> */}
 
 
         {/* 能力统计 */}
@@ -185,6 +184,7 @@ class Stat extends Component {
                   <TimelineChart
                     height={295}
                     data={offlineChartData}
+                    titleMap={{ y1: '调用次数' }}
                   />
                 </div>
               </Col>

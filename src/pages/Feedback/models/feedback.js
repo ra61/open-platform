@@ -1,11 +1,11 @@
-import { queryFeedbackList, queryFeedbackDetail, addFeedback } from '@/services/api';
+import { queryFeedbackList, queryFeedbackDetail, queryDialogList, addFeedback } from '@/services/api';
 
 export default {
   namespace: 'feedback',
 
   state: {
-    FeedbackList: [],
-    FeedbackDetail: []
+    dialogList: [],
+    feedbackDetail: {}
   },
 
   effects: {
@@ -16,8 +16,15 @@ export default {
         payload: response,
       });
     },
-    *fetchDetail(_, { call, put }) {
-      const response = yield call(queryFeedbackDetail);
+    *fetchDetail({ payload }, { call, put }) {
+      const response = yield call(queryFeedbackDetail, payload);
+      yield put({
+        type: 'detail',
+        payload: response,
+      });
+    },
+    *fetchDialog({ payload }, { call, put }) {
+      const response = yield call(queryDialogList, payload);
       yield put({
         type: 'show',
         payload: response,
@@ -38,6 +45,12 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+    detail(state, { payload }) {
+      return {
+        ...state,
+        feedbackDetail: payload.feedback,
       };
     },
     save(state, action) {

@@ -73,6 +73,7 @@ export default [
     path: '/',
     component: '../layouts/BlankLayout',
     Routes: ['src/pages/Authorized'],
+    authority: ['admin', 'user'],
     routes: [
       { path: '/', redirect: '/dashboard/panel' },
       { path: '/dashboard', redirect: '/dashboard/panel' },

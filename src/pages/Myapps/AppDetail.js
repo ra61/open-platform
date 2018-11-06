@@ -1,45 +1,62 @@
 import React, { Component } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Input, Icon, Button, } from 'antd';
+import { Input, Icon, Button, Form, Select } from 'antd';
 import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
 import dynamic from 'umi/dynamic';
 import Link from 'umi/link';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './AppDetail.less';
 
-@connect()
+@connect(({ appBasicInfo, loading }) => ({
+  appBasicInfo,
+  submitting: loading.effects['appBasicInfo/fetch'],
+}))
+@Form.create()
 class AppDetail extends Component {
 
   constructor(props) {
     super(props);
 
     this.params = {
-      id: this.props.location.search.split('?')[1]
+      id: this.props.location.query.id
     }
 
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    let params = {
+      appId: this.props.location.query.id
+    };
+
+    dispatch({
+      type: 'appBasicInfo/fetch',
+      payload: params,
+    });
   }
 
   handleTabChange = key => {
     const { match } = this.props;
     switch (key) {
       case 'situation':
-        router.push(`${match.url}/situation?${this.params.id}`);
+        router.push(`${match.url}/situation?id=${this.params.id}`);
         break;
       case 'ability':
-        router.push(`${match.url}/ability?${this.params.id}`);
+        router.push(`${match.url}/ability?id=${this.params.id}`);
         break;
       case 'resource':
-        router.push(`${match.url}/resource?${this.params.id}`);
+        router.push(`${match.url}/resource?id=${this.params.id}`);
         break;
       case 'terminal':
-        router.push(`${match.url}/terminal?${this.params.id}`);
+        router.push(`${match.url}/terminal?id=${this.params.id}`);
         break;
       case 'business':
-        router.push(`${match.url}/business?${this.params.id}`);
+        router.push(`${match.url}/business?id=${this.params.id}`);
         break;
       case 'stat':
-        router.push(`${match.url}/stat?${this.params.id}`);
+        router.push(`${match.url}/stat?id=${this.params.id}`);
         break;
       case 'app':
         router.push(`${match.url}/app`);
@@ -59,11 +76,20 @@ class AppDetail extends Component {
   }
 
   render() {
+    
     const tabList = [
       {
         key: 'situation',
         tab: '概况',
         
+      },
+      {
+        key: 'stat',
+        tab: '统计分析',
+      },
+      {
+        key: 'terminal',
+        tab: '终端授权',
       },
       {
         key: 'ability',
@@ -74,13 +100,11 @@ class AppDetail extends Component {
         tab: '资源文件',
       },
       {
-        key: 'terminal',
-        tab: '终端授权',
+        key: 'business',
+        tab: '申请商用',
       },
-      {
-        key: 'stat',
-        tab: '统计分析',
-      }
+      
+      
     ];
 
     // const routes = [
@@ -91,21 +115,46 @@ class AppDetail extends Component {
     //   }
     // ]
 
-    const { match, children, location } = this.props;
+    const { match, children, location, appBasicInfo } = this.props;
+    const {
+      form: { getFieldDecorator, getFieldValue },
+    } = this.props;
+
+    const { appInfo, appkeys } = appBasicInfo;
 
     const pageHeaderContent = (
-      <div className={styles.pageHeaderTitle}>应用A
+      <div className={styles.pageHeaderTitle}>{appInfo.name}
         <Link to={{pathname:"/myapps/detail/app", search: this.params.id}} >
           <Icon type="edit" theme="outlined" style={{ marginLeft: 10 }} />
         </Link>
       </div>
     )
+
+
+    // const extraContent = (
+    //   <Button type="primary" htmlType="submit">
+    //     <Link to={{pathname:"/myapps/detail/business", search: this.params.id}} >
+    //       申请商用
+    //     </Link>
+    //   </Button>
+    // );
+
     const extraContent = (
-      <Button type="primary" htmlType="submit">
-        <Link to={{pathname:"/myapps/detail/business", search: this.params.id}} >
-          申请商用
-        </Link>
-      </Button>
+      <Form onSubmit={this.handleSubmit} >
+        <Form.Item style={{ marginBottom: 0 }}>
+          {getFieldDecorator('appkey', {
+            initialValue: appkeys[0]
+          })(
+            <Select style={{ width: 100 }} onChange={this.handleChange}>
+              {
+                appkeys.map((item, index) => (
+                  <Option value={item} key={index}>{item}</Option>
+                ))
+              }
+            </Select>
+          )}
+        </Form.Item>
+      </Form>
     );
 
     const key = this.getTabActiveKey(match);
