@@ -18,11 +18,11 @@ class BackInfo extends Component {
   sourceColumns = [
     {
       title: '能力',
-      dataIndex: 'capacity',
+      dataIndex: 'title',
     },
     {
       title: 'capkey',
-      dataIndex: 'capkey'
+      dataIndex: 'description'
     }
   ];
 
@@ -30,19 +30,19 @@ class BackInfo extends Component {
 
   render() {
     const { createNewApp, loading } = this.props;
-    const { result } = createNewApp;
+    const { result, info } = createNewApp;
 
-    console.log(result);
+    console.log(result,info);
 
     const extra = (
       <Fragment>
-        <div>应用A</div>
-        <div>测试时间：2018-10-08</div>
+        <div>{ info.appName }</div>
+        <div>{ info.license}</div>
         <Table
           style={{ marginBottom: 16 }}
           pagination={false}
           loading={loading}
-          dataSource={this.sourceFile}
+          dataSource={info.capList}
           columns={this.sourceColumns}
         />
       </Fragment>

@@ -15,6 +15,7 @@ import Link from 'umi/link';
 import numeral from 'numeral';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import ExtraDatePicker from '@/components/ExtraDatePicker';
+import Bubblemap from '@/components/Bubblemap';
 import { getTimeDistance } from '@/utils/utils';
 
 import styles from './Panel.less';
@@ -204,6 +205,7 @@ class Panel extends Component {
                 />
               }
             >
+              <Bubblemap></Bubblemap>
             </Card>
           </Col>
 
@@ -221,7 +223,7 @@ class Panel extends Component {
                 />
               }
               bodyStyle={{ padding: 24 }}
-              style={{ minHeight: 509 }}
+              style={{ minHeight: 604 }}
             >
               <Pie
                 hasLegend

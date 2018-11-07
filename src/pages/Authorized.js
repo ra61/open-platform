@@ -6,6 +6,7 @@ import { matchRoutes } from 'react-router-config';
 import intersection from 'lodash/intersection';
 import { formatMessage } from 'umi/locale';
 import Link from 'umi/link';
+import Redirect from 'umi/redirect';
 
 const Authorized = RenderAuthorized(getAuthority());
 
@@ -19,13 +20,17 @@ export default ({ children, route, location }) => {
       authorities.push([item.route.authority]);
     }
   });
+  // const noMatch = (
+  //   <Exception
+  //     type="403"
+  //     desc={formatMessage({ id: 'app.exception.description.403' })}
+  //     linkElement={Link}
+  //     backText={formatMessage({ id: 'app.exception.back' })}
+  //   />
+  // );
+
   const noMatch = (
-    <Exception
-      type="403"
-      desc={formatMessage({ id: 'app.exception.description.403' })}
-      linkElement={Link}
-      backText={formatMessage({ id: 'app.exception.back' })}
-    />
+    <Redirect to="/user/login" />
   );
   return (
     <Authorized

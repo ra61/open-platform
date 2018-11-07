@@ -6,7 +6,8 @@ export default {
   namespace: 'createNewApp',
 
   state: {
-    result: {}
+    result: {},
+    info:{}
   },
 
   effects: {
@@ -25,7 +26,8 @@ export default {
     backInfo(state, { payload }) {
       return {
         ...state,
-        result: payload
+        result: payload,
+        info: payload.info
       };
     },
   },

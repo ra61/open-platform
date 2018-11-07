@@ -52,7 +52,6 @@ export default {
         },
         *fetchNotice(_, { call, put }) {
             const response = yield call(queryNoticeData);
-            console.log(response);
             yield put({
                 type: 'show',
                 payload: response,
