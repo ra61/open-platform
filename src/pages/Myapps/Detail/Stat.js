@@ -24,13 +24,26 @@ for (let i = 0; i < 7; i += 1) {
   });
 }
 
-@connect(({ chart, loading }) => ({
-  chart,
-  loading: loading.effects['chart/fetch'],
+@connect(({ stat, loading }) => ({
+  stat,
+  loading: loading.effects['stat/fetch'],
 }))
 class Stat extends Component {
   constructor(props) {
     super(props);
+
+    this.params = {
+      id: this.props.location.query.id
+    }
+
+    this.state = {
+      loading: true,
+      terminalPath: 'stat/fetchAppTerminal',
+      classifyPath: 'stat/fetchAppAbilityClassify',
+      calledParams: {
+        appId: this.params.id
+      }
+    };
 
     this.rankingListData = [];
     for (let i = 0; i < 7; i += 1) {
@@ -40,18 +53,20 @@ class Stat extends Component {
       });
     }
     
-    this.state = {
-      loading: true,
-      rangePickerValue: getTimeDistance('year'),
-    };
+    
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
+
       dispatch({
-        type: 'chart/fetch',
+        type: 'stat/fetchDailyStatistic',
+        payload: {
+          appId: this.params.id
+        }
       });
+
       this.timeoutId = setTimeout(() => {
         this.setState({
           loading: false,
@@ -62,27 +77,23 @@ class Stat extends Component {
 
   componentWillUnmount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'chart/clear',
-    });
+    // dispatch({
+    //   type: 'chart/clear',
+    // });
     cancelAnimationFrame(this.reqRef);
     clearTimeout(this.timeoutId);
   }
 
-  rankingPath = { type: 'panel/fetchRankingData' };
+  
 
   render() {
-    const { rangePickerValue, salesType, loading: propsLoding, currentTabKey } = this.state;
-    const { chart, loading: stateLoading } = this.props;
+    const { loading } = this.state;
+    const { stat } = this.props;
     const {
-      salesData,
-    } = chart;
-    const loading = propsLoding || stateLoading;
-  
-    const list = [{ id: 1, title: '今日新增终端', description: '123456' }, 
-      { id: 2, title: '今日调用次数', description: '123456' },
-      { id: 3, title: '今日使用点数', description: '123456' }, 
-      { id: 4, title: '今日流量', description: '123456'  }];
+      terminalList,
+      statisticData,
+      abilityClassifyList
+    } = stat;
 
     const offlineChartData = [];
     for (let i = 0; i < 20; i += 1) {
@@ -100,17 +111,17 @@ class Stat extends Component {
             rowKey="id"
             loading={loading}
             grid={{ gutter: 24, lg: 4, md: 4, sm: 4, xs: 4 }}
-            dataSource={[...list]}
+            dataSource={[...statisticData]}
             renderItem={item =>
               (
                 <List.Item key={item.id}>
                   <Card hoverable className={styles.card}>
                     <Card.Meta
                       avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
-                      title={<a>{item.title}</a>}
+                      title={<a> 今日{item.title}</a>}
                       description={
                         <Ellipsis className={styles.item} lines={3}>
-                          {item.description}
+                          {item.total}
                         </Ellipsis>
                       }
                     />
@@ -175,7 +186,7 @@ class Stat extends Component {
         {/* 能力统计 */}
 
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }} style={{ marginTop: 24 ,color: 'red'}}
-          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.rankingPath}></ExtraDatePicker>}
+          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.state.classifyPath} params={this.state.calledParams}></ExtraDatePicker>}
           title={<FormattedMessage id="myapps.detail.stat.capacity" defaultMessage="Sales" />}>
           <div className={styles.salesCard}>
             <Row style={{ marginTop: 24 }}>
@@ -183,8 +194,8 @@ class Stat extends Component {
                 <div className={styles.salesBar}>
                   <TimelineChart
                     height={295}
-                    data={offlineChartData}
-                    titleMap={{ y1: '调用次数' }}
+                    data={abilityClassifyList}
+                    titleMap={{ y1: '调用次数', y2: '调用次数', y3: '调用次数'  }}
                   />
                 </div>
               </Col>
@@ -195,7 +206,7 @@ class Stat extends Component {
         {/* 终端统计 */}
 
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }} style={{ marginTop: 24 }}
-          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.rankingPath}></ExtraDatePicker>}
+          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.state.terminalPath} params={this.state.calledParams}></ExtraDatePicker>}
           title={<FormattedMessage id="myapps.detail.stat.terminal" defaultMessage="Sales" />}>
           <div className={styles.salesCard}>
             <Row style={{ marginTop: 24 }}>
@@ -203,7 +214,7 @@ class Stat extends Component {
                 <div className={styles.salesBar}>
                   <Bar
                     height={295}
-                    data={salesData}
+                    data={terminalList}
                   />
                 </div>
               </Col>

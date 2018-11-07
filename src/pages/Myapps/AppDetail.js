@@ -19,7 +19,8 @@ class AppDetail extends Component {
     super(props);
 
     this.params = {
-      id: this.props.location.query.id
+      id: this.props.location.query.id,
+      key: this.props.location.query.appKey
     }
 
   }
@@ -28,7 +29,7 @@ class AppDetail extends Component {
     const { dispatch } = this.props;
 
     let params = {
-      appId: this.props.location.query.id
+      appId: this.params.id,
     };
 
     dispatch({
@@ -43,21 +44,22 @@ class AppDetail extends Component {
       case 'situation':
         router.push(`${match.url}/situation?id=${this.params.id}`);
         break;
-      case 'ability':
-        router.push(`${match.url}/ability?id=${this.params.id}`);
-        break;
-      case 'resource':
-        router.push(`${match.url}/resource?id=${this.params.id}`);
-        break;
-      case 'terminal':
-        router.push(`${match.url}/terminal?id=${this.params.id}`);
-        break;
-      case 'business':
-        router.push(`${match.url}/business?id=${this.params.id}`);
-        break;
       case 'stat':
         router.push(`${match.url}/stat?id=${this.params.id}`);
         break;
+      case 'ability':
+        router.push(`${match.url}/ability?id=${this.params.id}&&appKey=${this.params.key}`);
+        break;
+      case 'resource':
+        router.push(`${match.url}/resource?id=${this.params.id}&&appKey=${this.params.key}`);
+        break;
+      case 'terminal':
+        router.push(`${match.url}/terminal?id=${this.params.id}&&appKey=${this.params.key}`);
+        break;
+      case 'business':
+        router.push(`${match.url}/business?id=${this.params.id}&&appKey=${this.params.key}`);
+        break;
+      
       case 'app':
         router.push(`${match.url}/app`);
         break;

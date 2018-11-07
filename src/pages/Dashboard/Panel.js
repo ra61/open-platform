@@ -22,7 +22,7 @@ import styles from './Panel.less';
 
 @connect(({ panel, loading }) => ({
   panel,
-  loading: loading.effects['panel/fetch', 'panel/fetchRankingData'],
+  loading: loading.effects['panel/fetchRankingData'],
 }))
 class Panel extends Component {
   constructor(props) {
@@ -30,39 +30,33 @@ class Panel extends Component {
     
     this.state = {
       loading: true,
-      rangePickerValue: getTimeDistance('year'),
+      rankingPath : 'panel/fetchRankingData'
     };
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
-      
+  
+      // 今日统计
       dispatch({
-        type: 'panel/fetch',
+        type: 'panel/fetchDailyStatistic',
       });
 
+      // 今日调用
       dispatch({
-        type: 'panel/fetchRankingData',
+        type: 'panel/fetchAbilityStatistic',
       });
 
+      // 预警
       dispatch({
-        type: 'panel/fetchDailyStatisticData',
+        type: 'panel/fetchAppWarning',
       });
 
-      dispatch({
-        type: 'panel/fetchAbilityStatisticData',
-      });
-
-
-      dispatch({
-        type: 'panel/fetchPhpData',
-      });
-
+      // 公告
       dispatch({
         type: 'panel/fetchNotice',
       });
-
       
       
       this.timeoutId = setTimeout(() => {
@@ -73,7 +67,7 @@ class Panel extends Component {
     });
   }
 
-  rankingPath = 'panel/fetchRankingData';
+  
 
   render() {
     const { loading: propsLoding } = this.state;
@@ -243,7 +237,7 @@ class Panel extends Component {
           bodyStyle={{ padding: 0 }} 
           style={{ marginTop: 24 }} 
           title={<FormattedMessage id="dashboard.app-ranking" defaultMessage="App Ranking"/>}
-          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.rankingPath}></ExtraDatePicker>}
+          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.state.rankingPath}></ExtraDatePicker>}
         >
           <div className={styles.salesCard}>
             <Row style={{ marginTop: 24}}>

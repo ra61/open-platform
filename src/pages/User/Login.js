@@ -76,7 +76,7 @@ class LoginPage extends Component {
           }}
         >
           <div>
-            <div className={styles.title}>用户登录</div>
+            <div className={styles.title}>灵云开发者社区</div>
             {login.status === 'error' &&
               login.type === 'account' &&
               !submitting &&

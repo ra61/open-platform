@@ -4,6 +4,7 @@ import { Icon } from 'antd';
 import GlobalFooter from '@/components/GlobalFooter';
 import styles from './UserLayout.less';
 import logo from '../assets/logo.svg';
+import bg from '../assets/bg.jpg';
 
 const links = [
   {
@@ -56,9 +57,18 @@ class UserLayout extends React.PureComponent {
             </div>
             <div className={styles.desc}>灵云官网</div>
           </div>
-          {children}
+          <div className={styles.loginMain}>
+            <div className={styles.left}>
+              <div className={styles.topText}>灵智千企<em></em>云慧万户</div>
+              <div className={styles.bottomText}>灵云全方位人工智能</div>
+            </div>
+            <div className={styles.right}>
+              {children}
+            </div>
+          </div>
+          
         </div>
-        <GlobalFooter links={links} copyright={copyright} />
+        {/* <GlobalFooter links={links} copyright={copyright} /> */}
       </div>
     );
   }

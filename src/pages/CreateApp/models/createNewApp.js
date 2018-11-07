@@ -13,7 +13,6 @@ export default {
   effects: {
     *submitCreateNewApp({ payload }, { call, put }) {
       const response = yield  call(submitCreateNewApp, payload);
-      console.log(response);
       yield put({
         type: 'backInfo',
         payload: response

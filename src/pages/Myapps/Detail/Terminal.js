@@ -19,22 +19,30 @@ import styles from './Terminal.less';
 
 const { Description } = DescriptionList;
 
-@connect(({ situation, loading }) => ({
-    situation,
-    loading: loading.effects['situation/fetch']
+@connect(({ terminal, loading }) => ({
+    terminal,
+    loading: loading.effects['terminal/fetchAppTerminal']
 }))
 class Terminal extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
+
+        this.params = {
+            key: this.props.location.query.appKey
+        }
+
         dispatch({
-            type: 'situation/fetch',
+            type: 'terminal/fetchAppTerminal',
+            payload:{
+                appKey: this.params.key
+            }
         });
 
     }
 
     render() {
-        const { situation, loading } = this.props;
-        const { authpriv } = situation;
+        const { terminal, loading } = this.props;
+        const { authpriv } = terminal;
         
         return (
             <GridContent>
@@ -91,9 +99,9 @@ class Terminal extends Component {
                                     <ul className={styles.authInfo}>
                                         <li>
                                             <Description term="调用地址" >
-                                                <span>{authpriv.address}
+                                                <span>{authpriv.cloudUrl}
                                                     <CopyToClipboard
-                                                        text={authpriv.address}
+                                                        text={authpriv.cloudUrl}
                                                         onCopy={() => this.setState({ copied: true })}
                                                         className={styles.copyToClipboard}
                                                     >
@@ -148,12 +156,12 @@ class Terminal extends Component {
                                     <ul className={styles.authInfo}>
                                         <li>
                                             <Description term="授权终端数量" >
-                                                <span>{authpriv.number}</span>
+                                                <span>{authpriv.terminalLimit}</span>
                                             </Description>
                                         </li>
                                         <li>
                                             <Description term="云端每日点数" >
-                                                <span>{authpriv.points}</span>
+                                                <span>{authpriv.dailyUsingLimit}</span>
                                             </Description>
                                         </li>
                                         <li>
@@ -180,7 +188,7 @@ class Terminal extends Component {
                                         
                                         <li>
                                             <Description term="授权到期时间" >
-                                                <span>{authpriv.date}</span>
+                                                <span>{authpriv.expireTime}</span>
                                             </Description>
                                         </li>
                                         <li>

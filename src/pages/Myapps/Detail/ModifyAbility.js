@@ -73,30 +73,40 @@ const CreateForm = Form.create()(props => {
     );
 });
 
-@connect(({ files, loading }) => ({
-    files,
-    loading: loading.effects['files/fetchSource', 'files/fetchGrammar']
+@connect(({ ability, loading }) => ({
+    ability,
+    loading: loading.effects['ability/fetchCapkeyList']
 }))
 @Form.create()
 class ModifyAbility extends Component {
 
-    state = {
-        modalVisible: false,
-        updateModalVisible: false,
-        expandedRows: [], // 展开行的数组
-        selectedRowKeys: [], // Check here to configure the default column
-        nlus: [], // 选择的nlu应用领域
-        loading: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.params = {
+            id: this.props.location.query.id,
+            key: this.props.location.query.appKey,
+        }
+
+        this.state = {
+            modalVisible: false,
+            updateModalVisible: false,
+            expandedRows: [], // 展开行的数组
+            selectedRowKeys: [], // Check here to configure the default column
+            nlus: [], // 选择的nlu应用领域
+            loading: false,
+        };
+    }
+
+    
 
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({
-            type: 'files/fetchSource',
-        });
-
-        dispatch({
-            type: 'files/fetchGrammar',
+            type: 'ability/fetchCapkeyList',
+            payload: {
+                appKey: this.params.key
+            }
         });
     }
 
@@ -364,11 +374,11 @@ class ModifyAbility extends Component {
     };
 
     render() {
-        const { files, loading } = this.props;
+        const { ability, loading } = this.props;
         const { modalVisible, nlus } = this.state;
-        const { sourceFile } = files;
+        const { capkeyList } = ability;
 
-        this.init(sourceFile)
+        this.init(capkeyList)
 
         const parentMethods = {
             handleAdd: this.handleAdd,
@@ -386,9 +396,10 @@ class ModifyAbility extends Component {
                 bordered={false}>
                     <Table
                         style={{ marginBottom: 16 }}
+                        rowKey={record => record.key}
                         pagination={false}
                         loading={loading}
-                        dataSource={sourceFile}
+                        dataSource={capkeyList}
                         columns={this.sourceColumns}
                         expandedRowKeys={this.state.expandedRows}
                         onExpand={this.handleOnExpand.bind(this)}

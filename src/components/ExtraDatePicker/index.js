@@ -18,43 +18,49 @@ class ExtraDatePicker extends Component{
             salesType: 'all',
             currentTabKey: '',
             loading: true,
-            rangePickerValue: getTimeDistance('year'),
+            rangePickerValue: getTimeDistance('today'),
         };
     }
 
+    componentDidMount() {
+        this.handleRangePickerChange(this.state.rangePickerValue);
+    }
+
     handleRangePickerChange = rangePickerValue => {
-        const { dispatch } = this.props;
+        const { dispatch, request, params } = this.props;
         this.setState({
             rangePickerValue,
         }, function () {
 
-            let params = {
-                startDatetime: this.state.rangePickerValue[0].format('YYYY-MM-DD'),
-                endDatetime: this.state.rangePickerValue[1].format('YYYY-MM-DD')
+            let payload = {
+                startDate: this.state.rangePickerValue[0].format('YYYY-MM-DD'),
+                endDate: this.state.rangePickerValue[1].format('YYYY-MM-DD'),
+                ...params
             }
 
             dispatch({
-                type: this.props.request,
-                payload: params
+                type: request,
+                payload: payload
             });
         });
     };
 
     selectDate = type => {
-        const { dispatch } = this.props;
+        const { dispatch, request, params} = this.props;
 
         this.setState({
             rangePickerValue: getTimeDistance(type),
         }, function () {
 
-            let params = {
-                startDatetime: this.state.rangePickerValue[0].format('YYYY-MM-DD'),
-                endDatetime: this.state.rangePickerValue[1].format('YYYY-MM-DD')
+            let payload = {
+                startDate: this.state.rangePickerValue[0].format('YYYY-MM-DD'),
+                endDate: this.state.rangePickerValue[1].format('YYYY-MM-DD'),
+                ...params
             }
 
             dispatch({
-                type: this.props.request,
-                payload: params
+                type: request,
+                payload: payload
             });
         });
     };

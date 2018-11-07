@@ -22,7 +22,16 @@ class BackInfo extends Component {
     },
     {
       title: 'capkey',
-      dataIndex: 'description'
+      render: (text, record) => (
+        <Fragment>
+          {
+            record.description.map((item, index) => (
+              <div key={index}>{item}</div>
+            ))
+          }
+          
+        </Fragment>
+      ),
     }
   ];
 
@@ -31,8 +40,6 @@ class BackInfo extends Component {
   render() {
     const { createNewApp, loading } = this.props;
     const { result, info } = createNewApp;
-
-    console.log(result,info);
 
     const extra = (
       <Fragment>

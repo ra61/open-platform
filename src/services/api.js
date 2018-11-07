@@ -133,49 +133,33 @@ export async function getFakeCaptcha(mobile) {
 
 // sino API
 
-export async function queryPanelData() {
-  return request('/api/dashboard/panelData');
-}
-
-export async function queryRankingData(params) {
+// 应用排行
+export async function getAppRanking(params) {
+  let body = new FormData();
+  body.append('startDate', params.startDate);
+  body.append('endDate', params.endDate);
   return request('/api2/dev/statistics/getAppRanking', {
     method: 'POST',
-    body: params,
+    body: body,
   });
 }
 
-export async function queryDailyStatisticData() {
+// 今日统计
+export async function getDailyStatistic() {
   return request('/api2/dev/statistics/getDailyStatistic');
 }
 
-export async function queryAbilityStatisticData() {
+// 今日调用
+export async function getAbilityStatistic() {
   return request('/api2/dev/statistics/getAbilityStatistic');
 }
 
-export async function queryPhpData() {
+// 预警
+export async function getAppWarning() {
   let result = request('/api2/dev/statistics/getAppWarningInfo');
   return result;
 }
 
-export async function mockLogin() {
-  let params = new FormData();
-
-  params.append('account', '15912341234');
-  params.append('password', '111111aa');
-  params.append('remember', 'on');
-
-  let result = request('/api2/dev/appdeveloper/doLogin', {
-    method: 'POST',
-    body: params,
-  });
-
-  // /dev/appdeveloper/doLogin
-  // account: 15912341234
-  // password: 111111aa
-  // remember: on
-
-  return result;
-}
 
 // 应用列表
 
@@ -223,17 +207,6 @@ export async function updateAppBasicInfo(params) {
 
 
 // 概况
-export async function querySituationAllData() {
-  return request('/api/situation/allData');
-}
-
-export async function querySituationApp(params) {
-  return request(`/api/situation/app?id=${params}`);
-}
-
-export async function querySituationCalledData() {
-  return request('/api/situation/calledData');
-}
 
 // 统计信息
 export async function getAppStatisticByAppId(params) {
@@ -254,6 +227,77 @@ export async function getAppSerialList(params) {
     body: body,
   });
 }
+
+
+// 调用统计
+export async function getAppAbilityStByAppId(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('startDate', params.startDate);
+  body.append('endDate', params.endDate);
+  return request('/api2/dev/application/getAppAbilityStByAppId', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+// 统计分析
+
+export async function getDailyStatisticById(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  return request('/api2/dev/statistics/getDailyStatistic', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+// 能力统计
+export async function getAppAbilityClassifyStByAppId(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('startDate', params.startDate);
+  body.append('endDate', params.endDate);
+  return request('/api2/dev/application/getAppAbilityClassifyStByAppId', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+// 终端统计
+export async function getAppTerminalStByAppId(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('startDate', params.startDate);
+  body.append('endDate', params.endDate);
+  return request('/api2/dev/application/getAppTerminalStByAppId', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+// 授权信息
+export async function getAppInfoByAppkey(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  return request('/api2/dev/application/getAppInfoByAppkey', {
+    method: 'POST',
+    body: body,
+  });
+}
+
+
+
+// 获取能力列表
+export async function getCapkeyList(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  return request('/api2/dev/application/getCapkeyList', {
+    method: 'POST',
+    body: body,
+  });
+}
+
 
 
 // 创建应用

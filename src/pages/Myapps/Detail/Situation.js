@@ -14,7 +14,7 @@ import {
   Table  
 } from 'antd';
 import { routerRedux } from 'dva/router';
-import { TimelineChart } from '@/components/Charts';
+import { TimelineChart, MiniArea } from '@/components/Charts';
 import ExtraDatePicker from '@/components/ExtraDatePicker';
 import DescriptionList from '@/components/DescriptionList';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
@@ -39,12 +39,14 @@ class Situation extends Component {
 
     this.state = {
       loading: true,
-      rangePickerValue: getTimeDistance('year'),
-      copied: false,
       cumulativeTerminalFlag: true,
       remainingTerminalFlag: true,
       cumulativePointsFlag: true,
-      remainingPointsFlag: true
+      remainingPointsFlag: true,
+      calledPath: 'situation/fetchAppAbility',
+      calledParams: {
+        appId: this.params.id
+      }
     };
   }
 
@@ -73,6 +75,16 @@ class Situation extends Component {
         }
       });
 
+      // 调用统计
+      // dispatch({
+      //   type: 'situation/fetchAppAbility',
+      //   payload: {
+      //     appId: this.params.id,
+      //     startDate: '2018-11-07',
+      //     endDate: '2018-11-07'
+      //   }
+      // });
+
       this.timeoutId = setTimeout(() => {
         this.setState({
           loading: false,
@@ -90,7 +102,7 @@ class Situation extends Component {
     clearTimeout(this.timeoutId);
   }
 
-  calledPath = { type: 'situation/called' }
+  
 
   copyToClipboard = (params) => {
     if (window.clipboardData) {
@@ -106,7 +118,7 @@ class Situation extends Component {
     this.props.dispatch(
       routerRedux.push({
         pathname: path,
-        search: 'appKey=' + appKey,
+        search: 'id=' + this.params.id + '&&' +'appKey=' + appKey,
       })
     );
   };
@@ -125,10 +137,9 @@ class Situation extends Component {
       remainingTerminal,  // 剩余终端
       cumulativePoints,   // 累计点数
       remainingPoints,     // 累计点数
-      serialList
+      serialList,
+      visitData
     } = situation;
-
-    console.log(serialList)
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -231,13 +242,41 @@ class Situation extends Component {
       }
     ]
 
-    const offlineChartData = [];
-    for (let i = 0; i < 20; i += 1) {
-      offlineChartData.push({
-        x: new Date().getTime() + 1000 * 60 * 30 * i,
-        y1: Math.floor(Math.random() * 100) + 10,
-      });
-    }
+    // const visitData = [];
+    // const beginDay = new Date().getTime();
+    // for (let i = 0; i < 20; i += 1) {
+    //   visitData.push({
+    //     x: moment(new Date(beginDay + (1000 * 60 * 60 * 24 * i))).format('YYYY-MM-DD'),
+    //     y: Math.floor(Math.random() * 100) + 10,
+    //   });
+    // }
+
+    // const visitDatas = [
+    //   { key: 1, x: 0, y: 3 },
+    //   { key: 1, x: 1, y: 3 },
+    //   { key: 2, x: 2, y: 5 },
+    //   { key: 3, x: 3, y: 2 },
+    //   { key: 1, x: 4, y: 3 },
+    //   { key: 2, x: 5, y: 5 },
+    //   { key: 3, x: 6, y: 2 },
+    //   { key: 1, x: 7, y: 3 },
+    //   { key: 2, x: 8, y: 5 },
+    //   { key: 3, x: 9, y: 2 },
+    //   { key: 1, x: 10, y: 3 },
+    //   { key: 2, x: 11, y: 5 },
+    //   { key: 3, x: 12, y: 2 },
+    //   { key: 1, x: 13, y: 3 },
+    //   { key: 2, x: 14, y: 5 },
+    //   { key: 3, x: 15, y: 2 },
+    //   { key: 1, x: 16, y: 3 },
+    //   { key: 2, x: 17, y: 5 },
+    //   { key: 3, x: 18, y: 2 },
+    //   { key: 1, x: 19, y: 3 },
+    //   { key: 2, x: 20, y: 5 },
+    //   { key: 3, x: 21, y: 2 },
+    //   { key: 1, x: 22, y: 3 },
+    //   { key: 2, x: 23, y: 5 },
+    // ]
 
 
     const mouseOver = (flag) => {
@@ -411,15 +450,15 @@ class Situation extends Component {
           title={<FormattedMessage
             id="myapps.detail.situation.called"
             defaultMessage="App Ranking" />}
-          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.calledPath}></ExtraDatePicker>}>
+          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.state.calledPath} params={this.state.calledParams}></ExtraDatePicker>}>
           <div className={styles.salesCard}>
             <Row style={{ marginTop: 24 }}>
               <Col xl={24} lg={12} md={12} sm={24} xs={24}>
                 <div className={styles.salesBar}>
-                  <TimelineChart
+                  <MiniArea
                     height={295}
-                    data={offlineChartData}
-                    titleMap={{ y1: '调用次数' }}
+                    data={visitData}
+                    titleMap={{ y: '调用次数' }}
                   />
                 </div>
               </Col>

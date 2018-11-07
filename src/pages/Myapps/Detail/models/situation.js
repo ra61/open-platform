@@ -1,42 +1,19 @@
-import { querySituationAllData, querySituationApp, querySituationCalledData, getAppStatisticByAppId, getAppSerialList } from '@/services/api';
+import { getAppStatisticByAppId, getAppSerialList, getAppAbilityStByAppId } from '@/services/api';
 import { parse, stringify } from 'qs';
 
 export default {
     namespace: 'situation',
 
     state: {
-        calledData: [],
-        headerData: [],
-        authpriv:[],
         cumulativeTerminal:{},
         remainingTerminal:{},
         cumulativePoints:{},
         remainingPoints:{},
-        serialList: []
+        serialList: [],
+        visitData: []
     },
 
     effects: {
-        *fetch(_, { call, put }) {
-            const response = yield call(querySituationAllData);
-            yield put({
-                type: 'show',
-                payload: response,
-            });
-        },
-        *fetchApp({ payload }, { call, put }) {
-            const response = yield call(querySituationApp, payload);
-            yield put({
-                type: 'show',
-                payload: response,
-            });
-        },
-        *called(_, { call, put }) {
-            const response = yield call(querySituationCalledData);
-            yield put({
-                type: 'show',
-                payload: response,
-            });
-        },
         *fetchAppStatistic({ payload }, { call, put }) {
             const response = yield call(getAppStatisticByAppId, payload);
             yield put({
@@ -46,12 +23,20 @@ export default {
         },
         *fetchAppSerial({ payload }, { call, put }) {
             const response = yield call(getAppSerialList, payload);
-            console.log(response)
             yield put({
                 type: 'show',
                 payload: {
                     serialList: response.list
                 },
+            });
+        },
+        *fetchAppAbility({ payload }, { call, put }) {
+            const response = yield call(getAppAbilityStByAppId, payload);
+            yield put({
+                type: 'show',
+                payload: {
+                    visitData: response.list
+                }
             });
         }
 

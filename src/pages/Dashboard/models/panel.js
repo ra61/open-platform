@@ -1,4 +1,4 @@
-import { queryPanelData, queryRankingData, queryPhpData, queryDailyStatisticData, queryAbilityStatisticData, queryNoticeData } from '@/services/api';
+import { getAppRanking, getAppWarning, getDailyStatistic, getAbilityStatistic, queryNoticeData } from '@/services/api';
 
 export default {
     namespace: 'panel',
@@ -15,36 +15,31 @@ export default {
     },
 
     effects: {
-        *fetch(_, { call, put }) {
-            const response = yield call(queryPanelData);
+        
+        *fetchDailyStatistic(_, { call, put }) {
+            const response = yield call(getDailyStatistic);
             yield put({
                 type: 'show',
                 payload: response,
             });
         },
-        *fetchDailyStatisticData(_, { call, put }) {
-            const response = yield call(queryDailyStatisticData);
-            yield put({
-                type: 'show',
-                payload: response,
-            });
-        },
-        *fetchAbilityStatisticData(_, { call, put }) {
-            const response = yield call(queryAbilityStatisticData);
+        *fetchAbilityStatistic(_, { call, put }) {
+            const response = yield call(getAbilityStatistic);
             yield put({
                 type: 'show',
                 payload: response,
             });
         },
         *fetchRankingData({ payload }, { call, put }) {
-            const response = yield call(queryRankingData, payload);
+            const response = yield call(getAppRanking, payload);
+            console.log(response);
             yield put({
                 type: 'show',
                 payload: response,
             });
         },
-        *fetchPhpData(_, { call, put }) {
-            const response = yield call(queryPhpData);
+        *fetchAppWarning(_, { call, put }) {
+            const response = yield call(getAppWarning);
             yield put({
                 type: 'show',
                 payload: response,
