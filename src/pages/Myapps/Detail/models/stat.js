@@ -20,7 +20,6 @@ export default {
         },
         *fetchAppAbilityClassify({ payload }, { call, put }) {
             const response = yield call(getAppAbilityClassifyStByAppId, payload);
-            console.log(payload);
             yield put({
                 type: 'show',
                 payload: {

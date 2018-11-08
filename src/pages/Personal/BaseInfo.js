@@ -26,6 +26,13 @@ const validatorGeographic = (rule, value, callback) => {
 @Form.create()
 class BaseInfo extends Component {
   componentDidMount() {
+
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'user/fetch',
+    });
+
     this.setBaseInfo();
   }
 

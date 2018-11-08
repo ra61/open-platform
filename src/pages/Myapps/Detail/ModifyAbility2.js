@@ -145,6 +145,7 @@ class ModifyAbility extends Component {
                         record.audition ? <a href={record.audition}>试听</a> : ''
                     }
                     
+                    
                     {/* <a onClick={() => this.handleModalVisible(true, record)}>NLU</a>  */}
                 </Fragment>
             ),
@@ -153,7 +154,6 @@ class ModifyAbility extends Component {
             title: '操作',
             render: (text, record, dataIndex) => (
                 <Fragment>
-                    {/* <Checkbox checked={this.checkedSelect.call(this.state.selectedRowKeys, record.key)} onChange={(e) => this.onSelectChange(e, record)}>{record.children ? (<span>全选</span>) : (<span>选中</span>)}</Checkbox> */}
                     <Checkbox checked={this.checkedSelect.call(this.state.selectedRowKeys, record.key)} onChange={(e) => this.onSelectChange(e, record)}>{record.children ? (<span>全选</span>) : (<span>选中</span>)}</Checkbox>
                 </Fragment>
             ),
@@ -259,14 +259,12 @@ class ModifyAbility extends Component {
     // 触发事件
     onSelectChange = (e, record) => {
         if (e.target.checked){
-            record.checked = true;
             if (this.selectedRowKeys.indexOf(record.key) < 0){
                 this.selectedRowKeys.push(record.key);
             }
             this.allSelect(record);
             this.checkAllSelect(record);
         } else {
-            record.checked = false;
             this.remove.call(this.selectedRowKeys, record.key)
             this.removeAllChildren(record);
             this.removeAllParents(record);

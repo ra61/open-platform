@@ -24,17 +24,34 @@ const { Description } = DescriptionList;
     loading: loading.effects['terminal/fetchAppTerminal']
 }))
 class Terminal extends Component {
-    componentDidMount() {
-        const { dispatch } = this.props;
+    constructor(props) {
+        super(props);
 
         this.params = {
+            id: this.props.location.query.id,
             key: this.props.location.query.appKey
         }
+    }
+
+    componentDidMount() {
+        const { dispatch } = this.props;
 
         dispatch({
             type: 'terminal/fetchAppTerminal',
             payload:{
                 appKey: this.params.key
+            }
+        });
+
+    }
+
+    packDown = () => {
+        const { dispatch } = this.props;
+
+        dispatch({
+            type: 'terminal/fetchUdidList',
+            payload: {
+                appId: this.params.id
             }
         });
 
@@ -176,7 +193,7 @@ class Terminal extends Component {
                                                     </Tooltip>
                                                     ：
                                                 </span>
-                                                <Button type="primary" htmlType="submit" style={{ marginLeft: 20 }}>打包下载</Button>
+                                                <Button type="primary" htmlType="submit" onClick={this.packDown}>打包下载</Button>
                                             </Fragment>
                                         </li>
                                     </ul>

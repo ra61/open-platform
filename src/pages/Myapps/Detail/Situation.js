@@ -46,7 +46,8 @@ class Situation extends Component {
       calledPath: 'situation/fetchAppAbility',
       calledParams: {
         appId: this.params.id
-      }
+      },
+      showAllSerialList:false
     };
   }
 
@@ -114,17 +115,21 @@ class Situation extends Component {
     } 
   }
 
-  toDetail = (path, appKey) => {
-    this.props.dispatch(
+  toDetail = (path, appKey, page) => {
+    const { dispatch } = this.props;
+
+    dispatch(
       routerRedux.push({
         pathname: path,
-        search: 'id=' + this.params.id + '&&' +'appKey=' + appKey,
+        search: 'id=' + this.params.id + '&&' + 'appKey=' + appKey + '&&' + 'page=' + page,
       })
     );
   };
 
   showAll=() => {
-    alert('showAll');
+    this.setState({
+      showAllSerialList: true,
+    });
   }
 
   render() {
@@ -141,6 +146,17 @@ class Situation extends Component {
       visitData
     } = situation;
 
+    const { showAllSerialList } = this.state;
+
+    const serialLists = [
+      { id: 469, appKey: "6c5d54d9", version: "", status: "调试开发", expire: "授权到期时间 2019-05-06" },
+      { id: 469, appKey: "6c5d54d8", version: "", status: "调试开发", expire: "授权到期时间 2019-05-06" },
+      { id: 469, appKey: "6c5d54d7", version: "", status: "调试开发", expire: "授权到期时间 2019-05-06" },
+      { id: 469, appKey: "6c5d54d6", version: "", status: "调试开发", expire: "授权到期时间 2019-05-06" },
+      { id: 469, appKey: "6c5d54d5", version: "", status: "调试开发", expire: "授权到期时间 2019-05-06" },
+    ]
+
+
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
         <span>{title}</span>
@@ -154,16 +170,16 @@ class Situation extends Component {
     const moreDetail = (key, appKey) => {
       switch (key) {
         case 'terminal':
-          this.toDetail('/myapps/detail/terminal', appKey);
+          this.toDetail('/myapps/key/terminal', appKey, 'terminal');
           break;
         case 'ability':
-          this.toDetail('/myapps/detail/ability', appKey);
+          this.toDetail('/myapps/key/ability', appKey, 'ability');
           break;
-        case 'source':
-          this.toDetail('/myapps/detail/source', appKey);
+        case 'resource':
+          this.toDetail('/myapps/key/resource', appKey, 'resource');
           break;
         case 'business':
-          this.toDetail('/myapps/detail/business', appKey);
+          this.toDetail('/myapps/key/business', appKey, 'business');
           break;
         default:
           break;
@@ -176,7 +192,7 @@ class Situation extends Component {
           <Menu onClick={({ key }) => moreDetail(key, props.current.appKey)}>
             <Menu.Item key="terminal">终端授权</Menu.Item>
             <Menu.Item key="ability">修改能力</Menu.Item>
-            <Menu.Item key="source">资源文件</Menu.Item>
+            <Menu.Item key="resource">资源文件</Menu.Item>
             <Menu.Item key="business">申请商用</Menu.Item>
           </Menu>
         }
@@ -427,14 +443,14 @@ class Situation extends Component {
               </Tooltip>
             </span>
           }
-          extra={<div style={{ marginRight: 65, color:'#1890FF', cursor:'pointer'}} onClick={this.showAll}>展开</div>}
+          extra={serialList.length > 3 ? <div style={{ marginRight: 65, color:'#1890FF', cursor:'pointer'}} onClick={this.showAll}>展开</div> : ''}
         >
           <Table
             rowKey={record => record.appKey}
             pagination={false}
             showHeader={false}
             loading={false}
-            dataSource={serialList}
+            dataSource={showAllSerialList ? serialList : serialList.length > 3 ? serialList.slice(0, 3) : serialList}
             columns={sourceColumns}
           />
         </Card>

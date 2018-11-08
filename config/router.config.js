@@ -142,6 +142,46 @@ export default [
               },
             ],
           },
+          {
+            path: '/myapps/key',
+            name: 'key',
+            component: './Myapps/AppKey',
+            hideInMenu: true,
+            routes: [
+              {
+                path: '/myapps/key',
+                redirect: '/myapps/key/situation',
+              },
+              {
+                path: '/myapps/key/situation',
+                component: './Myapps/Detail/Situation',
+              },
+              {
+                path: '/myapps/key/app',
+                component: './Myapps/Detail/ModifyApp',
+              },
+              {
+                path: '/myapps/key/resource',
+                component: './Myapps/Detail/Resource',
+              },
+              {
+                path: '/myapps/key/ability',
+                component: './Myapps/Detail/ModifyAbility',
+              },
+              {
+                path: '/myapps/key/terminal',
+                component: './Myapps/Detail/Terminal',
+              },
+              {
+                path: '/myapps/key/business',
+                component: './Myapps/Detail/Business',
+              },
+              {
+                path: '/myapps/key/stat',
+                component: './Myapps/Detail/Stat',
+              },
+            ],
+          },
         ],
       },
       {

@@ -15,6 +15,13 @@ class TimelineChart extends React.Component {
       titleMap = {
         y1: 'y1',
         y2: 'y2',
+        y3: 'y3',
+        y4: 'y4',
+        y5: 'y5',
+        y6: 'y6',
+        y7: 'y7',
+        y8: 'y8',
+        y9: 'y9',
       },
       borderWidth = 2,
       data = [
@@ -22,6 +29,7 @@ class TimelineChart extends React.Component {
           x: 0,
           y1: 0,
           y2: 0,
+          y3: 0,
         },
       ],
     } = this.props;
@@ -58,12 +66,19 @@ class TimelineChart extends React.Component {
           const newRow = { ...row };
           newRow[titleMap.y1] = row.y1;
           newRow[titleMap.y2] = row.y2;
+          newRow[titleMap.y3] = row.y3;
+          newRow[titleMap.y4] = row.y4;
+          newRow[titleMap.y5] = row.y5;
+          newRow[titleMap.y6] = row.y6;
+          newRow[titleMap.y7] = row.y7;
+          newRow[titleMap.y8] = row.y8;
+          newRow[titleMap.y9] = row.y9;
           return newRow;
         },
       })
       .transform({
         type: 'fold',
-        fields: [titleMap.y1, titleMap.y2], // 展开字段集
+        fields: [titleMap.y1, titleMap.y2, titleMap.y3, titleMap.y4, titleMap.y5, titleMap.y6, titleMap.y7, titleMap.y8, titleMap.y9], // 展开字段集
         key: 'key', // key字段
         value: 'value', // value字段
       });

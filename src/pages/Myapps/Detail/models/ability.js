@@ -11,7 +11,6 @@ export default {
     effects: {
         *fetchCapkeyList({ payload }, { call, put }) {
             const response = yield call(getCapkeyList, payload);
-            console.log(response)
             yield put({
                 type: 'show',
                 payload: {
@@ -19,8 +18,6 @@ export default {
                 } 
             });
         },
-        
-
     },
 
     reducers: {

@@ -201,6 +201,7 @@ export async function updateAppBasicInfo(params) {
   return request('/api2/dev/application/updateAppBasicInfo', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -215,6 +216,7 @@ export async function getAppStatisticByAppId(params) {
   return request('/api2/dev/application/getAppStatisticByAppId', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -225,6 +227,7 @@ export async function getAppSerialList(params) {
   return request('/api2/dev/application/getAppSerialList', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -238,6 +241,7 @@ export async function getAppAbilityStByAppId(params) {
   return request('/api2/dev/application/getAppAbilityStByAppId', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -249,6 +253,7 @@ export async function getDailyStatisticById(params) {
   return request('/api2/dev/statistics/getDailyStatistic', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -261,6 +266,7 @@ export async function getAppAbilityClassifyStByAppId(params) {
   return request('/api2/dev/application/getAppAbilityClassifyStByAppId', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -273,6 +279,7 @@ export async function getAppTerminalStByAppId(params) {
   return request('/api2/dev/application/getAppTerminalStByAppId', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -283,10 +290,20 @@ export async function getAppInfoByAppkey(params) {
   return request('/api2/dev/application/getAppInfoByAppkey', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
-
+// 打包下载终端设备信息
+export async function downloadUdidList(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  return request('/api2/dev/application/downloadUdidList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
 
 // 获取能力列表
 export async function getCapkeyList(params) {
@@ -295,6 +312,42 @@ export async function getCapkeyList(params) {
   return request('/api2/dev/application/getCapkeyList', {
     method: 'POST',
     body: body,
+    expirys: false
+  });
+}
+
+// 获取资源文件版本列表
+export async function getResourceVersionList(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  return request('/api2/dev/application/getResourceVersionList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 获取资源文件
+export async function getResourceList(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  body.append('version', params.version);
+  return request('/api2/dev/application/getResourceList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 获取语法文件
+export async function getGrammarFile(params) {
+  let body = new FormData();
+  body.append('pageIndex', params.pageIndex);
+  body.append('pageSize', params.pageSize);
+  return request('/api2/dev/grammar/ajaxGetList', {
+    method: 'POST',
+    body: body,
+    expirys: false
   });
 }
 
@@ -312,6 +365,7 @@ export async function submitCreateNewApp(params) {
   return request('/api2/dev/application/createNewApp', {
     method: 'POST',
     body: body,
+    expirys: false
   });
 }
 
@@ -436,4 +490,9 @@ export async function querySourceFile() {
 
 export async function queryGrammarFile() {
   return request('/api/grammar/file');
+}
+
+// 用户基本信息
+export async function getDeveloperInfo() {
+  return request('/api2/dev/Appdeveloper/ajaxGetDeveloperInfo');
 }

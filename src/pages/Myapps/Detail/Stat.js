@@ -38,8 +38,8 @@ class Stat extends Component {
 
     this.state = {
       loading: true,
-      terminalPath: 'stat/fetchAppTerminal',
       classifyPath: 'stat/fetchAppAbilityClassify',
+      terminalPath: 'stat/fetchAppTerminal',
       calledParams: {
         appId: this.params.id
       }
@@ -100,6 +100,14 @@ class Stat extends Component {
       offlineChartData.push({
         x: new Date().getTime() + 1000 * 60 * 30 * i,
         y1: Math.floor(Math.random() * 100) + 10,
+        y2: Math.floor(Math.random() * 100) + 10,
+        y3: Math.floor(Math.random() * 100) + 10,
+        y4: Math.floor(Math.random() * 100) + 10,
+        y5: Math.floor(Math.random() * 100) + 10,
+        y6: Math.floor(Math.random() * 100) + 10,
+        y7: Math.floor(Math.random() * 100) + 10,
+        y8: Math.floor(Math.random() * 100) + 10,
+        y9: Math.floor(Math.random() * 100) + 10,
       });
     }
 
@@ -194,8 +202,8 @@ class Stat extends Component {
                 <div className={styles.salesBar}>
                   <TimelineChart
                     height={295}
-                    data={abilityClassifyList}
-                    titleMap={{ y1: '调用次数', y2: '调用次数', y3: '调用次数'  }}
+                    data={offlineChartData}
+                    titleMap={{ y1: 'tts', y2: 'asr', y3: 'hwr', y4: 'ocr', y5: 'mt', y6: 'nlu', y7: 'fpr', y8: 'vpr', y9: 'afr'  }}
                   />
                 </div>
               </Col>

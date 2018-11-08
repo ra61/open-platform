@@ -6,21 +6,22 @@ import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
 import dynamic from 'umi/dynamic';
 import Link from 'umi/link';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './AppDetail.less';
+import styles from './AppKey.less';
 
 @connect(({ appBasicInfo, loading }) => ({
   appBasicInfo,
   submitting: loading.effects['appBasicInfo/fetch'],
 }))
 @Form.create()
-class AppDetail extends Component {
+class AppKey extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       id: this.props.location.query.id,
-      key: this.props.location.query.appKey
+      key: this.props.location.query.appKey,
+      page: this.props.location.query.page,
     }
 
   }
@@ -45,6 +46,18 @@ class AppDetail extends Component {
         break;
       case 'stat':
         router.push(`/myapps/detail/stat?id=${this.state.id}`);
+        break;
+      case 'ability':
+        router.push(`${match.url}/ability?id=${this.state.id}&&appKey=${this.state.key}&&page=ability`);
+        break;
+      case 'resource':
+        router.push(`${match.url}/resource?id=${this.state.id}&&appKey=${this.state.key}&&page=resource`);
+        break;
+      case 'terminal':
+        router.push(`${match.url}/terminal?id=${this.state.id}&&appKey=${this.state.key}&&page=terminal`);
+        break;
+      case 'business':
+        router.push(`${match.url}/business?id=${this.state.id}&&appKey=${this.state.key}&&page=business`);
         break;
       default:
         break;
@@ -86,6 +99,22 @@ class AppDetail extends Component {
       {
         key: 'stat',
         tab: '统计分析',
+      },
+      {
+        key: 'terminal',
+        tab: '终端授权',
+      },
+      {
+        key: 'ability',
+        tab: '修改能力',
+      },
+      {
+        key: 'resource',
+        tab: '资源文件',
+      },
+      {
+        key: 'business',
+        tab: '申请商用',
       }
     ];
 
@@ -120,6 +149,7 @@ class AppDetail extends Component {
     return (
       <PageHeaderWrapper
         content={pageHeaderContent}
+        extraContent={extraContent}
         tabList={ tabList }
         tabActiveKey={key}
         onTabChange={this.handleTabChange}
@@ -135,4 +165,4 @@ class AppDetail extends Component {
   }
 }
 
-export default AppDetail;
+export default AppKey;

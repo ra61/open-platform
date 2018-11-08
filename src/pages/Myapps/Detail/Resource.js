@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Select, Tooltip, Icon, Button, Upload, Divider } from 'antd';
+import { Card, Table, Select, Tooltip, Icon, Button, Upload, Divider, Form  } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import { removeFromArray } from '@/utils/common';
@@ -11,11 +11,11 @@ const { Option } = Select;
 const sourceColumns = [
     {
         title: '能力(capkey)',
-        dataIndex: 'capacity',
+        dataIndex: 'title',
     },
     {
         title: '说明',
-        dataIndex: 'source',
+        dataIndex: 'comment',
     },
     {
         title: '下载',
@@ -56,25 +56,56 @@ const grammarColumns = [
 
 
 
-@connect(({ files, loading }) => ({
-    files,
-    loading: loading.effects['files/fetchSource', 'files/fetchGrammar']
+@connect(({ resource, loading }) => ({
+    resource,
+    loading: loading.effects['resource/fetchResourceList']
 }))
+@Form.create()
 class Resource extends Component {
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'files/fetchSource',
-        });
 
-        dispatch({
-            type: 'files/fetchGrammar',
-        });
+    constructor(props) {
+        super(props);
+
+        this.params = {
+            id: this.props.location.query.id,
+            key: this.props.location.query.appKey
+        }
+
+        this.state = {
+            version: '5.2.8',
+            expandedRows: [], // 展开行的数组
+            pageIndex: 1,
+            pageSize: 5
+        }
     }
 
-    state = {
-        expandedRows: [], // 展开行的数组
-    };
+    componentDidMount() {
+        const { dispatch } = this.props;
+        
+
+        dispatch({
+            type: 'resource/fetchResourceVersion',
+            payload: {
+                appKey: this.params.key
+            }
+        });
+
+        dispatch({
+            type: 'resource/fetchResourceList',
+            payload: {
+                appKey: this.params.key,
+                version: this.state.version
+            }
+        });
+
+        dispatch({
+            type: 'resource/fetchGrammarFile',
+            payload: {
+                pageIndex: this.state.pageIndex,
+                pageSize: this.state.pageSize
+            }
+        });
+    }
 
     // 获取所有key
     getKeys = function (array, allKeys) {
@@ -116,25 +147,52 @@ class Resource extends Component {
 
     }
 
+    handleChange = (value) => {
+        const { dispatch } = this.props;
+        
+        dispatch({
+            type: 'resource/fetchResourceList',
+            payload: {
+                appKey: this.params.key,
+                version: value.version
+            }
+        });
+    }
+
     render() {
-        const { files, loading } = this.props;
-        const { sourceFile, grammarFile } = files;
+        const { resource, loading } = this.props;
+        const {
+            form: { getFieldDecorator, getFieldValue },
+        } = this.props;
+
+        const { pageSize } = this.state;
+        const { versionList, resourceList, grammarFile, totalCount } = resource;
 
         const extraContent = (
             <div className={styles.extraContent}>
-                <Select defaultValue="alipay" style={{ width: 100 }} >
-                    <Option value="alipay">5.2.8</Option>
-                    <Option value="bank">5.2.0</Option>
-                    <Option value="tts">3.8</Option>
-                </Select>
+                <Form onSubmit={this.handleSubmit} >
+                    <Form.Item style={{ marginBottom: 0 }}>
+                        {getFieldDecorator('version', {
+                            initialValue: versionList[0]
+                        })(
+                            <Select style={{ width: 100 }} onChange={this.handleChange}>
+                                {
+                                    versionList.map((item, index) => (
+                                        <Option value={item} key={index}>{item}</Option>
+                                    ))
+                                }
+                            </Select>
+                        )}
+                    </Form.Item>
+                </Form>
             </div>
         );
 
         const paginationProps = {
-            showSizeChanger: true,
-            showQuickJumper: true,
-            pageSize: 5,
-            total: 50,
+            showSizeChanger: false,
+            showQuickJumper: false,
+            pageSize: pageSize,
+            total: totalCount,
         };
         
         return (
@@ -160,16 +218,17 @@ class Resource extends Component {
                 bordered={false}>
                     <Table
                         style={{ marginBottom: 16 }}
+                        rowKey={record => record.key}
                         pagination={false}
                         loading={loading}
-                        dataSource={sourceFile}
+                        dataSource={resourceList}
                         columns={sourceColumns}
                         expandedRowKeys={this.state.expandedRows}
                         onExpand={this.handleOnExpand.bind(this)}
                     />
 
                     <div style={{ marginTop: 15 }}>
-                        <Button type="primary" onClick={() => this.allExpand(sourceFile)}><Icon type="down-circle" />展开</Button>
+                        <Button type="primary" onClick={() => this.allExpand(resourceList)}><Icon type="down-circle" />展开</Button>
                         <Button type="primary" onClick={this.allContract} style={{ marginLeft: 20 }}><Icon type="up-circle" />收缩</Button>
                     </div>
                 </Card>

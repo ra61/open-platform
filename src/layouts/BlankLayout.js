@@ -105,6 +105,11 @@ class BlankLayout extends React.PureComponent {
         dispatch({
             type: 'user/fetchCurrent',
         });
+
+        dispatch({
+            type: 'user/fetchUser',
+        });
+
         dispatch({
             type: 'setting/getSetting',
         });

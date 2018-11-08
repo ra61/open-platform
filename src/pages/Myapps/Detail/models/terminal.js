@@ -1,4 +1,4 @@
-import { getAppInfoByAppkey } from '@/services/api';
+import { getAppInfoByAppkey, downloadUdidList } from '@/services/api';
 import { parse, stringify } from 'qs';
 
 export default {
@@ -16,6 +16,13 @@ export default {
                 payload: {
                     authpriv: response.data
                 }
+            });
+        },
+        *fetchUdidList({ payload }, { call, put }) {
+            const response = yield call(downloadUdidList, payload);
+            yield put({
+                type: 'show',
+                payload: response
             });
         },
         

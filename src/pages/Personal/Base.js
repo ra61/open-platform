@@ -13,21 +13,16 @@ class Base extends Component {
 
   constructor(props) {
     super(props);
-
-    this.params = {
-      id: this.props.location.search.split('?')[1]
-    }
-
   }
 
   handleTabChange = key => {
     const { match } = this.props;
     switch (key) {
       case 'baseInfo':
-        router.push(`${match.url}/baseInfo?${this.params.id}`);
+        router.push(`${match.url}/baseInfo`);
         break;
       case 'security':
-        router.push(`${match.url}/security?${this.params.id}`);
+        router.push(`${match.url}/security`);
         break;
       default:
         break;

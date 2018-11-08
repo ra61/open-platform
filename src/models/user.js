@@ -1,4 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
+import { getDeveloperInfo } from '@/services/api';
 
 export default {
   namespace: 'user',
@@ -11,6 +12,14 @@ export default {
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+    },
+    *fetchUser(_, { call, put }) {
+      const response = yield call(getDeveloperInfo);
+      console.log(response);
       yield put({
         type: 'save',
         payload: response,

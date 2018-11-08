@@ -13,6 +13,7 @@ export default {
   'dashboard.app-ranking': '应用排行',
   'dashboard.called-ranking': '调用排名',
 
+  'menu':'菜单',
   'menu.myapps': '我的应用',
   'menu.myapps.list': '应用列表',
   'menu.myapps.detail': '应用详情',
@@ -38,6 +39,8 @@ export default {
   'myapps.detail.stat.capacity': '能力统计', 
   'myapps.detail.stat.terminal': '终端统计', 
   'myapps.detail.business': '申请商用',
+
+  'menu.myapps.key':'版本',
   
   
   'menu.createApp': '创建应用',
