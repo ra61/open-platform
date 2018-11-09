@@ -107,10 +107,6 @@ class BlankLayout extends React.PureComponent {
         });
 
         dispatch({
-            type: 'user/fetchUser',
-        });
-
-        dispatch({
             type: 'setting/getSetting',
         });
         this.renderRef = requestAnimationFrame(() => {
@@ -207,13 +203,13 @@ class BlankLayout extends React.PureComponent {
             }
         });
         if (!currRouterData) {
-            return 'Ant Design Pro';
+            return '灵云开放平台';
         }
         const message = formatMessage({
             id: currRouterData.locale || currRouterData.name,
             defaultMessage: currRouterData.name,
         });
-        return `${message} - Ant Design Pro`;
+        return `${message} - 灵云开放平台`;
     };
 
     getLayoutStyle = () => {

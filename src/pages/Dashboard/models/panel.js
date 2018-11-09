@@ -32,7 +32,6 @@ export default {
         },
         *fetchRankingData({ payload }, { call, put }) {
             const response = yield call(getAppRanking, payload);
-            console.log(response);
             yield put({
                 type: 'show',
                 payload: response,

@@ -387,8 +387,6 @@ class ModifyAbility extends Component {
         const { modalVisible, nlus } = this.state;
         const { capkeyList } = ability;
 
-        console.log(capkeyList);
-
         this.init(capkeyList)
 
         const parentMethods = {

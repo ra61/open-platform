@@ -4,6 +4,7 @@ import { Form, Input, Radio, Select, Button, Card, Checkbox } from 'antd';
 import { connect } from 'dva';
 import styles from './BaseInfo.less';
 import GeographicView from './GeographicView';
+import AbilityView from './AbilityView';
 // import { getTimeDistance } from '@/utils/utils';
 
 const FormItem = Form.Item;
@@ -25,6 +26,15 @@ const validatorGeographic = (rule, value, callback) => {
 }))
 @Form.create()
 class BaseInfo extends Component {
+
+  constructor(props){
+    super(props);
+    
+    this.state = {
+
+    }
+  }
+
   componentDidMount() {
 
     const { dispatch } = this.props;
@@ -38,9 +48,31 @@ class BaseInfo extends Component {
 
   setBaseInfo = () => {
     const { currentUser, form } = this.props;
+
+    const currentUsers = {
+      geographic:{
+        province: {
+          label: '浙江省',
+          key: '330000',
+        },
+        city: {
+          label: '杭州市',
+          key: '330100',
+        },
+      },
+      address: "北京市",
+      company: "捷通",
+      mainBussiness: "",
+      name: "捷通测试2",
+      requiredAbility: ["TTS","ASR"],
+      subBussiness: null,
+      txid: "uid",
+      type: "1"
+    }
+    
     Object.keys(form.getFieldsValue()).forEach(key => {
       const obj = {};
-      obj[key] = currentUser[key] || null;
+      obj[key] = currentUsers[key] || null;
       form.setFieldsValue(obj);
     });
   };
@@ -49,6 +81,21 @@ class BaseInfo extends Component {
   getViewDom = ref => {
     this.view = ref;
   };
+
+  handleSubmit = (e) => {
+    const { dispatch, form } = this.props;
+    e.preventDefault();
+    form.validateFieldsAndScroll((err, values) => {
+      
+      console.log(values);
+      if (!err) {
+        // dispatch({
+        //   type: 'createNewApp/submitCreateNewApp',
+        //   payload: values,
+        // });
+      }
+    });
+  }
 
   render() {
     const {
@@ -73,13 +120,13 @@ class BaseInfo extends Component {
           <Form  onSubmit={this.handleSubmit} >
           <div className={styles.formSub}>用户信息</div>
             <FormItem {...formItemLayout} label={formatMessage({ id: 'personal.base.sinoId' })}>
-              {getFieldDecorator('sinoId', {
+              {getFieldDecorator('txid', {
                 rules: [
                   {
                     required: false,
                   },
                 ],
-              })(<Input disabled/>)}
+              })(<Input className={styles.txid} disabled/>)}
             </FormItem>
             <FormItem {...formItemLayout} label={formatMessage({ id: 'personal.base.nickname' })}>
               {getFieldDecorator('name', {
@@ -98,12 +145,11 @@ class BaseInfo extends Component {
                     required: true,
                     message: '请选择用户类型',
                   },
-                ],
-                initialValue: 'a'
+                ]
               })(
                 <Radio.Group>
-                  <Radio value="a">个人</Radio>
-                  <Radio value="b">企业</Radio>
+                  <Radio value="1">个人</Radio>
+                  <Radio value="2">企业</Radio>
                 </Radio.Group>
               )}
             </FormItem>
@@ -119,8 +165,8 @@ class BaseInfo extends Component {
               })(<Input />)}
             </FormItem>
             
-            <FormItem {...formItemLayout} label={formatMessage({ id: 'app.settings.basic.geographic' })}>
-              {getFieldDecorator('geographic', {
+            {/* <FormItem {...formItemLayout} label={formatMessage({ id: 'app.settings.basic.geographic' })}>
+              {value('geographic', {
                 rules: [
                   {
                     required: false,
@@ -131,7 +177,7 @@ class BaseInfo extends Component {
                   },
                 ],
               })(<GeographicView />)}
-            </FormItem>
+            </FormItem> */}
             <FormItem {...formItemLayout} label={formatMessage({ id: 'app.settings.basic.address' })}>
               {getFieldDecorator('address', {
                 rules: [
@@ -146,44 +192,15 @@ class BaseInfo extends Component {
             <div className={styles.formSub}>业务信息</div>
 
             <FormItem {...formItemLayout} label="需求能力" >
-              {getFieldDecorator('ability', {
+              {getFieldDecorator('requiredAbility', {
                 rules: [
                   {
                     required: false,
                     message: '请选择需求能力',
                   },
-                ],
-                initialValue: '1'
+                ]
               })(
-              <div>
-                <div>
-                  <Checkbox value="1">智能语音</Checkbox>
-                  <Checkbox value="1">语音合成</Checkbox>
-                  <Checkbox value="1">语音识别</Checkbox>
-                  <Checkbox value="1">麦克风阵列</Checkbox>
-                </div>
-                <div>
-                  <Checkbox value="1">智能语音交互</Checkbox>
-                  <Checkbox value="1">灵云种子</Checkbox>
-                </div>
-                <div>
-                  <Checkbox value="1">智能图像</Checkbox>
-                  <Checkbox value="1">文字识别</Checkbox>
-                  <Checkbox value="1">手写识别</Checkbox>
-                </div>
-                <div>
-                  <Checkbox value="1">智能语义</Checkbox>
-                  <Checkbox value="1">语义理解</Checkbox>
-                  <Checkbox value="1">键盘输入</Checkbox>
-                  <Checkbox value="1">机器翻译</Checkbox>
-                </div>
-                <div>
-                  <Checkbox value="1">生物特征</Checkbox>
-                  <Checkbox value="1">声纹识别</Checkbox>
-                  <Checkbox value="1">人脸识别</Checkbox>
-                  <Checkbox value="1">指纹识别</Checkbox>
-                </div>
-              </div>
+                <AbilityView></AbilityView>
               )}
             </FormItem>
 
@@ -215,7 +232,7 @@ class BaseInfo extends Component {
               )}
             </FormItem>
             
-            <Button type="primary">
+            <Button type="primary" htmlType="submit">
               <FormattedMessage
                 id="app.settings.basic.update"
                 defaultMessage="Update Information"

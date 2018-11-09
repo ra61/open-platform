@@ -6,28 +6,29 @@ import { Card, Button, Icon, List } from 'antd';
 import Ellipsis from '@/components/Ellipsis';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './DocuCenter.less';
+import styles from './DocCenter.less';
 
-@connect(({ docu, loading }) => ({
-  docu,
+@connect(({ docCenter, loading }) => ({
+  docCenter,
   loading: loading.models.list,
 }))
-class DocuCenter extends PureComponent {
+class DocCenter extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
-      type: 'docu/fetchFileCenterList'
+      type: 'docCenter/fetchDocSummary'
     });
   }
 
   render() {
 
     const {
-      docu,
+      docCenter,
       loading,
     } = this.props;
 
-    const { fileCenterList } = docu
+    const { fileCenterList } = docCenter
 
     const fileList= [
       { 
@@ -60,7 +61,7 @@ class DocuCenter extends PureComponent {
                     <Card.Meta
                       avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
                       title={
-                        <Link to={'/docu/list?id=' + item.id}>
+                        <Link to={'/doc/list?id=' + item.id}>
                           {item.title}
                         </Link>
                       }
@@ -77,7 +78,7 @@ class DocuCenter extends PureComponent {
                     {
                       item.article.map(element => (
                         <li key={element.id}>
-                          <Link to={'/docu/detail?id=' + element.id}>
+                          <Link to={'/doc/detail?id=' + element.id}>
                             {element.title}
                           </Link>
 
@@ -97,4 +98,4 @@ class DocuCenter extends PureComponent {
   }
 }
 
-export default DocuCenter;
+export default DocCenter;

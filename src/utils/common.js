@@ -5,3 +5,10 @@ export function removeFromArray (val) {
         this.splice(index, 1);
     }
 };
+
+export function addToArray(val) {
+    var index = this.indexOf(val);
+    if (index < 0) {
+        this.push(val);
+    }
+};

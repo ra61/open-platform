@@ -11,10 +11,11 @@ const nullSlectItem = {
 };
 
 @connect(({ geographic }) => {
-  const { province, isLoading, city } = geographic;
+  const { province, isLoading, city , area} = geographic;
   return {
     province,
     city,
+    area,
     isLoading,
   };
 })
@@ -110,15 +111,6 @@ class GeographicView extends PureComponent {
           onSelect={this.selectProvinceItem}
         >
           {this.getProvinceOption()}
-        </Select>
-        <Select
-          className={styles.item}
-          value={city}
-          labelInValue
-          showSearch
-          onSelect={this.selectCityItem}
-        >
-          {this.getCityOption()}
         </Select>
         <Select
           className={styles.item}

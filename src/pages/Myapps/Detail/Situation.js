@@ -193,7 +193,10 @@ class Situation extends Component {
             <Menu.Item key="terminal">终端授权</Menu.Item>
             <Menu.Item key="ability">修改能力</Menu.Item>
             <Menu.Item key="resource">资源文件</Menu.Item>
-            <Menu.Item key="business">申请商用</Menu.Item>
+            {
+              props.current.appStatus < 7 ? <Menu.Item key="business">申请商用</Menu.Item> : ''
+            }
+            
           </Menu>
         }
       >

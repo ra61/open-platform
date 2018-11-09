@@ -4,29 +4,34 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import { Form, Card, List, Tag, Icon, Button } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import styles from './DocuList.less';
+import styles from './DocList.less';
 
-@connect(({ docu, loading }) => ({
-  docu,
+@connect(({ docList, loading }) => ({
+  docList,
   loading: loading.models.list,
 }))
 class DocuList extends Component {
 
-  state = {
-    pageIndex: 1,
-    pageSize: 5
+  constructor(props){
+    super(props);
+
+    this.state = {
+      id: this.props.location.query.id,
+      pageIndex: 1,
+      pageSize: 5
+    }
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
     let params = {
-      classifyId: this.props.location.query.id,
+      classifyId: this.state.id,
       pageIndex: this.state.pageIndex,
       pageSize: this.state.pageSize
     }
 
     dispatch({
-      type: 'docu/fetchDocumentList',
+      type: 'docList/fetchDocList',
       payload: params
     });
   }
@@ -36,13 +41,13 @@ class DocuList extends Component {
     this.setState({ pageIndex: pageIndex, pageSize: pageSize });
 
     let params = {
-      classifyId: this.props.location.query.id,
+      classifyId: this.state.id,
       pageIndex: pageIndex,
       pageSize: pageSize,
     };
 
     this.props.dispatch({
-      type: 'docu/fetchDocumentList',
+      type: 'docList/fetchDocList',
       payload: params,
     });
   };
@@ -50,7 +55,7 @@ class DocuList extends Component {
 
   render() {
     const {
-      docu: { documentList, totalCount },
+      docList: { documentList, totalCount },
       loading,
     } = this.props;
 
@@ -69,17 +74,17 @@ class DocuList extends Component {
       },
     };
 
-    const dataSource = [
-      {
-        id:1,
-        title:'Ant',
-        href:'',
-        tags: ['应用教程','产品说明','随便写的'],
-        content: 'sflsjfslfs',
-        updatedAt: new Date(),
-        like: '456'
-      }
-    ]
+    // const dataSource = [
+    //   {
+    //     id:1,
+    //     title:'Ant',
+    //     href:'',
+    //     tags: ['应用教程','产品说明','随便写的'],
+    //     content: 'sflsjfslfs',
+    //     updatedAt: new Date(),
+    //     like: '456'
+    //   }
+    // ]
 
     const IconText = ({ type, text }) => (
       <span>
@@ -122,7 +127,7 @@ class DocuList extends Component {
                 <List.Item.Meta
                   title={
 
-                    <Link to={'/docu/detail?id=' + item.id} className={styles.listItemMetaTitle} >
+                    <Link to={'/doc/detail?id=' + item.id} className={styles.listItemMetaTitle} >
                       {item.title}
                     </Link>
                   }

@@ -1,14 +1,38 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Anchor, Card, Divider, Icon } from 'antd';
+import { routerRedux } from 'dva/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './DocuDetail.less';
+import styles from './DocDetail.less';
 
 const { Link } = Anchor;
 
-class DocuDetail extends PureComponent {
+@connect(({ docDetail, loading }) => ({
+  docDetail,
+  loading: loading.models.list,
+}))
+class DocDetail extends PureComponent {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      id: this.props.location.query.id, // 文档ID
+      anchorListData: [], // anchor列表数据
+      needFixed: false, // 滚动之后固定
+    }
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
+
+    dispatch({
+      type: 'docDetail/fetchDocDetail',
+      payload: {
+        id: this.state.id
+      }
+    })
 
     this.setState({ anchorListData: this.getListData(document.getElementById('wrap')) });
 
@@ -19,11 +43,7 @@ class DocuDetail extends PureComponent {
     document.removeEventListener('scroll', this.handScroll);
   }
 
-  state = {
-    anchorListData: [], // anchor列表数据
-    needFixed: false, // 滚动之后固定
-  };
-
+  // 获取标题
   getListData = html => {
     let listData = [];
     let H1List = html.getElementsByTagName('h1');
@@ -38,6 +58,7 @@ class DocuDetail extends PureComponent {
     return listData;
   };
 
+  // 滚动
   handScroll = () => {
     const { needFixed } = this.state;
     const scrollTop = document.body.scrollTop + document.documentElement.scrollTop;
@@ -56,12 +77,57 @@ class DocuDetail extends PureComponent {
     });
   };
 
+  // 点赞
+  upDoc = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'docDetail/fetchUpDownDoc',
+      payload: {
+        action: 'up',
+        id: this.state.id
+      }
+    })
+  }
+
+  // 点踩
+  downDoc = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'docDetail/fetchUpDownDoc',
+      payload: {
+        action: 'down',
+        id: this.state.id
+      }
+    })
+  }
+
+  // 跳转下一篇
+  goDoc = (id) => {
+
+    const { dispatch } = this.props;
+
+    dispatch(
+      routerRedux.push({
+        pathname: '/doc/detail',
+        search: 'id=' + id,
+      })
+    );
+    
+  };
+
   render() {
-    const docuData = {
+
+    const { docDetail } = this.props;
+    const { docData } = docDetail;
+    const { next, pre } = docData;
+
+    const docDatas = {
       title: '文档详情',
       date: '2017-1-12 12:12',
-      praiseCount: 200,
-      trampleCount: 25,
+      up: 200,
+      down: 25,
       prevTitle: 'Antdesign设计语言',
       prevUrl: '',
       nextTitle: '色彩应用',
@@ -70,10 +136,10 @@ class DocuDetail extends PureComponent {
 
     const extraTitle = (
       <div className={styles.extraContent}>
-        <div className={styles.title}>{docuData.title}</div>
+        <div className={styles.title}>{docData.title}</div>
         <div className={styles.info}>
-          <Icon type="eye-o" /> <span>{docuData.praiseCount}</span> <Icon type="clock-circle-o" />{' '}
-          <span>{docuData.date}</span>
+          <Icon type="eye-o" /> <span>{docData.up}</span> <Icon type="clock-circle-o" />{' '}
+          <span>{docData.publish_time}</span>
         </div>
       </div>
     );
@@ -82,7 +148,7 @@ class DocuDetail extends PureComponent {
       '<h1>标题1</h1></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br><h1>标题2</h1></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br><h1>标题3</h1></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>';
 
     return (
-      <PageHeaderWrapper title={docuData.title}>
+      <PageHeaderWrapper title={docData.title}>
         <Card title={extraTitle} style={{ position: 'relative', paddingRight: 330 }}>
           <Anchor
             getContainer={() => document.getElementById('wrap')}
@@ -101,17 +167,17 @@ class DocuDetail extends PureComponent {
               <div className={styles.title}>你认为本篇文章有用吗?</div>
               <div className={styles.action}>
                 <div className={styles.praise}>
-                  <div className={styles.icon}>
+                  <div className={styles.icon} onClick={this.upDoc}>
                     <Icon type="like-o" />
                   </div>
                   <div>赞一个</div>
                 </div>
                 <div className={styles.trample}>
-                  <div className={styles.icon}>
+                  <div className={styles.icon} onClick={this.downDoc}>
                     <Icon type="dislike-o" />
                   </div>
                   <div>
-                    {docuData.trampleCount}
+                    {docData.down}
                     个踩
                   </div>
                 </div>
@@ -121,12 +187,17 @@ class DocuDetail extends PureComponent {
 
           <Divider style={{ margin: '24px 0' }} />
           <div className={styles.moreDocu}>
-            <div className={styles.leftDocu}>
+            <div className={styles.leftDocu} >
               <Icon type="left" />
-              <span>{docuData.prevTitle}</span>
+              {
+                pre ? <span onClick={() => this.goDoc(pre.id)}>{pre.title}</span> : <span>没有了</span>
+              }
+              
             </div>
-            <div className={styles.rightDocu}>
-              <span>{docuData.nextTitle}</span>
+            <div className={styles.rightDocu} >
+              {
+                next ? <span onClick={() => this.goDoc(next.id)}>{next.title}</span> : <span>没有了</span>
+              }
               <Icon type="right" />
             </div>
           </div>
@@ -136,4 +207,4 @@ class DocuDetail extends PureComponent {
   }
 }
 
-export default DocuDetail;
+export default DocDetail;

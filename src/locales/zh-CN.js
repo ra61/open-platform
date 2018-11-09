@@ -57,10 +57,10 @@ export default {
   'menu.sdk.list': 'SDK列表',
   'menu.sdk.info': '拓展控件',
 
-  'menu.docu': '文档中心',
-  'menu.docu.center': '文档中心',
-  'menu.docu.list': '文档列表',
-  'menu.docu.detail': '文档详情',
+  'menu.doc': '文档中心',
+  'menu.doc.center': '文档中心',
+  'menu.doc.list': '文档列表',
+  'menu.doc.detail': '文档详情',
 
   'menu.feedback': '意见反馈',
   'menu.feedback.list': '反馈列表',

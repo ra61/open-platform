@@ -17,16 +17,8 @@ export default {
         payload: response,
       });
     },
-    *fetchUser(_, { call, put }) {
-      const response = yield call(getDeveloperInfo);
-      console.log(response);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      const response = yield call(getDeveloperInfo);
       yield put({
         type: 'saveCurrentUser',
         payload: response,
@@ -41,10 +33,10 @@ export default {
         list: action.payload,
       };
     },
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload }) {
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: payload || {},
       };
     },
     changeNotifyCount(state, action) {

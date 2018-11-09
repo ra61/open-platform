@@ -190,7 +190,6 @@ export async function queryAppBasicInfo(params) {
 
 // 更新应用基本信息
 export async function updateAppBasicInfo(params) {
-  console.log(params);
   let body = new FormData();
   body.append('appId', params.appId);
   body.append('appname', params.appname);
@@ -369,11 +368,12 @@ export async function submitCreateNewApp(params) {
   });
 }
 
-// sdk
+// sdk版本
 export async function querySDKVersionList() {
   return request('/api2/dev/sdk/getSdkVersionList');
 }
 
+// SDK列表
 export async function querySDKList(params) {
 
   let body = new FormData();
@@ -386,19 +386,19 @@ export async function querySDKList(params) {
   });
 }
 
+// 拓展控件
 export async function querySDKInfo() {
-
   return request('/api2/dev/sdk/getExtSdkList');
 }
 
 // 文档中心
-export async function queryFileCenterList() {
+export async function getDocSummary() {
   return request('/api2/dev/document/getDocSummary');
 }
 
-export async function queryDocumentList(params) {
+// 文档列表
+export async function getDocList(params) {
 
-  console.log(params)
   let body = new FormData();
   body.append('classifyId', params.classifyId);
   body.append('pageIndex', params.pageIndex);
@@ -410,7 +410,32 @@ export async function queryDocumentList(params) {
   });
 }
 
+// 文档详情
+export async function getDocDetail(params) {
+  let body = new FormData();
+  body.append('id', params.id);
+  return request('/api2/dev/document/getDocDetail', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
 
+// 点赞或踩
+export async function upDownDoc(params) {
+  let body = new FormData();
+  body.append('action', params.action);
+  body.append('id', params.id);
+  return request('/api2/dev/document/ajaxUpDownDoc', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+
+
+// 公告列表
 export async function queryNoticeList(params) {
   let body = new FormData();
   body.append('pageIndex', params.pageIndex);
@@ -441,6 +466,7 @@ export async function addFeedback(params) {
   // return request('/api/feedback/list');
 }
 
+// 反馈列表
 export async function queryFeedbackList(params) {
   let body = new FormData();
   body.append('pageIndex', params.pageIndex);
@@ -455,6 +481,7 @@ export async function queryFeedbackList(params) {
   // return request('/api/feedback/list');
 }
 
+// 反馈详情
 export async function queryFeedbackDetail(params) {
 
   let body = new FormData();
@@ -468,6 +495,7 @@ export async function queryFeedbackDetail(params) {
 
 }
 
+// 回复反馈
 export async function queryDialogList(params) {
 
   let body = new FormData();
