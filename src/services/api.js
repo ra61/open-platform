@@ -463,7 +463,6 @@ export async function addFeedback(params) {
     expirys: false
   });
 
-  // return request('/api/feedback/list');
 }
 
 // 反馈列表
@@ -478,7 +477,6 @@ export async function queryFeedbackList(params) {
     expirys: false
   });
 
-  // return request('/api/feedback/list');
 }
 
 // 反馈详情
@@ -509,15 +507,6 @@ export async function queryDialogList(params) {
 
 }
 
-// 应用详情-资源文件
-export async function querySourceFile() {
-  return request('/api/source/file');
-}
-
-export async function queryGrammarFile() {
-  return request('/api/grammar/file');
-}
-
 // 用户基本信息
 export async function getDeveloperInfo() {
   return request('/api2/dev/Appdeveloper/ajaxGetDeveloperInfo', {
@@ -526,7 +515,7 @@ export async function getDeveloperInfo() {
   });
 }
 
-// 用户基本信息
+// 更新用户基本信息
 export async function updateDeveloperInfo(params) {
 
   let body = new FormData();
@@ -542,6 +531,44 @@ export async function updateDeveloperInfo(params) {
   body.append('requiredAbility', params.requiredAbility);
 
   return request('/api2/dev/Appdeveloper/ajaxUpdateDeveloperInfo', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 获取安全设置信息
+export async function getSafeInfo() {
+  return request('/api2/dev/Appdeveloper/ajaxGetSafeInfo', {
+    method: 'get',
+    expirys: false
+  });
+}
+
+// 注册
+export async function doAjaxRegister(params) {
+
+  let body = new FormData();
+  body.append('phone', params.phone);
+  body.append('verifyCode', params.verifyCode);
+  body.append('password', params.password);
+  body.append('password2', params.password2);
+
+
+  return request('/api2/dev/Appdeveloper/doAjaxRegister', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 获取验证码
+export async function getVerifyCode(params) {
+
+  let body = new FormData();
+  body.append('phone', params.phone);
+
+  return request('/api2/dev/Appdeveloper/ajaxGetVerifyCode', {
     method: 'POST',
     body: body,
     expirys: false

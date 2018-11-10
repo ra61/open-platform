@@ -55,6 +55,9 @@ class Register extends Component {
   }
 
   onGetCaptcha = () => {
+    const { form, dispatch } = this.props;
+    const phone = form.getFieldValue('phone');
+    console.log(phone);
     let count = 59;
     this.setState({ count });
     this.interval = setInterval(() => {
@@ -64,6 +67,13 @@ class Register extends Component {
         clearInterval(this.interval);
       }
     }, 1000);
+
+    dispatch({
+      type: 'register/getVerifyCode',
+      payload: {
+        phone: phone
+      }
+    })
   };
 
   getPasswordStatus = () => {
@@ -82,7 +92,13 @@ class Register extends Component {
     e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
+
       if (!err) {
+
+        if (!values.protocol) {
+          alert('test');
+        }
+
         const { prefix } = this.state;
         dispatch({
           type: 'register/submit',
@@ -181,7 +197,7 @@ class Register extends Component {
                 <Option value="86">+86</Option>
                 <Option value="87">+87</Option>
               </Select>
-              {getFieldDecorator('mobile', {
+              {getFieldDecorator('phone', {
                 rules: [
                   {
                     required: true,

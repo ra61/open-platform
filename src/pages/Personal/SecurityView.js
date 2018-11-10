@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { List, Card} from 'antd';
 import Link from 'umi/link';
@@ -13,15 +14,27 @@ const user = {
   wx: '未绑定'
 }
 
-
+@connect(({ user }) => ({
+  user
+}))
 class SecurityView extends Component {
 
+  componentDidMount() {
+
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'user/fetchSafeInfo',
+    });
+
+  }
+
   
-  getData = () => [
+  getData = (safeInfo) => [
     {
       key: '1',
       title: '登录密码',
-      value: user.password,
+      value: (safeInfo.passwordSet == 1 ? '已设置' : '未设置' ),
       description: '安全性高的密码可以使帐号更安全。建议您定期更换密码',
       actions: [
         <Link to={{ pathname: "/personal/modify-password"}} key='1k'>
@@ -33,7 +46,7 @@ class SecurityView extends Component {
     {
       key: '2',
       title: '联系手机',
-      value: user.phone,
+      value: safeInfo.phone.toString().replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'),
       description: '您的联系手机可以直接用于登录、找回密码等。',
       actions: [
         <Link to={{ pathname: "/personal/modify-phone" }} key='2k'>
@@ -45,7 +58,7 @@ class SecurityView extends Component {
     {
       key: '3',
       title: '联系邮箱',
-      value: user.email,
+      value: (safeInfo.emailSet == 1 ? '已绑定' : '未绑定'),
       description: '您在灵云的联系邮箱未校验，不能用于业务的身份认证。',
       actions: [
         <Link to={{ pathname: "/personal/bind-email" }} key='3k'>
@@ -57,7 +70,7 @@ class SecurityView extends Component {
     {
       key: '4',
       title: '微信绑定',
-      value: user.wx,
+      value: (safeInfo.snsBind == 1 ? '已绑定' : '未绑定'),
       description: '绑定微信之后可以在登陆的时候实现扫一扫快捷登录。',
       actions: [
         <Link to={{ pathname: "/personal/bind-weixin" }} key='4k'>
@@ -68,11 +81,15 @@ class SecurityView extends Component {
   ];
 
   render() {
+
+    const { user } = this.props;
+    const { safeInfo } = user;
+    
     return (
       <Card title="安全信息">
         <List
           itemLayout="horizontal"
-          dataSource={this.getData()}
+          dataSource={this.getData(safeInfo)}
           renderItem={item => (
             
             <List.Item key={item.key} className={styles.item}>

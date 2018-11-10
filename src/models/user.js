@@ -1,5 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
-import { getDeveloperInfo, updateDeveloperInfo } from '@/services/api';
+import { getDeveloperInfo, updateDeveloperInfo, getSafeInfo } from '@/services/api';
 
 export default {
   namespace: 'user',
@@ -7,6 +7,7 @@ export default {
   state: {
     list: [],
     currentUser: {},
+    safeInfo:{}
   },
 
   effects: {
@@ -27,9 +28,22 @@ export default {
     *UpdateDeveloperInfo({ payload }, { call, put }) {
       const response = yield call(updateDeveloperInfo, payload);
     },
+    *fetchSafeInfo(_, { call, put }) {
+      const response = yield call(getSafeInfo);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
+    show(state, { payload }) {
+      return {
+        ...state,
+        safeInfo: payload.data
+      };
+    },
     save(state, action) {
       return {
         ...state,
