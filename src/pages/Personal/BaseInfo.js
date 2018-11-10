@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import styles from './BaseInfo.less';
 import GeographicView from './GeographicView';
 import AbilityView from './AbilityView';
+import BussinessView from './BussinessView';
 // import { getTimeDistance } from '@/utils/utils';
 
 const FormItem = Form.Item;
@@ -49,30 +50,32 @@ class BaseInfo extends Component {
   setBaseInfo = () => {
     const { currentUser, form } = this.props;
 
-    const currentUsers = {
-      geographic:{
-        province: {
-          label: '浙江省',
-          key: '330000',
-        },
-        city: {
-          label: '杭州市',
-          key: '330100',
-        },
-      },
-      address: "北京市",
-      company: "捷通",
-      mainBussiness: "",
-      name: "捷通测试2",
-      requiredAbility: ["TTS","ASR"],
-      subBussiness: null,
-      txid: "uid",
-      type: "1"
-    }
+    // const currentUsers = {
+    //   geographic:{
+    //     province: {
+    //       label: '浙江省',
+    //       key: '330000',
+    //     },
+    //     city: {
+    //       label: '杭州市',
+    //       key: '330100',
+    //     },
+    //   },
+    //   address: "北京市",
+    //   company: "捷通",
+    //   name: "捷通测试2",
+    //   requiredAbility: ["TTS", "ASR","SMA"],
+    //   bussiness:{
+    //     mainBussiness: "m2",
+    //     subBussiness: "",
+    //   },
+    //   txid: "uid",
+    //   type: "1"
+    // }
     
     Object.keys(form.getFieldsValue()).forEach(key => {
       const obj = {};
-      obj[key] = currentUsers[key] || null;
+      obj[key] = currentUser[key] || null;
       form.setFieldsValue(obj);
     });
   };
@@ -87,12 +90,11 @@ class BaseInfo extends Component {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       
-      console.log(values);
       if (!err) {
-        // dispatch({
-        //   type: 'createNewApp/submitCreateNewApp',
-        //   payload: values,
-        // });
+        dispatch({
+          type: 'user/UpdateDeveloperInfo',
+          payload: values,
+        });
       }
     });
   }
@@ -192,43 +194,14 @@ class BaseInfo extends Component {
             <div className={styles.formSub}>业务信息</div>
 
             <FormItem {...formItemLayout} label="需求能力" >
-              {getFieldDecorator('requiredAbility', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请选择需求能力',
-                  },
-                ]
-              })(
+              {getFieldDecorator('requiredAbility')(
                 <AbilityView></AbilityView>
               )}
             </FormItem>
 
             <FormItem {...formItemLayout} label="主营行业" >
-              {getFieldDecorator('platform', {
-                rules: [
-                  {
-                    required: false,
-                    message: '请选择主营行业',
-                  },
-                ],
-                initialValue: '1'
-              })(
-              <div>
-                <div>
-                  <Select style={{ maxWidth: 220 }}>
-                    <Option value="China">中国</Option>
-                  </Select>
-                </div>
-                <div>
-                  <Radio.Group >
-                    <Radio.Button value="1">ERP</Radio.Button>
-                    <Radio.Button value="2">OA</Radio.Button>
-                    <Radio.Button value="3">CRM</Radio.Button>
-                    <Radio.Button value="4">其他</Radio.Button>
-                  </Radio.Group>
-                  </div>
-              </div>
+              {getFieldDecorator('bussiness')(
+                <BussinessView />
               )}
             </FormItem>
             

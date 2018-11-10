@@ -509,8 +509,6 @@ export async function queryDialogList(params) {
 
 }
 
-
-
 // 应用详情-资源文件
 export async function querySourceFile() {
   return request('/api/source/file');
@@ -522,5 +520,30 @@ export async function queryGrammarFile() {
 
 // 用户基本信息
 export async function getDeveloperInfo() {
-  return request('/api2/dev/Appdeveloper/ajaxGetDeveloperInfo');
+  return request('/api2/dev/Appdeveloper/ajaxGetDeveloperInfo', {
+    method: 'get',
+    expirys: false
+  });
+}
+
+// 用户基本信息
+export async function updateDeveloperInfo(params) {
+
+  let body = new FormData();
+  body.append('name', params.name);
+  body.append('type', params.type);
+  body.append('company', params.company);
+  body.append('province', params.province);
+  body.append('city', params.city);
+  body.append('area', params.area);
+  body.append('address', params.address);
+  body.append('mainBussiness', params.bussiness.mainBussiness);
+  body.append('subBussiness', params.bussiness.subBussiness);
+  body.append('requiredAbility', params.requiredAbility);
+
+  return request('/api2/dev/Appdeveloper/ajaxUpdateDeveloperInfo', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
 }

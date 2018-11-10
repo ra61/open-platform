@@ -12,3 +12,14 @@ export function addToArray(val) {
         this.push(val);
     }
 };
+
+export function getInCount(arr) {
+    let count = 0;
+    for(let i=0; i < arr.length; i++){
+        let index = this.indexOf(arr[i]);
+        if (index > -1) {
+            count++;
+        }
+    }
+    return count;
+};

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Checkbox } from 'antd';
 import styles from './AbilityView.less';
-import { removeFromArray, addToArray } from '@/utils/common';
+import { removeFromArray, addToArray, getInCount } from '@/utils/common';
 
 class AbilityView extends PureComponent {
 
@@ -9,11 +9,6 @@ class AbilityView extends PureComponent {
     super(props);
     
     this.state = {
-      checkItem1: false,
-      checkItem2: false,
-      checkItem3: false,
-      checkItem4: false,
-      checkItem5: false,
       TTS: false,
       ASR: false,
       SMA: false,
@@ -26,16 +21,11 @@ class AbilityView extends PureComponent {
       VPR: false,
       AFR: false,
       FPR: false,
-      checkItem1List: [],
-      checkItem2List: [],
-      checkItem3List: [],
-      checkItem4List: [],
-      checkItem5List: [],
-      checkItem1Count: 0,
-      checkItem2Count: 0,
-      checkItem3Count: 0,
-      checkItem4Count: 0,
-      checkItem5Count: 0,
+      checkItem1: false,
+      checkItem2: false,
+      checkItem3: false,
+      checkItem4: false,
+      checkItem5: false,
       checkedList: []
     }
   }
@@ -49,82 +39,86 @@ class AbilityView extends PureComponent {
 
   componentDidUpdate(props) {
     const { dispatch, value } = this.props;
-    console.log(value);
 
-    let { checkItem1Count, checkedList } = this.state;
-
+    let checkItem1Count = getInCount.call(value, ['TTS', 'ASR', 'SMA']);
+    let checkItem2Count = getInCount.call(value, ['AISEED']);
+    let checkItem3Count = getInCount.call(value, ['OCR', 'HWR']);
+    let checkItem4Count = getInCount.call(value, ['NLU', 'KB', 'MT']);
+    let checkItem5Count = getInCount.call(value, ['VPR', 'AFR', 'FPR']);
 
     this.setState({
       TTS: value.indexOf('TTS') > -1,
+      ASR: value.indexOf('ASR') > -1,
+      SMA: value.indexOf('SMA') > -1,
+      AISEED: value.indexOf('AISEED') > -1,
+      OCR: value.indexOf('OCR') > -1,
+      HWR: value.indexOf('HWR') > -1,
+      NLU: value.indexOf('NLU') > -1,
+      KB: value.indexOf('KB') > -1,
+      MT: value.indexOf('MT') > -1,
+      VPR: value.indexOf('VPR') > -1,
+      AFR: value.indexOf('AFR') > -1,
+      FPR: value.indexOf('FPR') > -1,
+      checkItem1: checkItem1Count == 3,
+      checkItem2: checkItem2Count == 1,
+      checkItem3: checkItem3Count == 2,
+      checkItem4: checkItem4Count == 3,
+      checkItem5: checkItem5Count == 3,
+      checkedList: value,
     });
+
     
   }
 
 	// 1
   onCheckTTS = (e) => {
 
-    let { checkItem1Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked){
-      checkItem1Count++;
       addToArray.call(checkedList, 'TTS');
     } else {
-      checkItem1Count--;
       removeFromArray.call(checkedList, 'TTS')
     }
 
 
     this.setState({
       checkedList,
-      checkItem1Count: checkItem1Count,
-      checkItem1: checkItem1Count == 3,
       TTS: e.target.checked,
     });
   }
 
   onCheckASR = (e) => {
 
-    let { checkItem1Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem1Count++;
       addToArray.call(checkedList, 'ASR');
     } else {
-      checkItem1Count--;
       removeFromArray.call(checkedList, 'ASR')
     }
 
     this.setState({
       checkedList,
-      checkItem1Count: checkItem1Count,
-      checkItem1: checkItem1Count == 3,
       ASR: e.target.checked,
     });
   }
 
   onCheckSMA = (e) => {
 
-    let { checkItem1Count, checkedList } = this.state;
-    const { onChange } = this.props;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem1Count++;
       addToArray.call(checkedList, 'SMA');
     } else {
-      checkItem1Count--;
       removeFromArray.call(checkedList, 'SMA')
     }
 
     this.setState({
       checkedList,
-      checkItem1Count: checkItem1Count,
-      checkItem1: checkItem1Count == 3,
       SMA: e.target.checked,
     });
 
-    onChange({
-      checkedList
-    })
   }
 
   onCheckItem1 = (e) => {
@@ -135,7 +129,6 @@ class AbilityView extends PureComponent {
       addToArray.call(checkedList, 'ASR');
       addToArray.call(checkedList, 'SMA');
       this.setState({
-        checkItem1Count: 3,
         checkedList
       });
     } else {
@@ -143,7 +136,6 @@ class AbilityView extends PureComponent {
       removeFromArray.call(checkedList, 'ASR');
       removeFromArray.call(checkedList, 'SMA');
       this.setState({
-        checkItem1Count: 0,
         checkedList
       });
     }
@@ -162,27 +154,19 @@ class AbilityView extends PureComponent {
 
   onCheckAISEED = (e) => {
 
-    let { checkItem2Count, checkedList } = this.state;
-    const { onChange } = this.props;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem2Count++;
       checkedList.push('AISEED');
     } else {
-      checkItem2Count--;
       removeFromArray.call(checkedList, 'AISEED')
     }
 
     this.setState({
       checkedList,
-      checkItem2Count,
-      checkItem2: checkItem2Count == 1,
       AISEED: e.target.checked,
     });
 
-    onChange({
-      checkedList
-    })
   }
 
   onCheckItem2 = (e) => {
@@ -191,13 +175,11 @@ class AbilityView extends PureComponent {
     if (e.target.checked) {
       addToArray.call(checkedList, 'AISEED');
       this.setState({
-        checkItem2Count: 1,
         checkedList
       });
     } else {
       removeFromArray.call(checkedList, 'AISEED');
       this.setState({
-        checkItem2Count: 0,
         checkedList
       });
     }
@@ -213,41 +195,33 @@ class AbilityView extends PureComponent {
   // 3
   onCheckOCR = (e) => {
 
-    let { checkItem3Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem3Count++;
       checkedList.push('OCR');
     } else {
-      checkItem3Count--;
       removeFromArray.call(checkedList, 'OCR')
     }
 
 
     this.setState({
       checkedList,
-      checkItem3Count,
-      checkItem3: checkItem3Count == 2,
       OCR: e.target.checked,
     });
   }
 
   onCheckHWR = (e) => {
 
-    let { checkItem3Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem3Count++;
       checkedList.push('HWR');
     } else {
-      checkItem3Count--;
       removeFromArray.call(checkedList, 'HWR')
     }
 
     this.setState({
       checkedList,
-      checkItem3Count,
-      checkItem3: checkItem3Count == 2,
       HWR: e.target.checked,
     });
   }
@@ -259,14 +233,12 @@ class AbilityView extends PureComponent {
       addToArray.call(checkedList, 'OCR');
       addToArray.call(checkedList, 'HWR');
       this.setState({
-        checkItem3Count: 2,
         checkedList
       });
     } else {
       removeFromArray.call(checkedList, 'OCR');
       removeFromArray.call(checkedList, 'HWR');
       this.setState({
-        checkItem3Count: 0,
         checkedList
       });
     }
@@ -284,21 +256,17 @@ class AbilityView extends PureComponent {
 
   onCheckNLU = (e) => {
 
-    let { checkItem4Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem4Count++;
       checkedList.push('NLU');
     } else {
-      checkItem4Count--;
       removeFromArray.call(checkedList, 'NLU')
     }
 
 
     this.setState({
       checkedList,
-      checkItem4Count,
-      checkItem4: checkItem4Count == 3,
       NLU: e.target.checked,
     });
   }
@@ -307,52 +275,36 @@ class AbilityView extends PureComponent {
 
   onCheckKB = (e) => {
 
-    let { checkItem4Count, checkedList } = this.state;
-    const { onChange } = this.props;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem4Count++;
       checkedList.push('KB');
     } else {
-      checkItem4Count--;
       removeFromArray.call(checkedList, 'KB')
     }
 
     this.setState({
       checkedList,
-      checkItem4Count,
-      checkItem4: checkItem4Count == 3,
       KB: e.target.checked,
     });
 
-    onChange({
-      checkedList
-    })
   }
   
   onCheckMT = (e) => {
 
-    let { checkItem4Count, checkedList } = this.state;
-    const { onChange } = this.props;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem4Count++;
       checkedList.push('MT');
     } else {
-      checkItem4Count--;
       removeFromArray.call(checkedList, 'MT')
     }
 
     this.setState({
       checkedList,
-      checkItem4Count,
-      checkItem4: checkItem4Count == 3,
       MT: e.target.checked,
     });
 
-    onChange({
-      checkedList
-    })
   }
 
   onCheckItem4 = (e) => {
@@ -363,7 +315,6 @@ class AbilityView extends PureComponent {
       addToArray.call(checkedList, 'KB');
       addToArray.call(checkedList, 'MT');
       this.setState({
-        checkItem4Count: 3,
         checkedList
       });
     } else {
@@ -371,7 +322,6 @@ class AbilityView extends PureComponent {
       removeFromArray.call(checkedList, 'KB');
       removeFromArray.call(checkedList, 'MT');
       this.setState({
-        checkItem4Count: 0,
         checkedList
       });
     }
@@ -388,63 +338,51 @@ class AbilityView extends PureComponent {
 
   onCheckVPR = (e) => {
 
-    let { checkItem5Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem5Count++;
       checkedList.push('VPR');
     } else {
-      checkItem5Count--;
       removeFromArray.call(checkedList, 'VPR')
     }
 
 
     this.setState({
       checkedList,
-      checkItem5Count,
-      checkItem5: checkItem5Count == 3,
       VPR: e.target.checked,
     });
   }
   
   onCheckAFR = (e) => {
 
-    let { checkItem5Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem5Count++;
       checkedList.push('AFR');
     } else {
-      checkItem5Count--;
       removeFromArray.call(checkedList, 'AFR')
     }
 
 
     this.setState({
       checkedList,
-      checkItem5Count,
-      checkItem5: checkItem5Count == 3,
       AFR: e.target.checked,
     });
   }
   
   onCheckFPR = (e) => {
 
-    let { checkItem5Count, checkedList } = this.state;
+    let { checkedList } = this.state;
 
     if (e.target.checked) {
-      checkItem5Count++;
       checkedList.push('FPR');
     } else {
-      checkItem5Count--;
       removeFromArray.call(checkedList, 'FPR')
     }
 
 
     this.setState({
       checkedList,
-      checkItem5Count,
-      checkItem5: checkItem5Count == 3,
       FPR: e.target.checked,
     });
   }
@@ -459,7 +397,6 @@ class AbilityView extends PureComponent {
       addToArray.call(checkedList, 'AFR');
       addToArray.call(checkedList, 'FPR');
       this.setState({
-        checkItem5Count: 3,
         checkedList
       });
     } else {
@@ -467,7 +404,6 @@ class AbilityView extends PureComponent {
       removeFromArray.call(checkedList, 'AFR');
       removeFromArray.call(checkedList, 'FPR');
       this.setState({
-        checkItem5Count: 0,
         checkedList
       });
     }

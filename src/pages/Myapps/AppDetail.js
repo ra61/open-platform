@@ -106,7 +106,7 @@ class AppDetail extends Component {
             <Select style={{ width: 100 }} onChange={this.handleChange}>
               {
                 appkeys.map((item, index) => (
-                  <Option value={item} key={index}>{item}</Option>
+                  <Select.Option value={item} key={index}>{item}</Select.Option>
                 ))
               }
             </Select>

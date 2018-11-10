@@ -1,5 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
-import { getDeveloperInfo } from '@/services/api';
+import { getDeveloperInfo, updateDeveloperInfo } from '@/services/api';
 
 export default {
   namespace: 'user',
@@ -23,6 +23,9 @@ export default {
         type: 'saveCurrentUser',
         payload: response,
       });
+    },
+    *UpdateDeveloperInfo({ payload }, { call, put }) {
+      const response = yield call(updateDeveloperInfo, payload);
     },
   },
 
