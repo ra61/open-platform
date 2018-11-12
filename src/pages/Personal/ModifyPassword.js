@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import { routerRedux } from 'dva/router';
 import { Form, Input, Radio, Select, Button, Card, Checkbox } from 'antd';
 
 import { connect } from 'dva';
@@ -9,39 +10,84 @@ import GeographicView from '@/pages/Personal/GeographicView';
 const FormItem = Form.Item;
 const { Option } = Select;
 
-const validatorGeographic = (rule, value, callback) => {
-  const { province, city } = value;
-  if (!province.key) {
-    callback('Please input your province!');
-  }
-  if (!city.key) {
-    callback('Please input your city!');
-  }
-  callback();
-};
 
 @connect(({ user }) => ({
   currentUser: user.currentUser,
 }))
 @Form.create()
 class ModifyPassword extends Component {
+
+  state = {
+    confirmDirty: false,
+    visible: false,
+    help:''
+  };
+
   componentDidMount() {
-    this.setBaseInfo();
+
   }
 
-  setBaseInfo = () => {
-    const { currentUser, form } = this.props;
-    Object.keys(form.getFieldsValue()).forEach(key => {
-      const obj = {};
-      obj[key] = currentUser[key] || null;
-      form.setFieldsValue(obj);
+  handleSubmit = (e) => {
+    const { dispatch, form } = this.props;
+    e.preventDefault();
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'user/modifyPassword',
+          payload: values,
+        });
+      }
     });
-  };
+  }
 
 
-  getViewDom = ref => {
-    this.view = ref;
+  checkConfirm = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue('password_new')) {
+      callback('两次输入的密码不匹配!');
+    } else {
+      callback();
+    }
   };
+
+  checkPassword = (rule, value, callback) => {
+    const { visible, confirmDirty } = this.state;
+    if (!value) {
+      this.setState({
+        help: '请输入密码！',
+        visible: !!value,
+      });
+      callback('请输入新密码');
+    } else {
+      this.setState({
+        help: '',
+      });
+      if (!visible) {
+        this.setState({
+          visible: !!value,
+        });
+      }
+      if (value.length < 6) {
+        callback('至少6位密码');
+      } else {
+        const { form } = this.props;
+        if (value && confirmDirty) {
+          form.validateFields(['password_confirm'], { force: true });
+        }
+        callback();
+      }
+    }
+  };
+
+  // 取消-返回
+  cancleSubmit = () => {
+    const { dispatch } = this.props;
+    dispatch(
+      routerRedux.push({
+        pathname: '/personal/security'
+      })
+    )
+  }
 
   render() {
     const {
@@ -68,7 +114,6 @@ class ModifyPassword extends Component {
     };
 
     return (
-      <div ref={this.getViewDom}>
         <Card title="修改密码">
           <Form  onSubmit={this.handleSubmit} >
             <FormItem {...formItemLayout} label="原始密码">
@@ -76,6 +121,7 @@ class ModifyPassword extends Component {
                 rules: [
                   {
                     required: true,
+                    message: '请输入原始密码！'
                   },
                 ],
               })(<Input />)}
@@ -85,10 +131,13 @@ class ModifyPassword extends Component {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'personal.base.nickname-message' }, {}),
+                    message: '请输入新密码！'
+                  },
+                  {
+                    validator: this.checkPassword,
                   },
                 ],
-              })(<Input />)}
+            })(<Input type="password" placeholder="至少6位密码，区分大小写" />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="确认密码">
@@ -96,10 +145,13 @@ class ModifyPassword extends Component {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: 'personal.base.nickname-message' }, {}),
+                    message: '请确认密码！',
+                  },
+                  {
+                    validator: this.checkConfirm,
                   },
                 ],
-              })(<Input />)}
+            })(<Input type="password" placeholder="确认密码" />)}
             </FormItem>
 
             
@@ -107,12 +159,11 @@ class ModifyPassword extends Component {
               <Button type="primary" htmlType="submit">
                 提交
               </Button>
-              <Button style={{ marginLeft: 8 }}>取消</Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.cancleSubmit}>取消</Button>
             </FormItem>
             
           </Form>
         </Card>
-      </div>
     );
   }
 }

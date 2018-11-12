@@ -545,6 +545,62 @@ export async function getSafeInfo() {
   });
 }
 
+// 修改密码
+export async function modifyPassword(params) {
+
+  let body = new FormData();
+  body.append('old-password', params.password_original);
+  body.append('reset-password', params.password_new);
+
+  return request('/api2/dev/Appdeveloper/ajaxModifyPassword', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 重新绑定前的手机验证
+export async function bandingCheck(params) {
+
+  let body = new FormData();
+  body.append('phone', params.phone);
+  body.append('vcode', params.captcha);
+
+  return request('/api2/dev/Appdeveloper/ajaxBandingCheck', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 绑定新手机
+export async function bindPhone(params) {
+
+  let body = new FormData();
+  body.append('phone', params.phone);
+  body.append('vcode', params.captcha);
+
+  return request('/api2/dev/Appdeveloper/ajaxBindPhone', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 绑定新手机
+export async function bindEmail(params) {
+
+  let body = new FormData();
+  body.append('email', params.email);
+  body.append('vcode', params.captcha);
+
+  return request('/api2/dev/Appdeveloper/ajaxBindEmail', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
 // 注册
 export async function doAjaxRegister(params) {
 
@@ -562,13 +618,26 @@ export async function doAjaxRegister(params) {
   });
 }
 
-// 获取验证码
+// 获取手机验证码
 export async function getVerifyCode(params) {
 
   let body = new FormData();
   body.append('phone', params.phone);
 
   return request('/api2/dev/Appdeveloper/ajaxGetVerifyCode', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 获取邮箱验证码
+export async function getEmailVerifyCode(params) {
+
+  let body = new FormData();
+  body.append('email', params.email);
+
+  return request('/api2/dev/Appdeveloper/ajaxSendEmailVerifyCode', {
     method: 'POST',
     body: body,
     expirys: false

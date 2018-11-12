@@ -7,12 +7,6 @@ import styles from './SecurityView.less';
 
 // import { getTimeDistance } from '@/utils/utils';
 
-const user = {
-  password: '已设置',
-  phone: 13456789023,
-  email: '未绑定',
-  wx: '未绑定'
-}
 
 @connect(({ user }) => ({
   user
@@ -46,7 +40,7 @@ class SecurityView extends Component {
     {
       key: '2',
       title: '联系手机',
-      value: safeInfo.phone.toString().replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'),
+      value: safeInfo.phone && safeInfo.phone.toString().replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'),
       description: '您的联系手机可以直接用于登录、找回密码等。',
       actions: [
         <Link to={{ pathname: "/personal/modify-phone" }} key='2k'>

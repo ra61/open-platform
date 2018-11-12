@@ -57,7 +57,6 @@ class Register extends Component {
   onGetCaptcha = () => {
     const { form, dispatch } = this.props;
     const phone = form.getFieldValue('phone');
-    console.log(phone);
     let count = 59;
     this.setState({ count });
     this.interval = setInterval(() => {

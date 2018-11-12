@@ -14,15 +14,19 @@ const formItemLayout = {
   },
 };
 
-@connect(({ form, loading }) => ({
+@connect(({ user, loading }) => ({
   submitting: loading.effects['form/submitStepForm'],
-  data: form.step,
+  user
 }))
 @Form.create()
 class Step2 extends React.PureComponent {
   render() {
-    const { form, data, dispatch, submitting } = this.props;
+    const { form, user, dispatch, submitting } = this.props;
     const { getFieldDecorator, validateFields } = form;
+    const { phone } = user;
+
+    console.log(phone);
+
     const onPrev = () => {
       router.push('/user/back-phone');
     };

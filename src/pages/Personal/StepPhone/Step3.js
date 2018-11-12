@@ -5,12 +5,8 @@ import router from 'umi/router';
 import Result from '@/components/Result';
 import styles from './style.less';
 
-@connect(({ form }) => ({
-  data: form.step,
-}))
 class Step3 extends React.PureComponent {
   render() {
-    const { data } = this.props;
     
     return (
       <Result

@@ -43,7 +43,7 @@ class UserLayout extends React.PureComponent {
   // }
 
   render() {
-    const { children } = this.props;
+    const { children, location } = this.props;
     return (
       // @TODO <DocumentTitle title={this.getPageTitle()}>
       <div className={styles.container}>
@@ -57,17 +57,35 @@ class UserLayout extends React.PureComponent {
             </div>
             <div className={styles.desc}>灵云官网</div>
           </div>
-          <div className={styles.loginMain}>
-            <div className={styles.left}>
-              <div className={styles.topText}>灵智千企<em></em>云慧万户</div>
-              <div className={styles.bottomText}>灵云全方位人工智能</div>
-            </div>
-            <div className={styles.right}>
-              {children}
-            </div>
+          
+          {
+            [
+              '/user/back-phone/info', 
+              '/user/back-phone/confirm',
+              '/user/back-phone/result', 
+              '/user/back-email/info',
+              '/user/back-email/confirm',
+              '/user/back-email/result',
+            ].indexOf(location.pathname) > -1 ? 
+              <div className={styles.backMain}>
+                <div className={styles.backSub}>
+                  {children}
+                </div>
+              </div>
+              :   
+              <div className={styles.loginMain}>
+                  <div className={styles.left}>
+                    <div className={styles.topText}>灵智千企<em></em>云慧万户</div>
+                    <div className={styles.bottomText}>灵云全方位人工智能</div>
+                  </div>
+                  <div className={styles.right}>
+                    {children}
+                  </div>
+              </div>
+          }
+            
           </div>
           
-        </div>
         {/* <GlobalFooter links={links} copyright={copyright} /> */}
       </div>
     );

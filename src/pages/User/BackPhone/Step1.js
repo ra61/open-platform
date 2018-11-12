@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Form, Input, Button, Select, Divider } from 'antd';
+import { Form, Input, Button, Select, Divider, message } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
 
@@ -16,8 +16,8 @@ const formItemLayout = {
   },
 };
 
-@connect(({ form }) => ({
-  data: form.step,
+@connect(({ user }) => ({
+  user
 }))
 @Form.create()
 class Step1 extends React.PureComponent {
@@ -25,25 +25,39 @@ class Step1 extends React.PureComponent {
     prefix: '86',
   };
 
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.user !== this.props.user) {
+  //     if (nextProps.user.backInfo.status == 'ok') {
+  //       router.push('/user/back-phone/confirm');
+  //     } else {
+  //       message.success(nextProps.user.backInfo.message);
+  //     }
+  //   }
+  // }
+
   render() {
     const { prefix } = this.state;
-    const { form, dispatch, data } = this.props;
+    const { form, dispatch, user } = this.props;
+    const { backInfo } = user;
     const { getFieldDecorator, validateFields } = form;
+
     const onValidateForm = () => {
       validateFields((err, values) => {
         if (!err) {
           dispatch({
-            type: 'form/saveStepFormData',
-            payload: values,
-          });
+            type: 'user/getVerifyCode',
+            payload: {
+              ...values,
+              redirect:'/user/back-phone/confirm'
+            },
+          })
         }
-
-        router.push('/user/back-phone/confirm');
       });
     };
+
     return (
       <Fragment>
-        <Form layout="horizontal" className={styles.stepForm} hideRequiredMark>
+        <Form layout="horizontal" className={styles.stepForm} >
           <Form.Item {...formItemLayout} label="请输入手机号">
             <Input.Group compact>
               <Select
@@ -55,7 +69,7 @@ class Step1 extends React.PureComponent {
                 <Option value="86">+86</Option>
                 <Option value="87">+87</Option>
               </Select>
-              {getFieldDecorator('mobile', {
+              {getFieldDecorator('phone', {
                 rules: [
                   {
                     required: true,
@@ -67,12 +81,10 @@ class Step1 extends React.PureComponent {
                   },
                 ],
               })(
-                <Fragment>
-                  <Input size="large" style={{ width: '80%' }} placeholder="11位手机号" />
-                  <Link to="/user/back-email">邮箱找回密码</Link>
-                </Fragment>
+                <Input size="large" style={{ width: '80%' }} placeholder="11位手机号" />
               )}
             </Input.Group>
+            <Link to="/user/back-email">邮箱找回密码</Link>
           </Form.Item>
 
           <Form.Item
