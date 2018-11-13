@@ -217,7 +217,7 @@ class Panel extends Component {
                 />
               }
               bodyStyle={{ padding: 24 }}
-              style={{ minHeight: 604 }}
+              style={{ minHeight: 519 }}
             >
               <Pie
                 hasLegend
