@@ -5,19 +5,27 @@ import router from 'umi/router';
 import Result from '@/components/Result';
 import styles from './style.less';
 
-@connect(({ form }) => ({
-  data: form.step,
+@connect(({ user }) => ({
+  user,
 }))
 class Step3 extends React.PureComponent {
+
+  toLogin = () => {
+    router.push('/user/login');
+  }
+
+  toHome = () => {
+    router.push('/dashboard/panel');
+  }
+
   render() {
-    const { data } = this.props;
 
     const actions = (
       <Fragment>
-        <Button type="primary" >
+        <Button type="primary" onClick={this.toLogin}>
           立刻登录
         </Button>
-        <Button>返回首页</Button>
+        <Button onClick={this.toHome}>返回首页</Button>
       </Fragment>
     );
     

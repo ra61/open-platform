@@ -103,12 +103,13 @@ export async function updateFakeList(params) {
   });
 }
 
-export async function fakeAccountLogin(params) {
+export async function accountLogin(params) {
+
   let body = new FormData();
 
   body.append('userName', params.userName);
   body.append('password', params.password);
-  body.append('remember', 'on');
+  body.append('remember', params.autoLogin);
 
   return request('/api2/dev/Appdeveloper/doAjaxLogin', {
     method: 'POST',
@@ -606,9 +607,9 @@ export async function doAjaxRegister(params) {
 
   let body = new FormData();
   body.append('phone', params.phone);
-  body.append('verifyCode', params.verifyCode);
+  body.append('verifyCode', params.captcha);
   body.append('password', params.password);
-  body.append('password2', params.password2);
+  body.append('password2', params.confirm);
 
 
   return request('/api2/dev/Appdeveloper/doAjaxRegister', {
@@ -638,6 +639,39 @@ export async function getEmailVerifyCode(params) {
   body.append('email', params.email);
 
   return request('/api2/dev/Appdeveloper/ajaxSendEmailVerifyCode', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 忘记密码-重置密码（手机）
+export async function resetPasswordByPhone(params) {
+  let body = new FormData();
+  body.append('phone', params.phone);
+  body.append('vcode', params.captcha);
+  body.append('password', params.password_new);
+  body.append('password2', params.password_confirm);
+
+
+  return request('/api2/dev/Appdeveloper/ajaxResetPasswordByPhone', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 忘记密码-重置密码（邮箱）
+export async function resetPasswordByEmail(params) {
+
+  let body = new FormData();
+  body.append('email', params.email);
+  body.append('vcode', params.captcha);
+  body.append('password', params.password_new);
+  body.append('password2', params.password_confirm);
+
+
+  return request('/api2/dev/Appdeveloper/ajaxResetPasswordByEmail', {
     method: 'POST',
     body: body,
     expirys: false

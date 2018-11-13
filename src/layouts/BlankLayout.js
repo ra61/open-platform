@@ -94,13 +94,13 @@ class BlankLayout extends React.PureComponent {
     componentDidMount() {
         const { dispatch } = this.props;
 
-        const flag = getAuthority();
+        // const flag = getAuthority();
 
-        if(flag[0] != 'user'){
-            dispatch({
-                type: 'login/logout',
-            });
-        }
+        // if(flag[0] != 'user'){
+        //     dispatch({
+        //         type: 'login/logout',
+        //     });
+        // }
 
         dispatch({
             type: 'user/fetchCurrent',

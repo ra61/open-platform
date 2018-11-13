@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { Form, Input, Button, Select, Row, Col, Popover, Progress, Checkbox } from 'antd';
+import { Form, Input, Button, Select, Row, Col, Popover, Progress, Checkbox, message } from 'antd';
 import styles from './Register.less';
 
 const FormItem = Form.Item;
@@ -95,7 +95,8 @@ class Register extends Component {
       if (!err) {
 
         if (!values.protocol) {
-          alert('test');
+          message.error('请选择协议');
+          return;
         }
 
         const { prefix } = this.state;

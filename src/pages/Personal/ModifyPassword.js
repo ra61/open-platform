@@ -151,7 +151,7 @@ class ModifyPassword extends Component {
                     validator: this.checkConfirm,
                   },
                 ],
-            })(<Input type="password" placeholder="确认密码" />)}
+            })(<Input type="password" placeholder="请确认密码" />)}
             </FormItem>
 
             

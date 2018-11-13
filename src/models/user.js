@@ -1,18 +1,22 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
 import { 
-  getDeveloperInfo, 
-  updateDeveloperInfo, 
-  getSafeInfo, 
-  getVerifyCode, 
-  modifyPassword, 
-  bandingCheck, 
-  bindPhone, 
-  getEmailVerifyCode,
-  bindEmail 
+  getDeveloperInfo, // 获取个人信息
+  updateDeveloperInfo, // 更新个人信息
+  getSafeInfo, // 获取安全设置信息
+  getVerifyCode, // 通过手机获取验证码
+  modifyPassword, // 安全设置-修改密码
+  bandingCheck, // 重新绑定前的手机验证
+  bindPhone, // 绑定手机
+  getEmailVerifyCode, // 通过邮箱获取验证码
+  bindEmail,  // 绑定邮箱
+  resetPasswordByPhone, // 通过手机重置密码
+  resetPasswordByEmail,  // 通过邮箱重置密码
+  accountLogin // 登录
 } from '@/services/api';
 import { message } from 'antd';
 import router from 'umi/router';
-
+import Cookies from 'js-cookie';
+import { setAuthority } from '@/utils/authority';
 
 export default {
   namespace: 'user',
@@ -20,8 +24,7 @@ export default {
   state: {
     list: [],
     currentUser: {},
-    safeInfo:{},
-    phone:''
+    safeInfo:{}
   },
 
   effects: {
@@ -34,10 +37,48 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(getDeveloperInfo);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+
+      if (!response.name){
+        let userName = Cookies.get('userName');
+        let password = Cookies.get('password');
+
+        if (!userName || !password){
+          router.push('/user/login');
+        }else{
+
+          let payload = {
+            userName: userName,
+            password: password,
+            autoLogin: true
+          }
+
+          // 登录
+          const responseLogin = yield call(accountLogin, payload);
+
+          // 改变登录状态
+          yield put({
+            type: 'changeLoginStatus',
+            payload: responseLogin,
+          });
+
+          // 获取登录信息
+          const responseCurrentUser = yield call(getDeveloperInfo);
+
+          // 设置登录信息
+          yield put({
+            type: 'saveCurrentUser',
+            payload: responseCurrentUser,
+          });
+
+        }
+
+      } else {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
+      }
+      
     },
     *UpdateDeveloperInfo({ payload }, { call, put }) {
       const response = yield call(updateDeveloperInfo, payload);
@@ -47,11 +88,18 @@ export default {
 
       // 是否跳转 跳转地址
       if (response.status == 'ok' && payload.redirect){
-        router.push(payload.redirect);
+        router.push({
+          pathname: payload.redirect,
+          state: {
+            phone: payload.phone,
+          },
+        });
       };
 
       // 提示信息
-      message.success(response.message);
+      if (response.message) {
+        message.success(response.message);
+      }
     },
     *fetchSafeInfo(_, { call, put }) {
       const response = yield call(getSafeInfo);
@@ -62,7 +110,35 @@ export default {
     },
     *modifyPassword({ payload }, { call, put }) {
       const response = yield call(modifyPassword, payload);
-      message.success(response.message);
+      if (response.message) {
+        message.success(response.message);
+      }
+    },
+    *resetPasswordByPhone({ payload }, { call, put }) {
+      const response = yield call(resetPasswordByPhone, payload);
+
+      // 是否跳转 跳转地址
+      if (response.status == 'ok' && payload.redirect) {
+        router.push(payload.redirect);
+      };
+
+      // 提示信息
+      if (response.message) {
+        message.success(response.message);
+      }
+    },
+    *resetPasswordByEmail({ payload }, { call, put }) {
+      const response = yield call(resetPasswordByEmail, payload);
+
+      // 是否跳转 跳转地址
+      if (response.status == 'ok' && payload.redirect) {
+        router.push(payload.redirect);
+      };
+
+      // 提示信息
+      if (response.message) {
+        message.success(response.message);
+      }
     },
     *bandingCheck({ payload }, { call, put }) {
       const response = yield call(bandingCheck, payload);
@@ -73,7 +149,9 @@ export default {
       };
 
       // 提示信息
-      message.success(response.message);
+      if (response.message) {
+        message.success(response.message);
+      }
     },
     *bindPhone({ payload }, { call, put }) {
       const response = yield call(bindPhone, payload);
@@ -84,18 +162,27 @@ export default {
       };
 
       // 提示信息
-      message.success(response.message);
+      if (response.message) {
+        message.success(response.message);
+      }
     },
     *getEmailVerifyCode({ payload }, { call, put }) {
       const response = yield call(getEmailVerifyCode, payload);
 
       // 是否跳转 跳转地址
       if (response.status == 'ok' && payload.redirect) {
-        router.push(payload.redirect);
+        router.push({
+          pathname: payload.redirect,
+          state: {
+            email: payload.email,
+          },
+        });
       };
 
       // 提示信息
-      message.success(response.message);
+      if (response.message){
+        message.success(response.message);
+      }
     },
     *bindEmail({ payload }, { call, put }) {
       const response = yield call(bindEmail, payload);
@@ -106,7 +193,9 @@ export default {
       };
 
       // 提示信息
-      message.success(response.message);
+      if (response.message) {
+        message.success(response.message);
+      }
     },
   },
 
@@ -137,6 +226,15 @@ export default {
           ...state.currentUser,
           notifyCount: action.payload,
         },
+      };
+    },
+    changeLoginStatus(state, { payload }) {
+      setAuthority(payload.currentAuthority);
+      return {
+        ...state,
+        status: payload.status,
+        message: payload.message,
+        type: payload.type || 'account',
       };
     },
   },

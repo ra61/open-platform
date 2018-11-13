@@ -14,57 +14,128 @@ const formItemLayout = {
   },
 };
 
-@connect(({ form, loading }) => ({
-  submitting: loading.effects['form/submitStepForm'],
-  data: form.step,
+@connect(({ user, loading }) => ({
+  submitting: loading.effects['user/resetPasswordByEmail'],
+  user
 }))
 @Form.create()
 class Step2 extends React.PureComponent {
+
+  state = {
+    confirmDirty: false,
+    visible: false,
+    help: ''
+  };
+
+  checkConfirm = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue('password_new')) {
+      callback('两次输入的密码不匹配!');
+    } else {
+      callback();
+    }
+  };
+
+
+  checkPassword = (rule, value, callback) => {
+    const { visible, confirmDirty } = this.state;
+    if (!value) {
+      this.setState({
+        help: '请输入密码！',
+        visible: !!value,
+      });
+      callback('请输入新密码');
+    } else {
+      this.setState({
+        help: '',
+      });
+      if (!visible) {
+        this.setState({
+          visible: !!value,
+        });
+      }
+      if (value.length < 6) {
+        callback('至少6位密码');
+      } else {
+        const { form } = this.props;
+        if (value && confirmDirty) {
+          form.validateFields(['password_confirm'], { force: true });
+        }
+        callback();
+      }
+    }
+  };
+
   render() {
-    const { form, data, dispatch, submitting } = this.props;
+    const { form, location, dispatch, submitting } = this.props;
     const { getFieldDecorator, validateFields } = form;
+    const { state: { email } } = location;
+
     const onPrev = () => {
-      router.push('/user/back-phone');
+      router.push('/user/back-email');
     };
 
     const onValidateForm = () => {
       validateFields((err, values) => {
         if (!err) {
           dispatch({
-            type: 'form/saveStepFormData',
-            payload: values,
+            type: 'user/resetPasswordByEmail',
+            payload: {
+              ...values,
+              email: email,
+              redirect: '/user/back-email/result'
+            },
           });
-          router.push('/user/back-phone/result');
         }
       });
     };
 
+
+
     return (
       <Form layout="horizontal" className={styles.stepForm}>
         <Form.Item {...formItemLayout} label="输入验证码">
-          {getFieldDecorator('receiverName')(
-            <Fragment>
-              <Input style={{ width: 200 }} placeholder="请输入验证码" />
-              {/* <Button style={{ marginLeft: 20 }} type="primary" onClick={onValidateForm}>
-                获取验证码
-              </Button> */}
-            </Fragment>
+          {getFieldDecorator('captcha', {
+            rules: [
+              {
+                required: true,
+                message: '请输入验证码！',
+              },
+            ],
+          })(
+            <Input style={{ width: 200 }} placeholder="请输入验证码" />
           )}
         </Form.Item>
 
         <Form.Item {...formItemLayout} label="新密码">
-          {getFieldDecorator('new_password')(
-            <Fragment>
-              <Input style={{ width: 200 }} placeholder="请输入新密码" />
-            </Fragment>
+          {getFieldDecorator('password_new', {
+            rules: [
+              {
+                required: true,
+                message: '请输入新密码！'
+              },
+              {
+                validator: this.checkPassword,
+              },
+            ],
+          })(
+            <Input style={{ width: 200 }} placeholder="至少6位密码，区分大小写" />
           )}
         </Form.Item>
 
         <Form.Item {...formItemLayout} label="确认密码">
-          {getFieldDecorator('confirm_password')(
-            <Fragment>
-              <Input style={{ width: 200 }} placeholder="请输入确认密码" />
-            </Fragment>
+          {getFieldDecorator('password_confirm', {
+            rules: [
+              {
+                required: true,
+                message: '请确认密码！',
+              },
+              {
+                validator: this.checkConfirm,
+              },
+            ],
+          })(
+            <Input style={{ width: 200 }} placeholder="请确认密码" />
           )}
         </Form.Item>
 
