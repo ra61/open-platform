@@ -49,6 +49,7 @@ function getComponent(userData) {
       type: "map",
       callback: function (obj) {
         obj.trend = obj.value;
+        obj.percent = obj.percent;
         return obj;
       }
     });
@@ -100,7 +101,6 @@ function getComponent(userData) {
         <Chart
           height={this.state.height}
           width={this.state.width}
-          data
           scale={this.state.cols}
           padding={[0, 0, 0, 80]}
         >
@@ -126,7 +126,10 @@ function getComponent(userData) {
               },
               trend: {
                 alias: "用户"
-              }
+              },
+              percent: {
+                alias: "占比"
+              },
             }}
           >
             <Geom
@@ -138,7 +141,7 @@ function getComponent(userData) {
                 }
               }}
               opacity="value"
-              tooltip="name*trend"
+              tooltip="name*trend*percent"
               color={["trend", ["#C45A5A", "#14647D"]]}
               size={0}
             >
@@ -170,96 +173,10 @@ function getComponent(userData) {
 
 class Bubblemap extends React.Component {
 
-  userData = [
-    {
-      name: "青海",
-      value: 86.8
-    },
-    {
-      name: "广西",
-      value: 106.3
-    },
-    {
-      name: "贵州",
-      value: 94.7
-    },
-    {
-      name: "重庆",
-      value: 98
-    },
-    {
-      name: "北京",
-      value: 98.4
-    },
-    {
-      name: "福建",
-      value: 97.2
-    },
-    {
-      name: "安徽",
-      value: 98.3
-    },
-    {
-      name: "广东",
-      value: 96.7
-    },
-    {
-      name: "西藏",
-      value: 95.8
-    },
-    {
-      name: "新疆",
-      value: 101.3
-    },
-    {
-      name: "海南",
-      value: 94.8
-    },
-    {
-      name: "宁夏",
-      value: 96.6
-    },
-    {
-      name: "陕西",
-      value: 86.3
-    },
-    {
-      name: "山西",
-      value: 102.1
-    },
-    {
-      name: "湖北",
-      value: 101.3
-    },
-    {
-      name: "湖南",
-      value: 107.6
-    },
-    {
-      name: "四川",
-      value: 99.9
-    },
-    {
-      name: "云南",
-      value: 130.1
-    },
-    {
-      name: "河北",
-      value: 106.5
-    },
-    {
-      name: "河南",
-      value: 93.4
-    },
-    {
-      name: "辽宁",
-      value: 101.4
-    }
-  ];
-
-
   render() {
-    const App = getComponent(this.userData);
+
+    const { userData } = this.props;
+    const App = getComponent(userData);
     return (
       <div>
         <App />

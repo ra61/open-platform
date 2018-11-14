@@ -157,8 +157,12 @@ export async function getAbilityStatistic() {
 
 // 预警
 export async function getAppWarning() {
-  let result = request('/api2/dev/statistics/getAppWarningInfo');
-  return result;
+  return request('/api2/dev/statistics/getAppWarningInfo');
+}
+
+// 终端分布
+export async function getTerminalDistribute() {
+  return request('/api2/dev/statistics/getTerminalDistribute');
 }
 
 
@@ -191,6 +195,7 @@ export async function queryAppBasicInfo(params) {
 
 // 更新应用基本信息
 export async function updateAppBasicInfo(params) {
+
   let body = new FormData();
   body.append('appId', params.appId);
   body.append('appname', params.appname);
@@ -310,6 +315,18 @@ export async function getCapkeyList(params) {
   let body = new FormData();
   body.append('appKey', params.appKey);
   return request('/api2/dev/application/getCapkeyList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 更新能力列表
+export async function updateCapkeyList(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  body.append('ability', params.ability);
+  return request('/api2/dev/application/updateCapkeyList', {
     method: 'POST',
     body: body,
     expirys: false

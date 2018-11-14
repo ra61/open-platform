@@ -1,4 +1,4 @@
-import { getAppRanking, getAppWarning, getDailyStatistic, getAbilityStatistic, queryNoticeData } from '@/services/api';
+import { getAppRanking, getAppWarning, getDailyStatistic, getAbilityStatistic, queryNoticeData, getTerminalDistribute } from '@/services/api';
 
 export default {
     namespace: 'panel',
@@ -11,6 +11,7 @@ export default {
         noticeData: [],
         rankingListData: [],
         rankingData: [],
+        terminalDistribute:[],
         apps:{}
     },
 
@@ -50,6 +51,17 @@ export default {
                 type: 'show',
                 payload: response,
             });
+        },
+        *fetchTerminalDistribute(_, { call, put }) {
+            const response = yield call(getTerminalDistribute);
+
+            yield put({
+                type: 'show',
+                payload: {
+                    terminalDistribute: response.data
+                }
+            });
+            
         }
     },
 

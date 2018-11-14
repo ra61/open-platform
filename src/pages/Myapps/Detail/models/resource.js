@@ -22,7 +22,6 @@ export default {
         },
         *fetchResourceList({ payload }, { call, put }) {
             const response = yield call(getResourceList, payload);
-
             yield put({
                 type: 'show',
                 payload: {
@@ -32,7 +31,6 @@ export default {
         },
         *fetchGrammarFile({ payload }, { call, put }) {
             const response = yield call(getGrammarFile, payload);
-
             yield put({
                 type: 'show',
                 payload: response

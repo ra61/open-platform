@@ -15,6 +15,7 @@ import {
 } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import ButtonChecbox from '@/components/ButtonChecbox';
+import { removeFromArray, addToArray } from '@/utils/common';
 
 import styles from './ModifyAbility.less';
 import { width } from 'window-size';
@@ -88,6 +89,8 @@ class ModifyAbility extends Component {
             key: this.props.location.query.appKey,
         }
 
+        
+
         this.state = {
             modalVisible: false,
             updateModalVisible: false,
@@ -97,8 +100,6 @@ class ModifyAbility extends Component {
             loading: false,
         };
     }
-
-    
 
     componentDidMount() {
         const { dispatch } = this.props;
@@ -111,55 +112,6 @@ class ModifyAbility extends Component {
     }
 
     allKeys = []
-
-    // start = () => {
-    //     this.setState({ loading: true });
-    //     // ajax request after empty completing
-    //     setTimeout(() => {
-    //         this.setState({
-    //             selectedRowKeys: [],
-    //             loading: false,
-    //         });
-    //     }, 1000);
-    // }
-
-    sourceColumns = [
-        {
-            title: '能力（capkey）',
-            dataIndex: 'title',
-        },
-        {
-            title: '说明',
-            dataIndex: 'comment',
-        },
-        {
-            title: '体验',
-            render: (text, record) => (
-                <Fragment>
-                    
-                    {
-                        record.experience ? <a href={record.experience}>体验</a> : ''
-                    }
-
-                    {
-                        record.audition ? <a href={record.audition}>试听</a> : ''
-                    }
-                    
-                    {/* <a onClick={() => this.handleModalVisible(true, record)}>NLU</a>  */}
-                </Fragment>
-            ),
-        },
-        {
-            title: '操作',
-            render: (text, record, dataIndex) => (
-                <Fragment>
-                    {/* <Checkbox checked={this.checkedSelect.call(this.state.selectedRowKeys, record.key)} onChange={(e) => this.onSelectChange(e, record)}>{record.children ? (<span>全选</span>) : (<span>选中</span>)}</Checkbox> */}
-                    <Checkbox checked={this.checkedSelect.call(this.state.selectedRowKeys, record.key)} onChange={(e) => this.onSelectChange(e, record)}>{record.children ? (<span>全选</span>) : (<span>选中</span>)}</Checkbox>
-                </Fragment>
-            ),
-        },
-    ];
-
 
     handleAdd = fields => {
         const { dispatch } = this.props;
@@ -181,150 +133,6 @@ class ModifyAbility extends Component {
         });
 
     };
-
-    // 选中的key
-    selectedRowKeys = [];
-
-    // 将key从已选择数组移除
-    remove = function (val) {
-        var index = this.indexOf(val);
-        if (index > -1) {
-            this.splice(index, 1);
-        }
-    };
-
-    // 全选
-    allSelect = function (record) {
-        if (record.children && record.children.length > 0) {
-            for (let i = 0; i < record.children.length; i++) {
-                if (this.selectedRowKeys.indexOf(record.children[i].key) < 0){
-                    this.selectedRowKeys.push(record.children[i].key);
-                }
-                
-                this.allSelect(record.children[i]);
-            }
-        }
-
-        
-    }
-
-    // 检测全选
-    checkAllSelect = function (record){
-        // 父级
-        if (record.brother && record.brother.length > 0) {
-            let couter = 0;
-            for (let i = 0; i < record.brother.length; i++){
-                if (this.selectedRowKeys.indexOf(record.brother[i]) > -1){
-                    couter = couter + 1;
-                }
-            }
-            if (couter == record.brother.length && this.selectedRowKeys.indexOf(record.parent) < 0){
-                this.selectedRowKeys.push(record.parent);
-            }
-        }
-
-        // 祖级
-        if (record.parentBrother && record.parentBrother.length > 0) {
-            let couter = 0;
-            for (let i = 0; i < record.parentBrother.length; i++) {
-                if (this.selectedRowKeys.indexOf(record.parentBrother[i]) > -1) {
-                    couter = couter + 1;
-                }
-            }
-            if (couter == record.parentBrother.length && this.selectedRowKeys.indexOf(record.grandparent) < 0) {
-                this.selectedRowKeys.push(record.grandparent);
-            }
-        }
-    }
-
-    // 取消子选项
-    removeAllChildren = function (record) {
-        if (record.children && record.children.length > 0) {
-            for (let i = 0; i < record.children.length; i++) {
-                this.remove.call(this.selectedRowKeys, record.children[i].key)
-                this.removeAllChildren(record.children[i]);
-            }
-        }
-    }
-
-    // 取消全选
-    removeAllParents = function (record) {
-        if (record.parents && record.parents.length > 0) {
-            for(let i = 0;i < record.parents.length; i++){
-                this.remove.call(this.selectedRowKeys, record.parents[i])
-            }
-        }
-    }
-
-    // 触发事件
-    onSelectChange = (e, record) => {
-        if (e.target.checked){
-            record.checked = true;
-            if (this.selectedRowKeys.indexOf(record.key) < 0){
-                this.selectedRowKeys.push(record.key);
-            }
-            this.allSelect(record);
-            this.checkAllSelect(record);
-        } else {
-            record.checked = false;
-            this.remove.call(this.selectedRowKeys, record.key)
-            this.removeAllChildren(record);
-            this.removeAllParents(record);
-        }
-
-        // 更新状态
-        this.setState({ selectedRowKeys: this.selectedRowKeys });
-
-    }
-
-    // 检测是否选择
-    checkedSelect = function (record) {
-        let checked;
-        var index = this.indexOf(record);
-        if (index > -1) {
-            checked = true;
-        } else {
-            checked = false;
-        }
-
-        return checked;
-    }
-
-    // 数据预处理
-    init = function (array, brother, parent) {
-        for (let i = 0; i < array.length; i++) {
-
-            if (brother && parent){
-                array[i].parentBrother = brother;
-                array[i].grandparent = parent;
-            }
-            
-
-            if (array[i].children && array[i].children.length > 0) {
-
-                let brotherKeys = [];
-                for (let m = 0; m < array[i].children.length; m++) {
-                    brotherKeys.push(array[i].children[m].key)
-                }
-
-                for (let j = 0; j < array[i].children.length; j++ ){
-                    array[i].children[j].parents = [];
-                    array[i].children[j].parents.push(array[i].key);
-
-                    array[i].children[j].parent = array[i].key;
-
-                    array[i].children[j].brother = brotherKeys;
-
-                    if (array[i].parents && array[i].parents.length > 0){
-                        for (let k = 0; k < array[i].parents.length; k++){
-                            array[i].children[j].parents.push(array[i].parents[k]);
-                        }
-                    }
-                }
-                this.init(array[i].children, array[i].brother, array[i].parent);
-            }
-        }
-    }
 
     // 获取所有key
     getKeys = function (array, allKeys) {
@@ -359,10 +167,9 @@ class ModifyAbility extends Component {
         if(expanded){  
             expandedRows.push(record.key);        
         }else{
-            this.remove.call(expandedRows, record.key)
+            removeFromArray.call(expandedRows, record.key)
 
         }
-        console.log(expandedRows)
         this.setState({ expandedRows});
 
     }
@@ -373,7 +180,7 @@ class ModifyAbility extends Component {
         if (nlus.indexOf(value) < 0) {
             nlus.push(value);
         } else {
-            this.remove.call(nlus, value)
+            removeFromArray.call(nlus, value)
         }
 
         this.setState({
@@ -384,10 +191,213 @@ class ModifyAbility extends Component {
 
     render() {
         const { ability, loading } = this.props;
-        const { modalVisible, nlus } = this.state;
-        const { capkeyList } = ability;
+        const { capkeyList, selectedAbilityID } = ability;
+        const { modalVisible, nlus, expandedRows, selectedRowKeys } = this.state;
 
-        this.init(capkeyList)
+        // 数据预处理
+        const init = function (array, brother, parent) {
+            for (let i = 0; i < array.length; i++) {
+
+                if (brother && parent) {
+                    array[i].parentBrother = brother;
+                    array[i].grandparent = parent;
+                }
+
+
+                if (array[i].children && array[i].children.length > 0) {
+
+                    let brotherKeys = [];
+                    let count = 0;
+                    for (let m = 0; m < array[i].children.length; m++) {
+                        brotherKeys.push(array[i].children[m].key);
+
+                        if (array[i].children[m].id && selectedAbilityID.indexOf(array[i].children[m].id) > -1){
+                            addToArray.call(selectedRowKeys, array[i].children[m].key);
+                            count++;
+                            if (count == array[i].children.length){
+                                addToArray.call(selectedRowKeys, array[i].key);
+                            }
+                        }
+                    }
+
+                    for (let j = 0; j < array[i].children.length; j++) {
+                        array[i].children[j].parents = [];
+                        addToArray.call(array[i].children[j].parents, array[i].key)
+
+                        array[i].children[j].parent = array[i].key;
+
+                        array[i].children[j].brother = brotherKeys;
+
+                        if (array[i].parents && array[i].parents.length > 0) {
+                            for (let k = 0; k < array[i].parents.length; k++) {
+                                addToArray.call(array[i].children[j].parents, array[i].parents[k])
+                            }
+                        }
+
+                        let count2 = 0;
+                        for (let k = 0; k < array[i].children[j].brother.length; k++){
+                            if (selectedRowKeys.indexOf(array[i].children[j].brother[k]) > -1){
+                                count2++;
+                                if (count2 == array[i].children[j].brother.length){
+                                    addToArray.call(selectedRowKeys, array[i].children[j].parent);
+                                }
+                            }
+                        }
+                    }
+
+                    init(array[i].children, array[i].brother, array[i].parent);
+                }
+            }
+        }
+
+        // 全选
+        const allSelect = function (record) {
+            if (record.children && record.children.length > 0) {
+                for (let i = 0; i < record.children.length; i++) {
+                    addToArray.call(selectedRowKeys, record.children[i].key);
+                    record.children[i].id && addToArray.call(selectedAbilityID, record.children[i].id);
+                    allSelect(record.children[i]);
+                }
+            }
+        }
+
+        // 检测全选
+        const checkAllSelect = function (record) {
+            // 父级
+            if (record.brother && record.brother.length > 0) {
+                let couter = 0;
+                for (let i = 0; i < record.brother.length; i++) {
+                    if (selectedRowKeys.indexOf(record.brother[i]) > -1) {
+                        couter = couter + 1;
+                    }
+                }
+                if (couter == record.brother.length) {
+                    addToArray.call(selectedRowKeys, record.parent);
+                }
+            }
+
+            // 祖级
+            if (record.parentBrother && record.parentBrother.length > 0) {
+                let couter = 0;
+                for (let i = 0; i < record.parentBrother.length; i++) {
+                    if (selectedRowKeys.indexOf(record.parentBrother[i]) > -1) {
+                        couter = couter + 1;
+                    }
+                }
+                if (couter == record.parentBrother.length) {
+                    addToArray.call(selectedRowKeys, record.grandparent);
+                }
+            }
+        }
+
+        // 取消子选项
+        const removeAllChildren = function (record) {
+            if (record.children && record.children.length > 0) {
+                for (let i = 0; i < record.children.length; i++) {
+                    removeFromArray.call(selectedRowKeys, record.children[i].key)
+                    record.children[i].id && removeFromArray.call(selectedAbilityID, record.children[i].id);
+                    removeAllChildren(record.children[i]);
+                }
+            }
+        }
+
+        // 取消全选
+        const removeAllParents = function (record) {
+            if (record.parents && record.parents.length > 0) {
+                for (let i = 0; i < record.parents.length; i++) {
+                    removeFromArray.call(selectedRowKeys, record.parents[i])
+                }
+            }
+        }
+
+        // 触发事件
+        const onSelectChange = (e, record) => {
+            if (e.target.checked) {
+                record.checked = true;
+                addToArray.call(selectedRowKeys, record.key);
+                allSelect(record);
+                checkAllSelect(record);
+
+                record.id && addToArray.call(selectedAbilityID, record.id);
+
+            } else {
+                record.checked = false;
+                removeFromArray.call(selectedRowKeys, record.key)
+                removeAllChildren(record);
+                removeAllParents(record);
+
+                record.id && removeFromArray.call(selectedAbilityID, record.id);
+            }
+
+            // 更新状态
+            this.setState({ selectedRowKeys: selectedRowKeys });
+        }
+
+        // 检测是否选择
+        const checkedSelect = function (record) {
+            let checked;
+            var index = this.indexOf(record);
+            if (index > -1) {
+                checked = true;
+            } else {
+                checked = false;
+            }
+
+            return checked;
+        }
+
+        // 
+        const updateAbility = (selectedAbilityID) => {
+            const { dispatch } = this.props;
+            dispatch({
+                type:'ability/updateCapkeyList',
+                payload: {
+                    appKey: this.params.key,
+                    ability: selectedAbilityID
+                }
+            })
+
+            
+        }
+
+        const sourceColumns = [
+            {
+                title: '能力（capkey）',
+                dataIndex: 'title',
+            },
+            {
+                title: '说明',
+                dataIndex: 'comment',
+            },
+            {
+                title: '体验',
+                render: (text, record) => (
+                    <Fragment>
+
+                        {
+                            record.experience ? <a href={record.experience}>体验</a> : ''
+                        }
+
+                        {
+                            record.audition ? <a href={record.audition}>试听</a> : ''
+                        }
+
+                        {/* <a onClick={() => this.handleModalVisible(true, record)}>NLU</a>  */}
+                    </Fragment>
+                ),
+            },
+            {
+                title: '操作',
+                render: (text, record, dataIndex) => (
+                    <Fragment>
+                        <Checkbox checked={checkedSelect.call(selectedRowKeys, record.key)} onChange={(e) => onSelectChange(e, record)}>{record.children ? (<span>全选</span>) : (<span>选中</span>)}</Checkbox>
+                    </Fragment>
+                ),
+            },
+        ];
+
+
+        init(capkeyList);
 
         const parentMethods = {
             handleAdd: this.handleAdd,
@@ -409,15 +419,21 @@ class ModifyAbility extends Component {
                         pagination={false}
                         loading={loading}
                         dataSource={capkeyList}
-                        columns={this.sourceColumns}
-                        expandedRowKeys={this.state.expandedRows}
+                        columns={sourceColumns}
+                        expandedRowKeys={expandedRows}
                         onExpand={this.handleOnExpand.bind(this)}
                     />
 
-                    <div style={{ marginTop: 15 }}>
-                        <Button type="primary" onClick={() => this.allExpand(capkeyList)}><Icon type="down-circle" />展开</Button>
-                        <Button type="primary" onClick={this.allContract} style={{ marginLeft: 20 }}><Icon type="up-circle" />收缩</Button>
+                    <div className={styles.buttonGroup}>
+                        <div style={{ marginTop: 15 }}>
+                            <Button type="primary" onClick={() => this.allExpand(capkeyList)}><Icon type="down-circle" />展开</Button>
+                            <Button type="primary" onClick={this.allContract} style={{ marginLeft: 20 }}><Icon type="up-circle" />收缩</Button>
+                        </div>
+                        <div>
+                            <Button type="primary" onClick={() => updateAbility(selectedAbilityID)}>保存</Button>
+                        </div>
                     </div>
+                    
                 </Card>
                 
                 <CreateForm {...parentMethods} modalVisible={modalVisible} nlus={nlus} changeSetting={this.changeSetting} />

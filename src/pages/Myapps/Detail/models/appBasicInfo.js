@@ -24,11 +24,20 @@ export default {
     },
     *submitForm({ payload }, { call, put }) {
       const response = yield call(updateAppBasicInfo, payload);
+      
       yield put({
         type: 'show',
         payload: response,
       });
-      message.success('提交成功');
+
+      if (response.status == 'error'){
+        message.error(response.message);
+      }
+
+      if (response.status == 'ok') {
+        message.success(response.message);
+      }
+      
     },
   },
 

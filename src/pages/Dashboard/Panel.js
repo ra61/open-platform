@@ -57,6 +57,11 @@ class Panel extends Component {
       dispatch({
         type: 'panel/fetchNotice',
       });
+
+      // 终端分布
+      dispatch({
+        type: 'panel/fetchTerminalDistribute',
+      });
       
       
       this.timeoutId = setTimeout(() => {
@@ -81,8 +86,11 @@ class Panel extends Component {
       noticeData,
       rankingListData,
       apps,
-      rankingData
+      rankingData,
+      terminalDistribute
     } = panel;
+
+    console.log(terminalDistribute);
 
 
     const loading = propsLoding || stateLoading;
@@ -173,9 +181,9 @@ class Panel extends Component {
               <ul className={styles.notice}>
                 {noticeData.map((item, index) => (
                   <li key={item.key}>
-                    <span className={styles.noticeItemTitle}>
+                    {/* <span className={styles.noticeItemTitle}>
                       【{item.type}】
-                    </span>
+                    </span> */}
                     <span className={styles.noticeItemValue}>
                       {item.title}
                     </span>
@@ -199,7 +207,7 @@ class Panel extends Component {
                 />
               }
             >
-              <Bubblemap></Bubblemap>
+              <Bubblemap userData={terminalDistribute}></Bubblemap>
             </Card>
           </Col>
 

@@ -31,6 +31,12 @@ class Terminal extends Component {
             id: this.props.location.query.id,
             key: this.props.location.query.appKey
         }
+
+        this.state = {
+            appKeyFlag: false,
+            devKeyFlag: false,
+            cloudUrlFlag: false
+        }
     }
 
     componentDidMount() {
@@ -59,7 +65,54 @@ class Terminal extends Component {
 
     render() {
         const { terminal, loading } = this.props;
+        const { appKeyFlag, devKeyFlag, cloudUrlFlag } = this.state;
         const { authpriv } = terminal;
+
+        const mouseOver = (flag) => {
+            switch (flag) {
+                case 'appKeyFlag':
+                    this.setState({
+                        appKeyFlag: true,
+                    });
+                    break;
+                case 'devKeyFlag':
+                    this.setState({
+                        devKeyFlag: true,
+                    });
+                    break;
+                case 'cloudUrlFlag':
+                    this.setState({
+                        cloudUrlFlag: true,
+                    });
+                    break;
+                default:
+                    break;
+            }
+
+
+        }
+
+        const mouseOut = (flag) => {
+            switch (flag) {
+                case 'appKeyFlag':
+                    this.setState({
+                        appKeyFlag: false,
+                    });
+                    break;
+                case 'devKeyFlag':
+                    this.setState({
+                        devKeyFlag: false,
+                    });
+                    break;
+                case 'cloudUrlFlag':
+                    this.setState({
+                        cloudUrlFlag: false,
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
         
         return (
             <GridContent>
@@ -70,9 +123,12 @@ class Terminal extends Component {
                     bordered={false}
                     bodyStyle={{ padding: 0 }}
                     style={{ marginTop: 24 }}
-                    title={<FormattedMessage
-                        id="myapps.detail.situation.info"
-                        defaultMessage="App Ranking" />}
+                    title={
+                        <FormattedMessage
+                            id="myapps.detail.situation.info"
+                            defaultMessage="App Ranking" 
+                        />
+                    }
                 >
                     <div>
                         <Row style={{ marginTop: 24 }}>
@@ -81,28 +137,44 @@ class Terminal extends Component {
                                     <ul className={styles.authInfo}>
                                         <li>
                                             <Description term="appKey" >
-                                                <span>{authpriv.appKey}
-                                                    <CopyToClipboard
-                                                        text={authpriv.appKey}
-                                                        onCopy={() => this.setState({ copied: true })}
-                                                        className={styles.copyToClipboard}
-                                                    >
-                                                        <span>复制</span>
-                                                    </CopyToClipboard>
+                                                <span 
+                                                    onMouseEnter={() => { mouseOver('appKeyFlag') }}
+                                                    onMouseLeave={() => { mouseOut('appKeyFlag') }}
+                                                >
+                                                    {authpriv.appKey}
+                                                    {
+                                                        appKeyFlag && 
+                                                        <CopyToClipboard
+                                                            text={authpriv.appKey}
+                                                            onCopy={() => this.setState({ copied: true })}
+                                                            className={styles.copyToClipboard}
+                                                        >
+                                                            <span>复制</span>
+                                                        </CopyToClipboard>
+                                                    }
+                                                    
                                                 </span>
                                             </Description>
 
                                         </li>
                                         <li>
                                             <Description term="devKey" >
-                                                <span>{authpriv.devKey}
-                                                    <CopyToClipboard
-                                                        text={authpriv.devKey}
-                                                        onCopy={() => this.setState({ copied: true })}
-                                                        className={styles.copyToClipboard}
-                                                    >
-                                                        <span>复制</span>
-                                                    </CopyToClipboard>
+                                                <span
+                                                    onMouseEnter={() => { mouseOver('devKeyFlag') }}
+                                                    onMouseLeave={() => { mouseOut('devKeyFlag') }}
+                                                >
+                                                    {authpriv.devKey}
+                                                    {
+                                                        devKeyFlag &&
+                                                            <CopyToClipboard
+                                                                text={authpriv.devKey}
+                                                                onCopy={() => this.setState({ copied: true })}
+                                                                className={styles.copyToClipboard}
+                                                            >
+                                                                <span>复制</span>
+                                                            </CopyToClipboard>
+                                                    }
+                                                    
                                                 </span>
                                             </Description>
                                         </li>
@@ -116,14 +188,22 @@ class Terminal extends Component {
                                     <ul className={styles.authInfo}>
                                         <li>
                                             <Description term="调用地址" >
-                                                <span>{authpriv.cloudUrl}
-                                                    <CopyToClipboard
-                                                        text={authpriv.cloudUrl}
-                                                        onCopy={() => this.setState({ copied: true })}
-                                                        className={styles.copyToClipboard}
-                                                    >
-                                                        <span>复制</span>
-                                                    </CopyToClipboard>
+                                                <span
+                                                    onMouseEnter={() => { mouseOver('cloudUrlFlag') }}
+                                                    onMouseLeave={() => { mouseOut('cloudUrlFlag') }}
+                                                >
+                                                    {authpriv.cloudUrl}
+                                                    {
+                                                        cloudUrlFlag &&
+                                                            <CopyToClipboard
+                                                                text={authpriv.cloudUrl}
+                                                                onCopy={() => this.setState({ copied: true })}
+                                                                className={styles.copyToClipboard}
+                                                            >
+                                                                <span>复制</span>
+                                                            </CopyToClipboard>
+                                                    }
+                                                    
                                                 </span>
                                                 <span>
                                                     <Tooltip
@@ -162,9 +242,10 @@ class Terminal extends Component {
                     bordered={false}
                     bodyStyle={{ padding: 0 }}
                     style={{ marginTop: 24 }}
-                    title={<FormattedMessage
-                        id="myapps.detail.situation.info"
-                        defaultMessage="App Ranking" />}
+                    title={
+
+                        authpriv.appStatus < 7 ? '测试授权' : '正式商用'
+                    }
                 >
                     <div>
                         <Row style={{ marginTop: 24 }}>
