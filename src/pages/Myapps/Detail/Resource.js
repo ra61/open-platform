@@ -1,60 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Select, Tooltip, Icon, Button, Upload, Divider, Form  } from 'antd';
+import { Card, Table, Select, Tooltip, Icon, Button, Upload, Divider, Form, message } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import { removeFromArray } from '@/utils/common';
 import styles from './Resource.less';
 
 const { Option } = Select;
-
-const sourceColumns = [
-    {
-        title: '能力(capkey)',
-        dataIndex: 'title',
-    },
-    {
-        title: '说明',
-        dataIndex: 'comment',
-    },
-    {
-        title: '下载',
-        render: (text, record) => (
-            <Fragment>
-                <a onClick={() => this.handleUpdateModalVisible(true, record)}>下载</a>
-                <Divider type="vertical" />
-                <a onClick={() => this.handleUpdateModalVisible(true, record)}>打包下载</a>
-            </Fragment>
-        ),
-    },
-];
-
-const grammarColumns = [
-    {
-        title: 'grammarid',
-        dataIndex: 'grammarid',
-    },
-    {
-        title: '文件名',
-        dataIndex: 'fileName',
-    },
-    {
-        title: '类型',
-        dataIndex: 'type',
-    },
-    {
-        title: '操作',
-        render: (text, record) => (
-            <Fragment>
-                <a onClick={() => this.handleUpdateModalVisible(true, record)}>下载</a>
-                <Divider type="vertical" />
-                <a onClick={() => this.handleUpdateModalVisible(true, record)}>删除</a>
-            </Fragment>
-        ),
-    },
-];
-
-
 
 @connect(({ resource, loading }) => ({
     resource,
@@ -147,6 +99,7 @@ class Resource extends Component {
 
     }
 
+    // 切换版本
     handleChange = (value) => {
         const { dispatch } = this.props;
         
@@ -159,14 +112,89 @@ class Resource extends Component {
         });
     }
 
+    // 切换页码
+    handleListChange = (pageIndex, pageSize) => {
+        let params = {
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+        };
+
+        this.setState({ pageIndex: pageIndex, pageSize: pageSize });
+
+        this.props.dispatch({
+            type: 'resource/fetchGrammarFile',
+            payload: params,
+        });
+    };
+
     render() {
         const { resource, loading } = this.props;
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
 
-        const { pageSize } = this.state;
+        const { pageIndex, pageSize } = this.state;
         const { versionList, resourceList, grammarFile, totalCount } = resource;
+
+        const sourceColumns = [
+            {
+                title: '能力(capkey)',
+                dataIndex: 'title',
+            },
+            {
+                title: '说明',
+                dataIndex: 'comment',
+            },
+            {
+                title: '下载',
+                render: (text, record) => (
+                    <Fragment>
+                        {
+                            record.file_url && <a href={record.file_url}>下载</a>
+                        }
+                    </Fragment>
+                ),
+            },
+        ];
+
+        const grammarColumns = [
+            {
+                title: 'grammarId',
+                dataIndex: 'grammarId',
+            },
+            {
+                title: '文件名',
+                dataIndex: 'fileName',
+            },
+            {
+                title: '类型',
+                dataIndex: 'type',
+            },
+            {
+                title: '操作',
+                render: (text, record) => (
+                    <Fragment>
+                        <a href={'/api2' + record.url}>下载</a>
+                        <Divider type="vertical" />
+                        <a onClick={() => deleteGrammarFile(record)}>删除</a>
+                    </Fragment>
+                ),
+            },
+        ];
+
+        const deleteGrammarFile = (record) => {
+            const { dispatch } = this.props;
+
+            dispatch({
+                type: 'resource/deleteGrammarFile',
+                payload: {
+                    grammarId: record.grammarId,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    totalCount: totalCount
+                }
+            })
+        }
 
         const extraContent = (
             <div className={styles.extraContent}>
@@ -192,8 +220,34 @@ class Resource extends Component {
             showSizeChanger: false,
             showQuickJumper: false,
             pageSize: pageSize,
+            current: pageIndex,
             total: totalCount,
+            onChange: (pageIndex, pageSize) => {
+                this.handleListChange(pageIndex, pageSize)
+            },
+            onShowSizeChange: (pageIndex, pageSize) => {
+                this.handleListChange(pageIndex, pageSize)
+            },
         };
+
+        const upload_grammar = {
+            name: 'file',
+            action: '/api2/dev/grammar/ajaxAddGrammar',
+            headers: {
+                authorization: 'authorization-text',
+            },
+            onChange:(info) => {
+                // if (info.file.status !== 'uploading') {
+                //     console.log(info.file, info.fileList);
+                // }
+                if (info.file.status === 'done') {
+                    message.success(`${info.file.name} 文件上传成功`);
+                    this.handleListChange(1, 5);
+                } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} 文件上传失败`);
+                }
+            },
+        }
         
         return (
             <GridContent>
@@ -251,7 +305,7 @@ class Resource extends Component {
                 bordered={false}>
                     <Fragment>
                         <span>上传语法文件：</span>
-                        <Upload fileList={[]}>
+                        <Upload {...upload_grammar}>
                             <div className={styles.button_view}>
                                 <Button icon="upload">
                                     <FormattedMessage id="myapps.detail.resource.upload" defaultMessage="Upload file" />
@@ -267,10 +321,10 @@ class Resource extends Component {
                                 <Icon type="question-circle" theme="outlined" style={{ marginLeft: 10 }} />
                             </Tooltip>
                         </div>
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: 100, marginTop:10, marginBottom:20 }}>提交上传</Button>
+                        {/* <Button type="primary" htmlType="submit" style={{ marginLeft: 100, marginTop:10, marginBottom:20 }}>提交上传</Button> */}
                     </Fragment>
                     <Table
-                        style={{ marginBottom: 16 }}
+                        style={{ marginBottom: 16, marginTop: 20 }}
                         pagination={paginationProps}
                         loading={loading}
                         dataSource={grammarFile}

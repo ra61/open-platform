@@ -90,9 +90,6 @@ class Panel extends Component {
       terminalDistribute
     } = panel;
 
-    console.log(terminalDistribute);
-
-
     const loading = propsLoding || stateLoading;
     const topColResponsiveProps = {
       xs: 24,

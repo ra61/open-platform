@@ -368,6 +368,19 @@ export async function getGrammarFile(params) {
   });
 }
 
+// 删除语法文件
+export async function deleteGrammarFile(params) {
+
+  let body = new FormData();
+  body.append('grammar_id', params.grammarId);
+  return request('/api2/dev/grammar/ajaxDeleteGrammar', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+  
+}
+
 
 
 // 创建应用
