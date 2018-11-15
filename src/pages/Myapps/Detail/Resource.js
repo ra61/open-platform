@@ -189,10 +189,32 @@ class Resource extends Component {
                 type: 'resource/deleteGrammarFile',
                 payload: {
                     grammarId: record.grammarId,
-                    pageIndex: pageIndex,
-                    pageSize: pageSize,
-                    totalCount: totalCount
+                },
+                callback: (response) => {
+
+                    // 删除成功
+                    if (response.status == 'ok'){
+
+                        let delete_totalCount = totalCount - 1;
+                        let delete_pageIndex = pageIndex;
+
+                        // 判断删除文件之后剩余的文件是否需要翻页显示
+                        if (delete_totalCount > 0 && delete_totalCount % pageSize == 0) {
+                            delete_pageIndex = pageIndex - 1;
+                        }
+
+                        // 重新查询语法文件数据
+                        this.handleListChange(delete_pageIndex, pageSize)
+
+                        message.success(response.message);
+                    }
+
+                    // 删除失败
+                    if (response.status == 'error'){
+                        message.error(response.message);
+                    }
                 }
+                
             })
         }
 
@@ -236,6 +258,7 @@ class Resource extends Component {
             headers: {
                 authorization: 'authorization-text',
             },
+            showUploadList: false,
             onChange:(info) => {
                 // if (info.file.status !== 'uploading') {
                 //     console.log(info.file, info.fileList);
@@ -260,7 +283,7 @@ class Resource extends Component {
                             defaultMessage="resource download" />
                         <Tooltip
                             title={
-                                <FormattedMessage id="myapps.detail.resource.download" defaultMessage="resource download" />
+                                <FormattedMessage id="help.sdk_res" defaultMessage="resource download" />
                             }
                         >
                             <Icon type="question-circle" theme="outlined" style={{marginLeft:10}} />
@@ -294,7 +317,7 @@ class Resource extends Component {
                             defaultMessage="grammar download" />
                         <Tooltip
                             title={
-                                <FormattedMessage id="myapps.detail.resource.download" defaultMessage="resource download" />
+                                <FormattedMessage id="help.grammar_res" defaultMessage="resource download" />
                             }
                         >
                             <Icon type="question-circle" theme="outlined" style={{ marginLeft: 10 }} />

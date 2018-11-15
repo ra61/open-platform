@@ -92,6 +92,11 @@ export default {
   'menu.notice': '通知公告',
   "menu.notice.list":"通知列表",
 
+  'help.appVersionList': '应用在商审通过之后修改能力会产生新的应用版本，每个应用版本都有唯一的appkey。',
+  'help.app_status': '应用授权分为测试授权和正式商用授权',
+  'help.sdk_res': 'SDK使用本地能力需要配合资源文件，不同的能力需要下载不同的资源文件。',
+  'help.grammar_res': '语法文件需配合语音识别的语法识别（asr.cloud.grammar）使用，语法识别能够识别语法文件中特定的词语。',
+
 
 
 

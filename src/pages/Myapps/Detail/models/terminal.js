@@ -1,11 +1,18 @@
-import { getAppInfoByAppkey, downloadUdidList } from '@/services/api';
+import { 
+    getAppInfoByAppkey, 
+    downloadUdidList, 
+    uploadIdentification, 
+    downloadAuthFile, 
+    generateActiveList,
+    downloadActiveList 
+} from '@/services/api';
 import { parse, stringify } from 'qs';
 
 export default {
     namespace: 'terminal',
 
     state: {
-        authpriv:{}
+        auth:{}
     },
 
     effects: {
@@ -14,7 +21,7 @@ export default {
             yield put({
                 type: 'show',
                 payload: {
-                    authpriv: response.data
+                    auth: response.data
                 }
             });
         },
@@ -25,7 +32,22 @@ export default {
                 payload: response
             });
         },
-        
+        *uploadIdentification({ payload, callback }, { call, put }) {
+            const response = yield call(uploadIdentification, payload);
+            callback && callback();
+        },
+        *downloadAuthFile({ payload, callback }, { call, put }) {
+            const response = yield call(downloadAuthFile, payload);
+            callback && callback();
+        },
+        *generateActiveList({ payload, callback }, { call, put }) {
+            const response = yield call(generateActiveList, payload);
+            callback && callback();
+        },
+        *downloadActiveList({ payload, callback }, { call, put }) {
+            const response = yield call(downloadActiveList, payload);
+            callback && callback();
+        },
 
     },
 

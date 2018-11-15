@@ -18,23 +18,23 @@ export default {
         payload: response,
       });
 
-      if (response.status == 'ok' && response.message){
-        message.success(response.message);
+      if (response.status == 'ok'){
+        response.message && message.success(response.message);
       }
 
-      if (response.status == 'error' && response.message) {
-        message.error(response.message);
+      if (response.status == 'error') {
+        response.message && message.error(response.message);
       }
     },
     *getVerifyCode({ payload }, { call }) {
       const response = yield call(getVerifyCode, payload);
       
-      if (response.status == 'ok' && response.message) {
-        message.success(response.message);
+      if (response.status == 'ok') {
+        response.message && message.success(response.message);
       }
 
-      if (response.status == 'error' && response.message) {
-        message.error(response.message);
+      if (response.status == 'error') {
+        response.message && message.error(response.message);
       }
     },
   },

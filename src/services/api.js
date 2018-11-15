@@ -310,6 +310,64 @@ export async function downloadUdidList(params) {
   });
 }
 
+// 上传授权文件
+export async function uploadIdentification(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('appKey', params.appKey);
+
+  params.authFileList.forEach((file) => {
+    body.append('files', file);
+  })
+
+  return request('/api2/dev/application/uploadIdentification', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 下载授权文件
+export async function downloadAuthFile(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+
+  return request('/api2/dev/application/downloadAuthFile', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 上传激活码
+export async function generateActiveList(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+  body.append('appKey', params.appKey);
+
+  params.activeList.forEach((file) => {
+    body.append('files', file);
+  })
+
+  return request('/api2/dev/application/generateActiveList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 下载激活码
+export async function downloadActiveList(params) {
+  let body = new FormData();
+  body.append('appId', params.appId);
+
+  return request('/api2/dev/application/downloadActiveList', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
 // 获取能力列表
 export async function getCapkeyList(params) {
   let body = new FormData();
@@ -381,6 +439,25 @@ export async function deleteGrammarFile(params) {
   
 }
 
+// 申请商用
+export async function applyFromal(params) {
+
+  console.log(params);
+
+  let body = new FormData();
+
+  body.append('appKey', params.appKey);
+
+  // params.activeList.forEach((file) => {
+  //   body.append('files', file);
+  // })
+
+  return request('/api2/dev/application/ApplyFromalComAppByAppkey', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
 
 
 // 创建应用

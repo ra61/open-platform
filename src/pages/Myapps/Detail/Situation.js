@@ -1,6 +1,7 @@
 import React, { Component, Fragment  } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
+import Animate from 'rc-animate';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {
   Row,
@@ -365,17 +366,19 @@ class Situation extends Component {
                 onMouseEnter={() => { mouseOver('cumulativeTerminalFlag')}} 
                 onMouseLeave={() => { mouseOut('cumulativeTerminalFlag') }}
               >
-                {
-                  this.state.cumulativeTerminalFlag ? <Info title={cumulativeTerminal.title} value={cumulativeTerminal.total} bordered /> :
-                    <Row>
-                      <Col sm={12} xs={24}>
-                        <Info title="测试授权" value={cumulativeTerminal.test} bordered />
-                      </Col>
-                      <Col sm={12} xs={24}>
-                        <Info title="正式商用" value={cumulativeTerminal.business} bordered />
-                      </Col>
-                    </Row>
-                }
+                <Animate component="" transitionName="fade">
+                  {
+                    this.state.cumulativeTerminalFlag ? <Info title={cumulativeTerminal.title} value={cumulativeTerminal.total} bordered key="1" /> :
+                      <Row key="2">
+                        <Col sm={12} xs={24}>
+                          <Info title="测试授权" value={cumulativeTerminal.test} bordered />
+                        </Col>
+                        <Col sm={12} xs={24}>
+                          <Info title="正式商用" value={cumulativeTerminal.business} bordered />
+                        </Col>
+                      </Row>
+                  }
+                </Animate>
                 
               </Col>
               <Col sm={6} xs={24}
@@ -439,7 +442,7 @@ class Situation extends Component {
               版本列表
               <Tooltip
                 title={
-                  <FormattedMessage id="myapps.detail.resource.download" defaultMessage="resource download" />
+                  <FormattedMessage id="help.appVersionList" defaultMessage="resource download" />
                 }
               >
                 <Icon type="question-circle" theme="outlined" style={{ marginLeft: 10 }} />

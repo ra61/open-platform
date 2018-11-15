@@ -97,9 +97,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *fetchSafeInfo(_, { call, put }) {
       const response = yield call(getSafeInfo);
@@ -110,9 +108,7 @@ export default {
     },
     *modifyPassword({ payload }, { call, put }) {
       const response = yield call(modifyPassword, payload);
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *resetPasswordByPhone({ payload }, { call, put }) {
       const response = yield call(resetPasswordByPhone, payload);
@@ -123,9 +119,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *resetPasswordByEmail({ payload }, { call, put }) {
       const response = yield call(resetPasswordByEmail, payload);
@@ -136,9 +130,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *bandingCheck({ payload }, { call, put }) {
       const response = yield call(bandingCheck, payload);
@@ -149,9 +141,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *bindPhone({ payload }, { call, put }) {
       const response = yield call(bindPhone, payload);
@@ -162,9 +152,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *getEmailVerifyCode({ payload }, { call, put }) {
       const response = yield call(getEmailVerifyCode, payload);
@@ -180,9 +168,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message){
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
     *bindEmail({ payload }, { call, put }) {
       const response = yield call(bindEmail, payload);
@@ -193,9 +179,7 @@ export default {
       };
 
       // 提示信息
-      if (response.message) {
-        message.success(response.message);
-      }
+      response.message && message.success(response.message);
     },
   },
 
