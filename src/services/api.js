@@ -391,6 +391,30 @@ export async function updateCapkeyList(params) {
   });
 }
 
+// 获取领域数据
+export async function getDomainList(params) {
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  return request('/api2/dev/application/getDomainListAjax', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
+// 更新领域数据
+export async function updateDomain(params) {
+  console.log(params);
+  let body = new FormData();
+  body.append('appKey', params.appKey);
+  body.append('ids', params.ids);
+  return request('/api2/dev/application/ajaxUpdateDomain', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+}
+
 // 获取资源文件版本列表
 export async function getResourceVersionList(params) {
   let body = new FormData();
@@ -447,10 +471,16 @@ export async function applyFromal(params) {
   let body = new FormData();
 
   body.append('appKey', params.appKey);
+  body.append('app_online_name', params.name);
+  body.append('type', params.type);
+  body.append('app_online_ver', params.version);
+  body.append('app_online_desc', params.desc);
+  body.append('app_online_logo', params.logo);
+  body.append('app_online_pkg', params.pkg.file);
 
-  // params.activeList.forEach((file) => {
-  //   body.append('files', file);
-  // })
+  params.screenshot.forEach((file, index) => {
+    body.append(`app_online_screenshot${index + 1}`, file);
+  })
 
   return request('/api2/dev/application/ApplyFromalComAppByAppkey', {
     method: 'POST',

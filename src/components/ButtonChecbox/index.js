@@ -2,8 +2,8 @@ import React from 'react';
 import { Tooltip, Icon, Button} from 'antd';
 import style from './index.less';
 
-const keyInValue = (key, value) => {
-  if (value.indexOf(key) > -1){
+const keyInValue = (id, value) => {
+  if (value.indexOf(id) > -1){
     return true;
   } else {
     return false;
@@ -11,13 +11,13 @@ const keyInValue = (key, value) => {
 
 }
 
-const ButtonChecbox = ({ value, onChange, list }) => (
+const ButtonChecbox = ({ list, value, onChange }) => (
   <div className={style.buttonChecbox} key={value}>
     {list.map(item => (
       <Button
-        key={item.key} 
+        key={item.id} 
         className={style.item} 
-        style={{ borderColor: keyInValue(item.key, value) ? 'blue' : 'black', color: keyInValue(item.key, value) ? 'blue' : 'black'}}
+        style={{ borderColor: keyInValue(item.id, value) ? 'blue' : 'black', color: keyInValue(item.key, value) ? 'blue' : 'black'}}
         onClick={() => onChange(item.key)}
       >
         {item.title}

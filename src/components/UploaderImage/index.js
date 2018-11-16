@@ -31,13 +31,18 @@ class UploaderImage extends Component {
     state = {};
 
     handleChange = (info) => {
+
         const { onChange } = this.props;
+        
         if (info.file.status === 'done') {
             // Get this url from response in real world.
             getBase64(info.file.originFileObj, imageUrl => {
                 this.setState({ imageUrl });
-                onChange(imageUrl);
             });
+        }
+
+        if (info.file.response && info.file.response.status == 'ok'){
+            onChange(info.file.response.url);
         }
     }
 
@@ -48,7 +53,7 @@ class UploaderImage extends Component {
                 className={styles.avatarUploader}
                 name="avatar"
                 showUploadList={false}
-                action="//jsonplaceholder.typicode.com/posts/"
+                action="/api2/dev/application/uploadImage"
                 beforeUpload={beforeUpload}
                 onChange={this.handleChange}
             >

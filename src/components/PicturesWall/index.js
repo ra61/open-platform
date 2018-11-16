@@ -21,11 +21,23 @@ class PicturesWall extends Component {
     handleChange = ({ fileList }) => {
         const { onChange } = this.props;
         this.setState({ fileList });
-        onChange(fileList);
+
+        let imgUrls = [];
+
+        fileList.map( file => {
+
+            if (file.response && imgUrls.indexOf(file.response.url) < 0){
+                imgUrls.push(file.response.url)
+            }
+            
+        })
+
+        onChange(imgUrls);
     }
 
     render() {
         const { previewVisible, previewImage, fileList } = this.state;
+        
         const uploadButton = (
             <div>
                 <Icon type="plus" />
@@ -35,7 +47,7 @@ class PicturesWall extends Component {
         return (
             <div className="clearfix">
                 <Upload
-                    action="//jsonplaceholder.typicode.com/posts/"
+                    action="/api2/dev/application/uploadImage"
                     listType="picture-card"
                     fileList={fileList}
                     onPreview={this.handlePreview}

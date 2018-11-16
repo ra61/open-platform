@@ -81,20 +81,29 @@ function getComponent(userData) {
     componentDidMount() {
       const self = this;
 
-      window.onresize = function () {
-        const nw = parseInt(
-          window.getComputedStyle(document.getElementById("mountNode"), null)[
-          "width"
-          ]
-        );
-        const nh = (nw - 80) / ratio; // 80 是 左边的 padding
+      // window.onresize = function () {
 
-        self.setState({
-          width: nw,
-          height: nh
-        });
-      };
+      //   const getStyle = (element, attr) => {
+      //     if (element.currentStyle) {
+      //       return element.currentStyle[attr];
+      //     } else {
+      //       return getComputedStyle(element, false)[attr];
+      //     }
+      //   }
+
+      //   let width = getStyle(document.getElementById("mountNode"),'width');
+      //   const nw = parseInt(width);
+      //   const nh = (nw - 80) / ratio; // 80 是 左边的 padding
+
+      //   self.setState({
+      //     width: nw,
+      //     height: nh
+      //   });
+        
+      // };
     }
+
+     
 
     render() {
       return (

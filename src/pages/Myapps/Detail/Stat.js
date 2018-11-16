@@ -16,14 +16,6 @@ import { getTimeDistance } from '@/utils/utils';
 
 import styles from './Stat.less';
 
-const rankingListData = [];
-for (let i = 0; i < 7; i += 1) {
-  rankingListData.push({
-    title: `工专路 ${i} 号店`,
-    total: 323234,
-  });
-}
-
 @connect(({ stat, loading }) => ({
   stat,
   loading: loading.effects['stat/fetch'],
@@ -43,17 +35,7 @@ class Stat extends Component {
       calledParams: {
         appId: this.params.id
       }
-    };
-
-    this.rankingListData = [];
-    for (let i = 0; i < 7; i += 1) {
-      this.rankingListData.push({
-        title: formatMessage({ id: 'app.analysis.test' }, { no: i }),
-        total: 323234,
-      });
-    }
-    
-    
+    };    
   }
 
   componentDidMount() {
@@ -139,57 +121,6 @@ class Stat extends Component {
             }
           />
         </div>
-
-        {/* 调用分布 */}
-      
-        {/* <Card 
-          loading={loading} 
-          bordered={false} 
-          bodyStyle={{ padding: 0 }} 
-          style={{ marginTop: 24 }}
-          extra={<ExtraDatePicker dispatch={this.props.dispatch} request={this.rankingPath}></ExtraDatePicker>}
-          title={<FormattedMessage id="myapps.detail.stat.called" defaultMessage="Sales" />}
-          >
-          <div className={styles.salesCard}>
-            <Row style={{marginTop:24}}>
-              <Col xl={16} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesBar}>
-                  
-                </div>
-              </Col>
-              <Col xl={8} lg={12} md={12} sm={24} xs={24}>
-                <div className={styles.salesRank}>
-                  <h4 className={styles.rankingTitle}>
-                    <FormattedMessage
-                      id="myapps.detail.stat.ranking"
-                      defaultMessage="Sales Ranking"
-                    />
-                  </h4>
-                  <ul className={styles.rankingList}>
-                    {this.rankingListData.map((item, i) => (
-                      <li key={item.title}>
-                        <span
-                          className={`${styles.rankingItemNumber} ${
-                            i < 3 ? styles.active : ''
-                          }`}
-                        >
-                          {i + 1}
-                        </span>
-                        <span className={styles.rankingItemTitle} title={item.title}>
-                          {item.title}
-                        </span>
-                        <span className={styles.rankingItemValue}>
-                          {numeral(item.total).format('0,0')}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Card> */}
-
 
         {/* 能力统计 */}
 

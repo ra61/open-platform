@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Select, Icon, Divider, Button, Checkbox, Form, Input, Radio, Modal, Tooltip  } from 'antd';
+import { Card, Table, Select, Icon, Divider, Button, Checkbox, Form, Input, Radio, Modal, Tooltip, message  } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import {
@@ -23,14 +23,14 @@ import { width } from 'window-size';
 const FormItem = Form.Item;
 
 const CreateForm = Form.create()(props => {
-    const { modalVisible, form, handleAdd, handleModalVisible, nlus, changeSetting } = props;
-    const okHandle = () => {
-        form.validateFields((err, fieldsValue) => {
-            if (err) return;
-            form.resetFields();
-            handleAdd(fieldsValue);
-        });
-    };
+    const { modalVisible, form, okHandle, handleModalVisible, ids, changeSetting, domain_list } = props;
+    // const okHandle = () => {
+    //     form.validateFields((err, fieldsValue) => {
+    //         if (err) return;
+    //         form.resetFields();
+    //         handleAdd(fieldsValue);
+    //     });
+    // };
 
     return (
         <Modal
@@ -51,22 +51,13 @@ const CreateForm = Form.create()(props => {
             visible={modalVisible}
             onOk={okHandle}
             onCancel={() => handleModalVisible()}
-            width={800}
+            width={700}
         >
             
 
             <ButtonChecbox
-                list={[
-                    {
-                        key: 'sidemenu',
-                        title: '天气',
-                    },
-                    {
-                        key: 'topmenu',
-                        title: '列车',
-                    },
-                ]}
-                value={nlus}
+                list={domain_list}
+                value={ids}
                 onChange={value => changeSetting(value)}
             />
             
@@ -88,15 +79,13 @@ class ModifyAbility extends Component {
             id: this.props.location.query.id,
             key: this.props.location.query.appKey,
         }
-
         
-
         this.state = {
             modalVisible: false,
             updateModalVisible: false,
             expandedRows: [], // 展开行的数组
             selectedRowKeys: [], // Check here to configure the default column
-            nlus: [], // 选择的nlu应用领域
+            ids: [], // 选择的nlu应用领域
             loading: false,
         };
     }
@@ -109,21 +98,42 @@ class ModifyAbility extends Component {
                 appKey: this.params.key
             }
         });
+
+        dispatch({
+            type: 'ability/getDomainList',
+            payload: {
+                appKey: this.params.key
+            }
+        });
     }
 
     allKeys = []
 
-    handleAdd = fields => {
+    okHandle = () => {
         const { dispatch } = this.props;
+        const { ids } = this.state;
+
         dispatch({
-            type: 'rule/add',
+            type: 'ability/updateDomain',
             payload: {
-                desc: fields.desc,
+                appKey: this.params.key,
+                ids
             },
+            callback: (response) => {
+
+                if (response.status == 'ok') {
+                    message.success('更新成功');
+                    this.handleModalVisible();
+                }
+
+                if (response.status == 'error') {
+                    response.message && message.success(response.message);
+                }
+            }
         });
 
-        message.success('添加成功');
-        this.handleModalVisible();
+        // message.success('添加成功');
+        // this.handleModalVisible();
     };
 
     handleModalVisible = (flag, record) => {
@@ -176,23 +186,23 @@ class ModifyAbility extends Component {
 
     // 应用领域选择
     changeSetting = (value) => {
-        let nlus = this.state.nlus;
-        if (nlus.indexOf(value) < 0) {
-            nlus.push(value);
+        let ids = this.state.ids;
+        if (ids.indexOf(value) < 0) {
+            ids.push(value);
         } else {
-            removeFromArray.call(nlus, value)
+            removeFromArray.call(ids, value)
         }
 
         this.setState({
-            nlus: nlus,
+            ids: ids,
         });
 
     };
 
     render() {
         const { ability, loading } = this.props;
-        const { capkeyList, selectedAbilityID } = ability;
-        const { modalVisible, nlus, expandedRows, selectedRowKeys } = this.state;
+        const { capkeyList, selectedAbilityID, domain_list } = ability;
+        const { modalVisible, ids, expandedRows, selectedRowKeys } = this.state;
 
         // 数据预处理
         const init = function (array, brother, parent) {
@@ -331,6 +341,14 @@ class ModifyAbility extends Component {
 
             // 更新状态
             this.setState({ selectedRowKeys: selectedRowKeys });
+
+            // 意图领域
+            if (e.target.checked && (record.id == 193 || record.id == 192) ) {
+
+                this.setState({
+                    modalVisible: true,
+                });
+            }
         }
 
         // 检测是否选择
@@ -346,7 +364,7 @@ class ModifyAbility extends Component {
             return checked;
         }
 
-        // 
+        // 更新能力选择
         const updateAbility = (selectedAbilityID) => {
             const { dispatch } = this.props;
             dispatch({
@@ -382,7 +400,6 @@ class ModifyAbility extends Component {
                             record.audition ? <a href={record.audition}>试听</a> : ''
                         }
 
-                        {/* <a onClick={() => this.handleModalVisible(true, record)}>NLU</a>  */}
                     </Fragment>
                 ),
             },
@@ -400,8 +417,9 @@ class ModifyAbility extends Component {
         init(capkeyList);
 
         const parentMethods = {
-            handleAdd: this.handleAdd,
+            okHandle: this.okHandle,
             handleModalVisible: this.handleModalVisible,
+            domain_list: domain_list
         };
         
         return (
@@ -436,7 +454,7 @@ class ModifyAbility extends Component {
                     
                 </Card>
                 
-                <CreateForm {...parentMethods} modalVisible={modalVisible} nlus={nlus} changeSetting={this.changeSetting} />
+                <CreateForm {...parentMethods} modalVisible={modalVisible} ids={ids} changeSetting={this.changeSetting} />
             </GridContent>
         );
     }

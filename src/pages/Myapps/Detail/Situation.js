@@ -195,7 +195,7 @@ class Situation extends Component {
             <Menu.Item key="ability">修改能力</Menu.Item>
             <Menu.Item key="resource">资源文件</Menu.Item>
             {
-              props.current.appStatus < 7 ? <Menu.Item key="business">申请商用</Menu.Item> : ''
+              (props.current.appStatus < 5 || props.current.appStatus == 6) && <Menu.Item key="business">申请商用</Menu.Item> 
             }
             
           </Menu>
@@ -366,19 +366,17 @@ class Situation extends Component {
                 onMouseEnter={() => { mouseOver('cumulativeTerminalFlag')}} 
                 onMouseLeave={() => { mouseOut('cumulativeTerminalFlag') }}
               >
-                <Animate component="" transitionName="fade">
-                  {
-                    this.state.cumulativeTerminalFlag ? <Info title={cumulativeTerminal.title} value={cumulativeTerminal.total} bordered key="1" /> :
-                      <Row key="2">
-                        <Col sm={12} xs={24}>
-                          <Info title="测试授权" value={cumulativeTerminal.test} bordered />
-                        </Col>
-                        <Col sm={12} xs={24}>
-                          <Info title="正式商用" value={cumulativeTerminal.business} bordered />
-                        </Col>
-                      </Row>
-                  }
-                </Animate>
+                {
+                  this.state.cumulativeTerminalFlag ? <Info title={cumulativeTerminal.title} value={cumulativeTerminal.total} bordered /> :
+                    <Row key="2">
+                      <Col sm={12} xs={24}>
+                        <Info title="测试授权" value={cumulativeTerminal.test} bordered />
+                      </Col>
+                      <Col sm={12} xs={24}>
+                        <Info title="正式商用" value={cumulativeTerminal.business} bordered />
+                      </Col>
+                    </Row>
+                }
                 
               </Col>
               <Col sm={6} xs={24}

@@ -156,7 +156,7 @@ class AppList extends PureComponent {
     ];
 
     return (
-      <PageHeaderWrapper content={pageHeaderContent} extraContent={extraContent}>
+      <PageHeaderWrapper content={pageHeaderContent} >  
         <div className={styles.standardList}>
           <Card
             className={styles.listCard}

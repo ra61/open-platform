@@ -17,7 +17,6 @@ import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import ExtraDatePicker from '@/components/ExtraDatePicker';
 import Bubblemap from '@/components/Bubblemap';
 import { getTimeDistance } from '@/utils/utils';
-
 import styles from './Panel.less';
 
 @connect(({ panel, loading }) => ({
@@ -79,15 +78,13 @@ class Panel extends Component {
     const { panel, loading: stateLoading } = this.props;
     
     const {
-      pieData,
-      rankingBarData,
-      warningData,
-      statisticData,
-      noticeData,
-      rankingListData,
-      apps,
-      rankingData,
-      terminalDistribute
+      pieData, // 今日调用占比
+      rankingBarData, // 应用排行
+      warningData, // 预警
+      statisticData, // 今日统计
+      noticeData, // 公告
+      rankingListData, // 应用排行
+      terminalDistribute, // 终端分布
     } = panel;
 
     const loading = propsLoding || stateLoading;
@@ -145,7 +142,7 @@ class Panel extends Component {
               }
             >
               <ul className={styles.statistics}>
-                {statisticData.map(item => (
+                {/* {statisticData.map(item => (
                   <li key={item.key}>
                     <span className={styles.statisticsItemTitle}>
                       <Avatar shape='square' src={item.logo} />
@@ -155,7 +152,44 @@ class Panel extends Component {
                       {item.total}
                     </span>
                   </li>
-                ))}
+                ))} */}
+                <li key='1'>
+                  <span className={styles.statisticsItemTitle}>
+                    {/* <Avatar shape='square' src={''} /> */}
+                    <i class="iconfont icon-liuliang"></i>
+                    <div>新增终端</div>
+                  </span>
+                  <span className={styles.statisticsItemValue}>
+                    {statisticData.newTerminal}
+                  </span>
+                </li>
+                <li key='2'>
+                  <span className={styles.statisticsItemTitle}>
+                    <Avatar shape='square' src={''} />
+                    <div>调用</div>
+                  </span>
+                  <span className={styles.statisticsItemValue}>
+                    {statisticData.invoking}
+                  </span>
+                </li>
+                <li key='3'>
+                  <span className={styles.statisticsItemTitle}>
+                    <Avatar shape='square' src={''} />
+                    <div>消费点数</div>
+                  </span>
+                  <span className={styles.statisticsItemValue}>
+                    {statisticData.consumerPoints}
+                  </span>
+                </li>
+                <li key='4'>
+                  <span className={styles.statisticsItemTitle}>
+                    <Avatar shape='square' src={''} />
+                    <div>流量</div>
+                  </span>
+                  <span className={styles.statisticsItemValue}>
+                    {statisticData.flow}
+                  </span>
+                </li>
               </ul>
             </Card>
           </Col>

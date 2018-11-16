@@ -24,8 +24,8 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['form/submitRegularForm'],
+@connect(({ business, loading }) => ({
+  business
 }))
 @Form.create()
 class Business extends PureComponent {
@@ -34,22 +34,10 @@ class Business extends PureComponent {
     super(props);
 
     this.state = {
-      pkgList:[]
+      pkgList:[],
+      appKey: this.props.location.query.appKey
     }
   }
-
-  handleSubmit = e => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'business/applyFromal',
-          payload: values,
-        });
-      }
-    });
-  };
 
   render() {
     const { submitting } = this.props;
@@ -57,7 +45,7 @@ class Business extends PureComponent {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
 
-    const { pkgList } = this.state;
+    const { pkgList, appKey } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -117,10 +105,27 @@ class Business extends PureComponent {
       },
     }
 
+    const handleSubmit = e => {
+      const { dispatch, form } = this.props;
+      e.preventDefault();
+      form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'business/applyFromal',
+            payload: {
+              ...values,
+              appKey
+            },
+          });
+        }
+      });
+    };
+
+
     return (
       <GridContent>
         <Card bordered={false} title="申请商用">
-          <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
+          <Form onSubmit={handleSubmit} style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="发布名称" help="中文/英文/数字字符1-20位">
               {getFieldDecorator('name', {
                 rules: [

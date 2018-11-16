@@ -7,12 +7,11 @@ export default {
         pieData: [],
         rankingBarData: [],
         warningData: [],
-        statisticData: [],
+        statisticData: {},
         noticeData: [],
         rankingListData: [],
         rankingData: [],
         terminalDistribute:[],
-        apps:{}
     },
 
     effects: {
@@ -20,8 +19,8 @@ export default {
         *fetchDailyStatistic(_, { call, put }) {
             const response = yield call(getDailyStatistic);
             yield put({
-                type: 'show',
-                payload: response,
+                type: 'statistic',
+                payload: response
             });
         },
         *fetchAbilityStatistic(_, { call, put }) {
@@ -70,6 +69,19 @@ export default {
             return {
                 ...state,
                 ...payload,
+                
+            };
+        },
+        statistic(state, { payload }) {
+            console.log(payload)
+            return {
+                ...state,
+                statisticData: {
+                    newTerminal: payload.statisticData[0].total,
+                    invoking: payload.statisticData[1].total,
+                    consumerPoints: payload.statisticData[2].total,
+                    flow: payload.statisticData[3].total,
+                }
             };
         },
     },
