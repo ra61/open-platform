@@ -15,7 +15,7 @@ export default {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
+    *login({ payload, callback }, { call, put }) {
       const response = yield call(accountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
@@ -50,6 +50,8 @@ export default {
         }
         yield put(routerRedux.replace(redirect || '/'));
       }
+
+      callback && callback();
     },
 
     *logout(_, { put }) {

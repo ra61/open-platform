@@ -34,19 +34,21 @@ export default {
         },
         *uploadIdentification({ payload, callback }, { call, put }) {
             const response = yield call(uploadIdentification, payload);
-            callback && callback();
+            callback && callback(response);
         },
         *downloadAuthFile({ payload, callback }, { call, put }) {
             const response = yield call(downloadAuthFile, payload);
-            callback && callback();
+            console.log(response)
+            callback && callback(response);
         },
         *generateActiveList({ payload, callback }, { call, put }) {
             const response = yield call(generateActiveList, payload);
-            callback && callback();
+            callback && callback(response);
         },
         *downloadActiveList({ payload, callback }, { call, put }) {
             const response = yield call(downloadActiveList, payload);
-            callback && callback();
+            console.log(response)
+            callback && callback(response);
         },
 
     },

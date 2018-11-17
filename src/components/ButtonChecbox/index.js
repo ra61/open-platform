@@ -13,12 +13,12 @@ const keyInValue = (id, value) => {
 
 const ButtonChecbox = ({ list, value, onChange }) => (
   <div className={style.buttonChecbox} key={value}>
-    {list.map(item => (
+    {list.map((item, index) => (
       <Button
-        key={item.id} 
+        key={index} 
         className={style.item} 
-        style={{ borderColor: keyInValue(item.id, value) ? 'blue' : 'black', color: keyInValue(item.key, value) ? 'blue' : 'black'}}
-        onClick={() => onChange(item.key)}
+        style={{ borderColor: keyInValue(item.id, value) ? 'blue' : 'black', color: keyInValue(item.id, value) ? 'blue' : 'black'}}
+        onClick={() => onChange(item.id)}
       >
         {item.title}
       </Button>

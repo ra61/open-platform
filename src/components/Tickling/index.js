@@ -90,17 +90,24 @@ class Tickling extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'feedback/add',
+      type: 'feedback/createFeedback',
       payload: {
         type: fields.type,
         title: fields.title,
         content: fields.content,
         contact: fields.contact,
       },
-    });
+      callback: (response) => {
+        if (response.status == 'ok'){
+          response.message && message.success(response.message);
+          this.handleModalVisible();
+        }
 
-    message.success('添加成功');
-    this.handleModalVisible();
+        if (response.status == 'error') {
+          response.message && message.error(response.message);
+        }
+      }
+    });
   };
 
   handleModalVisible = flag => {

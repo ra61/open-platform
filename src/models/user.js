@@ -35,53 +35,21 @@ export default {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ callback }, { call, put }) {
       const response = yield call(getDeveloperInfo);
-
-      if (!response.name){
-        let userName = Cookies.get('userName');
-        let password = Cookies.get('password');
-
-        if (!userName || !password){
-          router.push('/user/login');
-        }else{
-
-          let payload = {
-            userName: userName,
-            password: password,
-            autoLogin: true
-          }
-
-          // 登录
-          const responseLogin = yield call(accountLogin, payload);
-
-          // 改变登录状态
-          yield put({
-            type: 'changeLoginStatus',
-            payload: responseLogin,
-          });
-
-          // 获取登录信息
-          const responseCurrentUser = yield call(getDeveloperInfo);
-
-          // 设置登录信息
-          yield put({
-            type: 'saveCurrentUser',
-            payload: responseCurrentUser,
-          });
-
-        }
-
-      } else {
+      if(response.name){
         yield put({
           type: 'saveCurrentUser',
           payload: response,
         });
+      } else {
+        callback && callback(response);
       }
       
     },
-    *UpdateDeveloperInfo({ payload }, { call, put }) {
+    *UpdateDeveloperInfo({ payload, callback }, { call, put }) {
       const response = yield call(updateDeveloperInfo, payload);
+      callback && callback(response)
     },
     *getVerifyCode({ payload }, { call, put }) {
       const response = yield call(getVerifyCode, payload);

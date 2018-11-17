@@ -93,6 +93,27 @@ class Stat extends Component {
       });
     }
 
+    const  getIcon = (index) => {
+      let node;
+      switch (index) {
+        case 0:
+          node = <i className="iconfont icon-renshutongji"></i>
+          break;
+        case 1:
+          node = <i className="iconfont icon-qushi"></i>
+          break;
+        case 2:
+          node = <i className="iconfont icon-liuliangtongji"></i>
+          break;
+        case 3:
+          node = <i className="iconfont icon-liuliangtongji1"></i>
+          break;
+        default:
+          break;
+      }
+      return node;
+    }
+
     return (
       <GridContent>
 
@@ -102,12 +123,12 @@ class Stat extends Component {
             loading={loading}
             grid={{ gutter: 24, lg: 4, md: 4, sm: 4, xs: 4 }}
             dataSource={[...statisticData]}
-            renderItem={item =>
+            renderItem={(item, index) =>
               (
                 <List.Item key={item.id}>
                   <Card hoverable className={styles.card}>
                     <Card.Meta
-                      avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
+                      avatar={getIcon(index)}
                       title={<a> 今日{item.title}</a>}
                       description={
                         <Ellipsis className={styles.item} lines={3}>
@@ -133,7 +154,7 @@ class Stat extends Component {
                 <div className={styles.salesBar}>
                   <TimelineChart
                     height={295}
-                    data={offlineChartData}
+                    data={abilityClassifyList}
                     titleMap={{ y1: 'tts', y2: 'asr', y3: 'hwr', y4: 'ocr', y5: 'mt', y6: 'nlu', y7: 'fpr', y8: 'vpr', y9: 'afr'  }}
                   />
                 </div>

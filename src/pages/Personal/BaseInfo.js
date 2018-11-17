@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Form, Input, Radio, Select, Button, Card, Checkbox } from 'antd';
+import { Form, Input, Radio, Select, Button, Card, Checkbox, message } from 'antd';
 import { connect } from 'dva';
 import styles from './BaseInfo.less';
 import GeographicView from './GeographicView';
@@ -41,7 +41,7 @@ class BaseInfo extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'user/fetch',
+      type: 'user/fetchCurrent',
     });
 
     this.setBaseInfo();
@@ -94,6 +94,20 @@ class BaseInfo extends Component {
         dispatch({
           type: 'user/UpdateDeveloperInfo',
           payload: values,
+          callback: (response) => {
+            if (response.status == 'ok') {
+              response.message && message.success(response.message);
+
+              // 更新数据
+              dispatch({
+                type: 'user/fetchCurrent'
+              });
+            }
+
+            if (response.status == 'error') {
+              response.message && message.error(response.message);
+            }
+          }
         });
       }
     });

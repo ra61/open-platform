@@ -12,7 +12,9 @@ const { Description } = DescriptionList;
 const { TextArea } = Input;
 
 const CreateForm = Form.create()(props => {
-    const { modalVisible, form, handleAdd, handleModalVisible, handleSubmit, getFieldDecorator } = props;
+    const { modalVisible, form, handleAdd, handleModalVisible, upload_file } = props;
+    const { getFieldDecorator } = form;
+
     const okHandle = () => {
         form.validateFields((err, fieldsValue) => {
             if (err) return;
@@ -36,9 +38,8 @@ const CreateForm = Form.create()(props => {
             width={800}
         >
 
-            <Form onSubmit={handleSubmit} style={{ marginTop: 8 }}>
                 <Form.Item {...formItemLayout} label="应用描述">
-                    {getFieldDecorator('goal', {
+                {getFieldDecorator('content', {
                         rules: [
                             {
                                 message: '请输入应用描述',
@@ -58,18 +59,14 @@ const CreateForm = Form.create()(props => {
                     label="上传附件"
                     extra="支持扩展名：jpg, bmp, png, gif, txt, log, docx"
                 >
-                    {getFieldDecorator('upload', {
-                        valuePropName: 'fileList',
-                        // getValueFromEvent: this.normFile,
-                    })(
-                        <Upload name="logo" action="/upload.do" listType="picture">
+                    {getFieldDecorator('upload')(
+                        <Upload {...upload_file}>
                             <Button>
-                                <Icon type="upload" /> Click to upload
+                                <Icon type="upload" /> 上传文件
                             </Button>
                         </Upload>
                     )}
                 </Form.Item>
-            </Form>
 
         </Modal>
     );
@@ -81,6 +78,8 @@ const CreateForm = Form.create()(props => {
 }))
 @Form.create()
 class Detail extends Component {
+
+
     componentDidMount() {
 
         const { dispatch } = this.props;
@@ -103,21 +102,39 @@ class Detail extends Component {
     }
 
     state = {
-        modalVisible: false
+        modalVisible: false,
+        upload_file:[]
     };
 
     // 回传数据
     handleAdd = fields => {
         const { dispatch } = this.props;
-        dispatch({
-            type: 'rule/add',
-            payload: {
-                desc: fields.desc,
-            },
-        });
 
-        message.success('添加成功');
-        this.handleModalVisible();
+        dispatch({
+            type: 'feedback/addInteraction',
+            payload: {
+                id: this.props.location.query.id,
+                content: fields.content,
+                upload: fields.upload
+            },
+            callback: (response) => {
+                if (response.status == 'ok') {
+                    response.message && message.success(response.message);
+                    this.handleModalVisible();
+                    // 更新交互列表
+                    dispatch({
+                        type: 'feedback/fetchDialog',
+                        payload: {
+                            id: this.props.location.query.id
+                        }
+                    });
+                }
+
+                if (response.status == 'error') {
+                    response.message && message.error(response.message);
+                }
+            }
+        });
     };
 
     // 控制弹窗显示
@@ -129,26 +146,12 @@ class Detail extends Component {
 
     };
 
-    // 弹窗提交
-    handleSubmit = e => {
-        const { dispatch, form } = this.props;
-        e.preventDefault();
-        form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                dispatch({
-                    type: 'form/submitRegularForm',
-                    payload: values,
-                });
-            }
-        });
-    };
-
     render() {
         const { feedback, loading } = this.props;
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        const { modalVisible } = this.state;
+        const { modalVisible, feedFileList } = this.state;
         const { feedbackDetail, dialogList } = feedback;
 
         const dialogLists = [
@@ -213,11 +216,45 @@ class Detail extends Component {
             return node;
         }
 
+        const upload_file = {
+            name: 'file',
+            action: '',
+            showUploadList: true,
+            fileList: feedFileList,
+            beforeUpload: (file) => {
+                this.setState(({ feedFileList }) => ({
+                    feedFileList: [file],
+                }))
+                return false;
+            },
+            onRemove: (file) => {
+                this.setState(({ feedFileList }) => {
+                    const index = feedFileList.indexOf(file);
+                    let newFileList = feedFileList.slice();
+                    newFileList.splice(index, 1);
+                    return {
+                        feedFileList: newFileList
+                    }
+                })
+            },
+            onChange: (info) => {
+                // if (info.file.status !== 'uploading') {
+                //     console.log(info.file, info.fileList);
+                // }
+                if (info.file.status === 'done') {
+                    message.success(`${info.file.name} 文件上传成功`);
+                    this.handleListChange(1, 5);
+                } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} 文件上传失败`);
+                }
+            },
+        }
+
+
         const parentMethods = {
             handleAdd: this.handleAdd,
             handleModalVisible: this.handleModalVisible,
-            handleSubmit: this.handleSubmit,
-            getFieldDecorator: getFieldDecorator,
+            upload_file: upload_file,
         };
 
         return (

@@ -7,6 +7,64 @@ import styles from './index.less';
 
 @autoHeight()
 class TimelineChart extends React.Component {
+
+  constructor(props){
+    super(props);
+  }
+
+  state = {
+    timeScale: {
+      type: 'time',
+      tickInterval: 60 * 60 * 1000,
+      mask: 'HH:mm',
+      range: [0, 1],
+    }
+  }
+
+  timeInterval = (start, end) => {
+    
+    let day = parseInt(Math.abs(start - end) / 1000 / 60 / 60 / 24);
+
+    if (day <= 1) {
+      this.setState({
+        timeScale: {
+          type: 'time',
+          tickInterval: 60 * 60 * 1000,
+          mask: 'HH:mm',
+          range: [0, 1],
+        }
+      })
+    }
+
+    if (day > 1 && day <= 31) {
+      this.setState({
+        timeScale: {
+          type: 'time',
+          tickInterval: 24 * 60 * 60 * 1000,
+          mask: 'MM-dd',
+          range: [0, 1],
+        }
+      })
+    }
+
+    if (day > 31) {
+      this.setState({
+        timeScale: {
+          type: 'time',
+          tickInterval: 30 * 24 * 60 * 60 * 1000,
+          mask: 'MM-dd',
+          range: [0, 1],
+        }
+      })
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    const { data } = nextProps;
+    data.sort((a, b) => a.x - b.x);
+    this.timeInterval(data[0].x, data[data.length - 1].x);
+  }
+  
   render() {
     const {
       title,
@@ -30,17 +88,32 @@ class TimelineChart extends React.Component {
           y1: 0,
           y2: 0,
           y3: 0,
+          y4: 0,
+          y5: 0,
+          y6: 0,
+          y7: 0,
+          y8: 0,
+          y9: 0,
         },
       ],
     } = this.props;
 
+    const { timeScale } = this.state;
+
     data.sort((a, b) => a.x - b.x);
 
     let max;
-    if (data[0] && data[0].y1 && data[0].y2) {
+    if (data[0] && data[0].y1 && data[0].y2 && data[0].y3 && data[0].y4 && data[0].y5 && data[0].y6 && data[0].y7 && data[0].y8 && data[0].y9) {
       max = Math.max(
         [...data].sort((a, b) => b.y1 - a.y1)[0].y1,
-        [...data].sort((a, b) => b.y2 - a.y2)[0].y2
+        [...data].sort((a, b) => b.y2 - a.y2)[0].y2,
+        [...data].sort((a, b) => b.y3 - a.y3)[0].y3,
+        [...data].sort((a, b) => b.y4 - a.y4)[0].y4,
+        [...data].sort((a, b) => b.y5 - a.y5)[0].y5,
+        [...data].sort((a, b) => b.y6 - a.y6)[0].y6,
+        [...data].sort((a, b) => b.y7 - a.y7)[0].y7,
+        [...data].sort((a, b) => b.y8 - a.y8)[0].y8,
+        [...data].sort((a, b) => b.y9 - a.y9)[0].y9,
       );
     }
 
@@ -83,13 +156,6 @@ class TimelineChart extends React.Component {
         value: 'value', // value字段
       });
 
-    const timeScale = {
-      type: 'time',
-      tickInterval: 60 * 60 * 1000,
-      mask: 'YYYY-MM-dd HH:mm',
-      range: [0, 1],
-    };
-
     const cols = {
       x: timeScale,
       value: {
@@ -127,9 +193,9 @@ class TimelineChart extends React.Component {
             <Legend name="key" position="top" />
             <Geom type="line" position="x*value" size={borderWidth} color="key" />
           </Chart>
-          <div style={{ marginRight: -20 }}>
+          {/* <div style={{ marginRight: -20 }}>
             <SliderGen />
-          </div>
+          </div> */}
         </div>
       </div>
     );

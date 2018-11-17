@@ -1,4 +1,4 @@
-import { queryFeedbackList, queryFeedbackDetail, queryDialogList, addFeedback } from '@/services/api';
+import { queryFeedbackList, queryFeedbackDetail, queryDialogList, createFeedback, addInteraction } from '@/services/api';
 
 export default {
   namespace: 'feedback',
@@ -30,13 +30,21 @@ export default {
         payload: response,
       });
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addFeedback, payload);
+    *createFeedback({ payload, callback }, { call, put }) {
+      const response = yield call(createFeedback, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      callback && callback(response);
+    },
+    *addInteraction({ payload, callback }, { call, put }) {
+      const response = yield call(addInteraction, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      callback && callback(response);
     },
   },
 

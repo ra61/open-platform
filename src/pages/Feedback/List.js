@@ -131,7 +131,7 @@ class List extends Component {
         };
         
         return (
-            <PageHeaderWrapper content={pageHeaderContent} extraContent={extraContent}>
+            <PageHeaderWrapper content={pageHeaderContent} >
                 <Card bordered={false}>
                     <Table
                         style={{ marginBottom: 16 }}

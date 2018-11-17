@@ -23,14 +23,7 @@ import { width } from 'window-size';
 const FormItem = Form.Item;
 
 const CreateForm = Form.create()(props => {
-    const { modalVisible, form, okHandle, handleModalVisible, ids, changeSetting, domain_list } = props;
-    // const okHandle = () => {
-    //     form.validateFields((err, fieldsValue) => {
-    //         if (err) return;
-    //         form.resetFields();
-    //         handleAdd(fieldsValue);
-    //     });
-    // };
+    const { modalVisible, form, okHandle, handleModalVisible, ids, changeSetting, domainList } = props;
 
     return (
         <Modal
@@ -56,7 +49,7 @@ const CreateForm = Form.create()(props => {
             
 
             <ButtonChecbox
-                list={domain_list}
+                list={domainList}
                 value={ids}
                 onChange={value => changeSetting(value)}
             />
@@ -86,6 +79,7 @@ class ModifyAbility extends Component {
             expandedRows: [], // 展开行的数组
             selectedRowKeys: [], // Check here to configure the default column
             ids: [], // 选择的nlu应用领域
+            domainList: [],
             loading: false,
         };
     }
@@ -94,13 +88,6 @@ class ModifyAbility extends Component {
         const { dispatch } = this.props;
         dispatch({
             type: 'ability/fetchCapkeyList',
-            payload: {
-                appKey: this.params.key
-            }
-        });
-
-        dispatch({
-            type: 'ability/getDomainList',
             payload: {
                 appKey: this.params.key
             }
@@ -131,9 +118,6 @@ class ModifyAbility extends Component {
                 }
             }
         });
-
-        // message.success('添加成功');
-        // this.handleModalVisible();
     };
 
     handleModalVisible = (flag, record) => {
@@ -201,8 +185,8 @@ class ModifyAbility extends Component {
 
     render() {
         const { ability, loading } = this.props;
-        const { capkeyList, selectedAbilityID, domain_list } = ability;
-        const { modalVisible, ids, expandedRows, selectedRowKeys } = this.state;
+        const { capkeyList, selectedAbilityID } = ability;
+        const { modalVisible, ids, expandedRows, selectedRowKeys, domainList } = this.state;
 
         // 数据预处理
         const init = function (array, brother, parent) {
@@ -345,9 +329,41 @@ class ModifyAbility extends Component {
             // 意图领域
             if (e.target.checked && (record.id == 193 || record.id == 192) ) {
 
-                this.setState({
-                    modalVisible: true,
+                const { dispatch } = this.props;
+
+                
+
+                dispatch({
+                    type: 'ability/getDomainList',
+                    payload: {
+                        appKey: this.params.key
+                    },
+                    callback: (response) => {
+
+                        // 获取领域数据成功
+                        if (response.status == 'ok') {
+
+                            const { ability } = this.props;
+                            const { selected_list, domain_list } = ability;
+
+                            this.setState({
+                                modalVisible: true,
+                                ids: selected_list,
+                                domainList: domain_list
+                            });
+
+                            response.message && message.success(response.message);
+                        }
+
+                        // 获取领域数据成功
+                        if (response.status == 'error') {
+                            response.message && message.error(response.message);
+                        }
+
+                    }
                 });
+
+
             }
         }
 
@@ -419,7 +435,7 @@ class ModifyAbility extends Component {
         const parentMethods = {
             okHandle: this.okHandle,
             handleModalVisible: this.handleModalVisible,
-            domain_list: domain_list
+            domainList
         };
         
         return (

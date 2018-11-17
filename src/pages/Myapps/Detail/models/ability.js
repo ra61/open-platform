@@ -7,7 +7,8 @@ export default {
     state: {
         capkeyList: [],
         selectedAbilityID: [],
-        domain_list:[]
+        domain_list:[],
+        selected_list:[]
     },
 
     effects: {
@@ -28,13 +29,15 @@ export default {
                 payload: response
             });
         },
-        *getDomainList({ payload }, { call, put }) {
+        *getDomainList({ payload, callback }, { call, put }) {
             const response = yield call(getDomainList, payload);
-            console.log(response);
+            
             yield put({
                 type: 'show',
                 payload: response
             });
+
+            callback && callback(response);
         },
         *updateDomain({ payload, callback }, { call, put }) {
             const response = yield call(updateDomain, payload);

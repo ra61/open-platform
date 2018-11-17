@@ -586,8 +586,8 @@ export async function queryNoticeList(params) {
   });
 }
 
-// 意见反馈
-export async function addFeedback(params) {
+// 创建反馈
+export async function createFeedback(params) {
 
   let body = new FormData();
   body.append('type', params.type);
@@ -631,7 +631,7 @@ export async function queryFeedbackDetail(params) {
 
 }
 
-// 回复反馈
+// 对话列表
 export async function queryDialogList(params) {
 
   let body = new FormData();
@@ -644,6 +644,26 @@ export async function queryDialogList(params) {
   });
 
 }
+
+// 回复反馈
+export async function addInteraction(params) {
+
+  console.log(params);
+
+  let body = new FormData();
+  body.append('id', params.id);
+  body.append('content', params.content);
+  body.append('upload', params.upload);
+
+  return request('/api2/dev/WorkOrder/ajaxAddInteraction', {
+    method: 'POST',
+    body: body,
+    expirys: false
+  });
+
+}
+
+
 
 // 用户基本信息
 export async function getDeveloperInfo() {

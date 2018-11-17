@@ -185,9 +185,6 @@ class Terminal extends Component {
         const upload_auth = {
             name: 'file',
             action: '/api2/dev/application/uploadIdentification',
-            headers: {
-                authorization: 'authorization-text',
-            },
             showUploadList: true,
             fileList: authFileList,
             beforeUpload: (file) => {

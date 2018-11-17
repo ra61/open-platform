@@ -21,6 +21,7 @@ import Context from './MenuContext';
 import { getAuthority, setAuthority } from '../utils/authority';
 import router from 'umi/router';
 import { width } from 'window-size';
+import Cookies from 'js-cookie';
 
 import IntroJs from 'intro.js';
 import 'intro.js/introjs.css';
@@ -94,16 +95,41 @@ class BlankLayout extends React.PureComponent {
     componentDidMount() {
         const { dispatch } = this.props;
 
-        // const flag = getAuthority();
-
-        // if(flag[0] != 'user'){
-        //     dispatch({
-        //         type: 'login/logout',
-        //     });
-        // }
-
         dispatch({
             type: 'user/fetchCurrent',
+            callback: (response) => {
+                
+                let userName = Cookies.get('userName');
+                let password = Cookies.get('password');
+
+                // 账号密码不存在，跳转到登录页面
+                if (!userName || !password) {
+                    router.push('/user/login');
+                } else {
+
+                    let payload = {
+                        userName: userName,
+                        password: password,
+                        autoLogin: true
+                    }
+
+                    // 登录
+                    dispatch({
+                        type:'login/login',
+                        payload,
+                        callback: () => {
+
+                            // 获取登录信息
+                            dispatch({
+                                type: 'user/fetchCurrent'
+                            })
+                        }
+                    })
+
+                }
+
+                
+            }
         });
 
         dispatch({

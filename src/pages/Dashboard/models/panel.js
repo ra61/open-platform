@@ -73,7 +73,6 @@ export default {
             };
         },
         statistic(state, { payload }) {
-            console.log(payload)
             return {
                 ...state,
                 statisticData: {

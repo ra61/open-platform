@@ -5,7 +5,8 @@ import {
   Row,
   Col,
   Card,
-  Avatar
+  Avatar,
+  Icon
 } from 'antd';
 import {
   Bar,
@@ -155,8 +156,7 @@ class Panel extends Component {
                 ))} */}
                 <li key='1'>
                   <span className={styles.statisticsItemTitle}>
-                    {/* <Avatar shape='square' src={''} /> */}
-                    <i class="iconfont icon-liuliang"></i>
+                    <i className="iconfont icon-renshutongji" style={{paddingLeft:15}}></i>
                     <div>新增终端</div>
                   </span>
                   <span className={styles.statisticsItemValue}>
@@ -165,7 +165,7 @@ class Panel extends Component {
                 </li>
                 <li key='2'>
                   <span className={styles.statisticsItemTitle}>
-                    <Avatar shape='square' src={''} />
+                    <i className="iconfont icon-qushi"></i>
                     <div>调用</div>
                   </span>
                   <span className={styles.statisticsItemValue}>
@@ -173,8 +173,8 @@ class Panel extends Component {
                   </span>
                 </li>
                 <li key='3'>
-                  <span className={styles.statisticsItemTitle}>
-                    <Avatar shape='square' src={''} />
+                  <span className={styles.statisticsItemTitle} >
+                    <i className="iconfont icon-liuliangtongji" style={{ paddingLeft: 15 }}></i>
                     <div>消费点数</div>
                   </span>
                   <span className={styles.statisticsItemValue}>
@@ -183,7 +183,7 @@ class Panel extends Component {
                 </li>
                 <li key='4'>
                   <span className={styles.statisticsItemTitle}>
-                    <Avatar shape='square' src={''} />
+                    <i className="iconfont icon-liuliangtongji1"></i>
                     <div>流量</div>
                   </span>
                   <span className={styles.statisticsItemValue}>
