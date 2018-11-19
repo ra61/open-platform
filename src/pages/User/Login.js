@@ -100,9 +100,8 @@ class LoginPage extends Component {
           <Submit loading={submitting}>登录</Submit>
           <div className={styles.other}>
             其他登录方式
-            <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
-            <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
-            <Icon type="weibo-circle" className={styles.icon} theme="outlined" />
+            {/* <Icon type="wx" className={styles.icon} theme="outlined" /> */}
+            <a href='/api2/dev/Appdeveloper/snsauth.html?channel=wx_qrcode&action=login' className={styles.wx}></a>
             <Link className={styles.register} to="/user/Register">
               注册账户
             </Link>

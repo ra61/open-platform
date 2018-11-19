@@ -121,7 +121,7 @@ class Terminal extends Component {
 
         // 下载设备信息
         const downloadUdidList = () => {
-            window.location.href = 'http://open.net:8520/dev/application/downloadUdidList?appId=' + this.params.id;
+            window.location.href = '/api2/dev/application/downloadUdidList?appId=' + this.params.id;
         }
 
         // 选择授权协议
@@ -163,7 +163,7 @@ class Terminal extends Component {
 
         // 下载授权文件
         const downloadAuthFile = () => {
-            window.location.href = 'http://open.net:8520/dev/application/downloadAuthFile?appId=' + this.params.id;
+            window.location.href = '/api2/dev/application/downloadAuthFile?appId=' + this.params.id;
         }
 
         // 上传授权信息
@@ -247,7 +247,7 @@ class Terminal extends Component {
 
         // 下载激活码
         const downloadActiveList = () => {
-            window.location.href = 'http://open.net:8520/dev/application/downloadActiveList?appId=' + this.params.id + '&&appKey=' + this.params.key;
+            window.location.href = '/api2/dev/application/downloadActiveList?appId=' + this.params.id + '&&appKey=' + this.params.key;
         }
 
         const upload_device = {

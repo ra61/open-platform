@@ -67,9 +67,9 @@ class SecurityView extends Component {
       value: (safeInfo.snsBind == 1 ? '已绑定' : '未绑定'),
       description: '绑定微信之后可以在登陆的时候实现扫一扫快捷登录。',
       actions: [
-        <Link to={{ pathname: "/personal/bind-weixin" }} key='4k'>
+        <a href='/api2/dev/Appdeveloper/snsauth.html?channel=wx_qrcode&action=bind' key='4k'>
           <FormattedMessage id="personal.security.bind" defaultMessage="Bind" />
-        </Link>
+        </a>
       ],
     }
   ];

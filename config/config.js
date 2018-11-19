@@ -107,6 +107,7 @@ export default {
   proxy: {
     '/api2': {
       target: 'http://open.net:8520',
+      // target: 'http://www.ai.cloud',
       changeOrigin: true,
       pathRewrite: { '^/api2': '' },
     },
