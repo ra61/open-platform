@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Button, Icon, Select, Form  } from 'antd';
+import { Card, Table, Button, Icon, Select, Form, Badge  } from 'antd';
 import Link from 'umi/link';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { removeFromArray } from '@/utils/common';
@@ -21,9 +21,9 @@ const progressColumns = [
     },
     {
         title: '文档',
-        dataIndex: 'url',
+        dataIndex: 'docUrl',
         key: 'url',
-        render: () => (<Link to='/'>查看</Link>),
+        render: (text) => (<Link to={'/' + text} >查看</Link>),
     },
     {
         title: '更新日期',
@@ -39,6 +39,27 @@ const progressColumns = [
         title: '下载',
         dataIndex: 'platform',
         key: 'platform',
+        render: (text, record) => {
+            let node;
+            switch (text) {
+                case 1:
+                    node = <a href={record.url} style={{color:'#000'}}><Icon type="android" /></a>
+                    break;
+                case 2:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="apple" /></a>
+                    break;
+                case 3:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="windows" /></a>
+                    break;
+                case 4:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="dingding" /></a>
+                    break;
+                default:
+                    break;
+            }
+
+            return node;
+        }
     },
 ];
 
@@ -60,9 +81,6 @@ class List extends Component {
             type: 'sdk/fetchVersion',
         });
     }
-
-    
-
 
     // 获取所有key
     getKeys = function (array, allKeys) {
@@ -101,7 +119,6 @@ class List extends Component {
 
         }
         this.setState({ expandedRows });
-
     }
 
     handleChange = (value) => {
@@ -117,6 +134,8 @@ class List extends Component {
         const { sdk, loading } = this.props;
         const { selectVersion } = this.state;
         const { versionList, sdkList } = sdk;
+
+        console.log(sdkList);
 
         const {
             form: { getFieldDecorator, getFieldValue },

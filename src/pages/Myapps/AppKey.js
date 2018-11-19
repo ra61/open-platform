@@ -149,7 +149,7 @@ class AppKey extends Component {
     return (
       <PageHeaderWrapper
         content={pageHeaderContent}
-        extraContent={extraContent}
+        // extraContent={extraContent}
         tabList={ tabList }
         tabActiveKey={key}
         onTabChange={this.handleTabChange}

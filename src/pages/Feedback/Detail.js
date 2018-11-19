@@ -57,7 +57,7 @@ const CreateForm = Form.create()(props => {
                 <Form.Item
                     {...formItemLayout}
                     label="上传附件"
-                    extra="支持扩展名：jpg, bmp, png, gif, txt, log, docx"
+                    extra="支持扩展名：jpg, png, gif, txt, zip"
                 >
                     {getFieldDecorator('upload')(
                         <Upload {...upload_file}>
@@ -74,7 +74,7 @@ const CreateForm = Form.create()(props => {
 
 @connect(({ feedback, loading }) => ({
     feedback,
-    loading: loading.effects['feedback/fetchDetail'],
+    loading: loading.effects['feedback/addInteraction'],
 }))
 @Form.create()
 class Detail extends Component {
@@ -103,7 +103,7 @@ class Detail extends Component {
 
     state = {
         modalVisible: false,
-        upload_file:[]
+        uploadFeedFile:[]
     };
 
     // 回传数据
@@ -151,7 +151,7 @@ class Detail extends Component {
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        const { modalVisible, feedFileList } = this.state;
+        const { modalVisible, uploadFeedFile } = this.state;
         const { feedbackDetail, dialogList } = feedback;
 
         const dialogLists = [
@@ -220,20 +220,20 @@ class Detail extends Component {
             name: 'file',
             action: '',
             showUploadList: true,
-            fileList: feedFileList,
+            fileList: uploadFeedFile,
             beforeUpload: (file) => {
-                this.setState(({ feedFileList }) => ({
-                    feedFileList: [file],
+                this.setState(({ uploadFeedFile }) => ({
+                    uploadFeedFile: [...uploadFeedFile, file],
                 }))
                 return false;
             },
             onRemove: (file) => {
-                this.setState(({ feedFileList }) => {
-                    const index = feedFileList.indexOf(file);
-                    let newFileList = feedFileList.slice();
+                this.setState(({ uploadFeedFile }) => {
+                    const index = uploadFeedFile.indexOf(file);
+                    let newFileList = uploadFeedFile.slice();
                     newFileList.splice(index, 1);
                     return {
-                        feedFileList: newFileList
+                        uploadFeedFile: newFileList
                     }
                 })
             },
@@ -284,7 +284,9 @@ class Detail extends Component {
                         </Description>
                     </DescriptionList>
                 </Card>
-                <TimelineDialog list={dialogList}></TimelineDialog>
+                {
+                    dialogList.length && <TimelineDialog list={dialogList}></TimelineDialog>
+                }
                 <Button type="primary" onClick={() => this.handleModalVisible(true)} style={{float:'right', marginRight:60}}>回复</Button>
                 <CreateForm {...parentMethods} modalVisible={modalVisible} />
             </PageHeaderWrapper>

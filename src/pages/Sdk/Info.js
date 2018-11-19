@@ -25,6 +25,27 @@ const progressColumns = [
     {
         title: '下载',
         dataIndex: 'platform',
+        render: (text, record) => {
+            let node;
+            switch (text) {
+                case 1:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="android" /></a>
+                    break;
+                case 2:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="apple" /></a>
+                    break;
+                case 3:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="windows" /></a>
+                    break;
+                case 4:
+                    node = <a href={record.url} style={{ color: '#000' }}><Icon type="dingding" /></a>
+                    break;
+                default:
+                    break;
+            }
+
+            return node;
+        }
     },
 ];
 

@@ -57,17 +57,7 @@ class Terminal extends Component {
 
     }
 
-    packDown = () => {
-        const { dispatch } = this.props;
-
-        dispatch({
-            type: 'terminal/fetchUdidList',
-            payload: {
-                appId: this.params.id
-            }
-        });
-
-    }
+    
 
     render() {
         const { terminal, loading } = this.props;
@@ -129,6 +119,12 @@ class Terminal extends Component {
             }
         }
 
+        // 下载设备信息
+        const downloadUdidList = () => {
+            window.location.href = 'http://open.net:8520/dev/application/downloadUdidList?appId=' + this.params.id;
+        }
+
+        // 选择授权协议
         const onChangeAuthFile = e =>{
             this.setState({
                 selectedAuthFlag: e.target.checked
@@ -167,18 +163,7 @@ class Terminal extends Component {
 
         // 下载授权文件
         const downloadAuthFile = () => {
-            const { dispatch } = this.props;
-            const { appId } = this.state;
-
-            dispatch({
-                type: 'terminal/downloadAuthFile',
-                payload: {
-                    appId
-                },
-                callback: () => {
-                    
-                }
-            })
+            window.location.href = 'http://open.net:8520/dev/application/downloadAuthFile?appId=' + this.params.id;
         }
 
         // 上传授权信息
@@ -222,6 +207,7 @@ class Terminal extends Component {
             },
         }
 
+        // 选择激活码协议
         const onChangeActiveFlag = e => {
             this.setState({
                 selectedActiveFlag: e.target.checked
@@ -259,19 +245,9 @@ class Terminal extends Component {
             })
         }
 
+        // 下载激活码
         const downloadActiveList = () => {
-            const { dispatch } = this.props;
-            const { appId } = this.state;
-
-            dispatch({
-                type: 'terminal/downloadActiveList',
-                payload: {
-                    appId
-                },
-                callback: () => {
-
-                }
-            })
+            window.location.href = 'http://open.net:8520/dev/application/downloadActiveList?appId=' + this.params.id + '&&appKey=' + this.params.key;
         }
 
         const upload_device = {
@@ -477,7 +453,7 @@ class Terminal extends Component {
                                                     </Tooltip>
                                                     ：
                                                 </span>
-                                                <Button type="primary" htmlType="submit" onClick={this.packDown}>打包下载</Button>
+                                                <Button type="primary" htmlType="submit" onClick={downloadUdidList}>打包下载</Button>
                                             </Fragment>
                                         </li>
                                     </ul>
@@ -568,7 +544,7 @@ class Terminal extends Component {
                         </div>
                         <div style={{ marginLeft: 100, marginTop: 10, marginBottom: 20 }}>
                             <Button onClick={generateActiveList} type="primary">生成激活码</Button>
-                            <Button onClick={this.downloadActiveList} style={{ marginLeft: 20 }}>下载激活码</Button>
+                            <Button onClick={downloadActiveList} style={{ marginLeft: 20 }}>下载激活码</Button>
                         </div>
                     </Fragment>
                 </Card>

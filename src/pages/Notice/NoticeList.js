@@ -86,7 +86,7 @@ class NoticeList extends Component {
 
 
     return (
-      <PageHeaderWrapper title='社区使用'>
+      <PageHeaderWrapper title='通知公告'>
         
         <Card
           style={{ marginTop: 24 }}

@@ -107,8 +107,8 @@ export async function accountLogin(params) {
 
   let body = new FormData();
 
-  body.append('userName', params.userName);
-  body.append('password', params.password);
+  body.append('userName', params.userName);  // 15912341234
+  body.append('password', params.password); // 111111aa
   body.append('remember', params.autoLogin);
 
   return request('/api2/dev/Appdeveloper/doAjaxLogin', {
@@ -648,12 +648,15 @@ export async function queryDialogList(params) {
 // 回复反馈
 export async function addInteraction(params) {
 
-  console.log(params);
-
   let body = new FormData();
   body.append('id', params.id);
   body.append('content', params.content);
-  body.append('upload', params.upload);
+
+  params.upload.forEach((file) => {
+    body.append('files', file);
+  })
+
+  // body.append('upload', params.upload);
 
   return request('/api2/dev/WorkOrder/ajaxAddInteraction', {
     method: 'POST',

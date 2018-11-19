@@ -1,7 +1,7 @@
 import React, { Component, PureComponent, Fragment  } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { List, Card, Input, Icon, Dropdown, Menu, Avatar, Table  } from 'antd';
+import { List, Card, Input, Icon, Dropdown, Menu, Avatar, Table, Badge } from 'antd';
 import Link from 'umi/link';
 import { routerRedux } from 'dva/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -130,10 +130,46 @@ class AppList extends PureComponent {
       {
         title: '终端预警',
         dataIndex: 'terminalWarning',
+        render: text => {
+          let node;
+          switch (text) {
+            case 0:
+              node = <Badge status="success" text="正常" />
+              break;
+            case 1:
+              node = <Badge status="processing" text="预警" />
+              break;
+            case 2:
+              node = <Badge status="warning" text="不足" />
+              break;
+            default:
+              break;
+          }
+
+          return node;
+        }
       },
       {
         title: '点数预警',
         dataIndex: 'numberWarning',
+        render: text => {
+          let node;
+          switch (text) {
+            case 0:
+              node = <Badge status="success" text="正常" />
+              break;
+            case 1:
+              node = <Badge status="processing" text="预警" />
+              break;
+            case 2:
+              node = <Badge status="warning" text="不足" />
+              break;
+            default:
+              break;
+          }
+
+          return node;
+        }
       },
       {
         title: '操作',
