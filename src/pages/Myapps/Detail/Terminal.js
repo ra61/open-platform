@@ -507,7 +507,7 @@ class Terminal extends Component {
                             </div>
                         </Upload>
                         <div style={{ marginLeft: 100, marginTop: 10, }}>
-                            <a onClick={this.toggleForm}>下载导入模板</a>
+                            <a href='/api2/dev/application/downloadAuthTemplate'>下载导入模板</a>
                         </div>
                         <div style={{ marginLeft: 100, marginTop: 10, }}>
                             <Checkbox checked={selectedAuthFlag} onChange={onChangeAuthFile}>我已经阅读<a onClick={this.toggleFormAuthFile}>《离线授权生成说明》</a></Checkbox>
@@ -537,7 +537,7 @@ class Terminal extends Component {
                             </div>
                         </Upload>
                         <div style={{ marginLeft: 100, marginTop: 10, }}>
-                            <a onClick={this.toggleForm}>下载导入模板</a>
+                            <a href='/api2/dev/application/downloadActiveCodeTemplate'>下载导入模板</a>
                         </div>
                         <div style={{ marginLeft: 100, marginTop: 10, }}>
                             <Checkbox checked={selectedActiveFlag} onChange={onChangeActiveFlag}>我已经阅读<a onClick={this.toggleForm}>《硬件激活码生成说明》</a></Checkbox>

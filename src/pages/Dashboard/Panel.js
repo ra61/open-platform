@@ -27,6 +27,8 @@ import styles from './Panel.less';
 class Panel extends Component {
   constructor(props) {
     super(props);
+
+    console.log(props)
     
     this.state = {
       loading: true,
@@ -103,7 +105,7 @@ class Panel extends Component {
 
         <Row gutter={24}>
           {/* 预警 */}
-
+          <div data-step="5" data-intro="预警" >
           <Col {...topColResponsiveProps}>
             <Card
               loading={loading}
@@ -129,6 +131,7 @@ class Panel extends Component {
               </ul>
             </Card>
           </Col>
+          </div>
           {/* 今日统计 */}
 
           <Col {...topColResponsiveProps}>
