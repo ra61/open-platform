@@ -1,0 +1,37 @@
+
+:global{
+
+    .ant-layout{
+        background-color: #f8f9fb;
+    }
+
+    .ant-menu:not(.ant-menu-horizontal)
+    .ant-menu-item-selected {
+        background-color: #eaedf2
+    }
+
+    .ant-menu-vertical .ant-menu-item:after,
+    .ant-menu-vertical-left .ant-menu-item:after,
+    .ant-menu-vertical-right .ant-menu-item:after,
+    .ant-menu-inline .ant-menu-item:after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-right: 3px solid #eaedf2;
+        transform: scaleY(0.0001);
+        opacity: 0;
+        transition: transform 0.15s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .ant-menu-item-selected > a, .ant-menu-item-selected > a:hover {
+        color: #0066ff;
+    }
+
+    .ant-back-top{
+        right: 0;
+        bottom: 0;
+    }
+
+}
